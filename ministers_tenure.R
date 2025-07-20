@@ -178,7 +178,7 @@ tenure_distribution <- ggplot(df, aes(x = duration_days, fill = president_label)
   )
 
 # STEP 6: Display and export the histogram plot
-print(tenure_distribution)
+print(ministers_tenure_plot)
 
 ggsave(
   filename = file.path(folder_path, "tenure_distribution_by_president.png"),
