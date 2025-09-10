@@ -73,12 +73,12 @@ ministers_tenure_plot <- ggplot(df, aes(x = start_date, xend = end_date, y = min
   scale_color_gradientn(
     colours = c("#005f5e", "#00DFA2", "#FFF183", "#ff8575", "#E6004C"),
     values = rescale(c(1000, 700, 400, 200, 0)),
-    name = "Days in Office"
+    name = "Días en la oficina"
   ) +
   scale_x_datetime(date_labels = "%Y", date_breaks = "2 years") +
   labs(
     x = "",
-    y = "Minister"
+    y = "Ministro"
   ) +
   theme_minimal(base_size = 14) +
   theme(
@@ -98,7 +98,7 @@ ministers_tenure_plot <- ggplot(df, aes(x = start_date, xend = end_date, y = min
   )
 
 # STEP 3: Display and export the Gantt-like chart
-print(tenure_distribution)
+print(ministers_tenure_plot)
 
 ggsave(
   filename = file.path(folder_path, "ministers_tenure.png"),
@@ -157,9 +157,9 @@ tenure_distribution <- ggplot(df, aes(x = duration_days, fill = president_label)
     expand = expansion(mult = c(0, 0.02))
   ) +
   labs(
-    x = "Days in Office",
-    y = "Number of Ministers",
-    fill = "President"
+    x = "Días en la oficina",
+    y = "Número de ministros",
+    fill = "Presidente"
   ) +
   theme_minimal(base_size = 14) +
   theme(
@@ -178,7 +178,7 @@ tenure_distribution <- ggplot(df, aes(x = duration_days, fill = president_label)
   )
 
 # STEP 6: Display and export the histogram plot
-print(ministers_tenure_plot)
+print(tenure_distribution)
 
 ggsave(
   filename = file.path(folder_path, "tenure_distribution_by_president.png"),
