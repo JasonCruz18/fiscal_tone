@@ -147,12 +147,12 @@ fiscal_plot <- ggplot() +
   
   # Manual colors
   scale_fill_manual(values = c(
-    "Balance del Sector Público (% del PBI) - Histórico" = "#005f5e",
-    "Balance del Sector Público (% del PBI) - Proyección" = "#005f5e"
+    "Balance del Sector Público (% del PBI) - Histórico" = "#00DFA2",
+    "Balance del Sector Público (% del PBI) - Proyección" = "#00DFA2"
   )) +
   scale_color_manual(values = c(
-    "Deuda Pública (% del PBI) - Histórico" = "#00DFA2",
-    "Deuda Pública (% del PBI) - Proyección" = "#00DFA2"
+    "Deuda Pública (% del PBI) - Histórico" = "#033280",
+    "Deuda Pública (% del PBI) - Proyección" = "#033280"
   )) +
   
   # Labels
@@ -164,7 +164,7 @@ fiscal_plot <- ggplot() +
     axis.text = element_text(size = 14),
     plot.title = element_text(face = "bold"),
     panel.grid.major = element_line(color = "#f5f5f5", linewidth = 0.65),
-    panel.grid.minor = element_line(color = "#f5f5f5", linewidth = 0.65),
+    panel.grid.minor = element_blank(),  # <-- Se eliminó la grilla secundaria
     panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5),
     
     # Put both legends inside chart (top-right corner)
@@ -188,7 +188,7 @@ fiscal_plot <- ggplot() +
 print(fiscal_plot)
 
 ggsave(
-  filename = file.path(folder_path, "fiscal_indicators.png"),
+  filename = file.path(folder_path, "agenda_1.png"),
   plot = fiscal_plot,
   width = 12, height = 6, dpi = 300, bg = "white"
 )
