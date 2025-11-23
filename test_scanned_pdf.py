@@ -27,10 +27,13 @@ try:
     from pdf2image import convert_from_path
     from PIL import Image, ImageEnhance, ImageFilter
 except ImportError as e:
-    print(f"❌ Missing dependencies: {e}")
+    print(f"[ERROR] Missing dependencies: {e}")
     print("Run: pip install pytesseract pdf2image Pillow")
     print("Also install Tesseract OCR: https://github.com/UB-Mannheim/tesseract/wiki")
     exit(1)
+
+# Configure Tesseract path for Windows
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Import OCR functions by executing only the relevant section
 import sys
@@ -40,7 +43,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 # by loading only the function definitions we need
 
 # Prepare globals for exec (provide all necessary imports)
-exec_globals = {
+# Use a single dict for both globals and locals so functions can see each other
+exec_namespace = {
     'os': os,
     'json': json,
     're': re,
@@ -52,7 +56,6 @@ exec_globals = {
     'ImageFilter': ImageFilter,
     '__name__': '__main__',
 }
-exec_locals = {}
 
 # Read the data_curation.py file and extract only the OCR section
 curation_file = Path(__file__).parent / "data_curation.py"
@@ -63,20 +66,43 @@ with open(curation_file, 'r', encoding='utf-8') as f:
 # Find the start and end of section 7
 section_7_start = content.find("# 7. TEXT EXTRACTION FROM SCANNED PDFS (OCR)")
 if section_7_start == -1:
-    print("❌ Could not find OCR section in data_curation.py")
+    print("[ERROR] Could not find OCR section in data_curation.py")
     exit(1)
 
 # Extract from section 7 to end of pipeline
 section_7_end = content.find("# END OF PIPELINE", section_7_start)
 ocr_code = content[section_7_start:section_7_end]
 
+# Skip the try-except import block since we already have imports
+# Find where the ROI constants start (they're needed by the functions)
+roi_start = ocr_code.find("# --- Region of Interest (ROI) Definitions ---")
+if roi_start != -1:
+    # Extract from ROI definitions onward (includes constants and all functions)
+    ocr_code = ocr_code[roi_start:]
+else:
+    # Fallback: try to find the first function definition
+    first_def = ocr_code.find("def preprocess_page_image")
+    if first_def != -1:
+        ocr_code = ocr_code[first_def:]
+
 # Execute only the OCR code to get the functions
-exec(ocr_code, exec_globals, exec_locals)
+# Use the same dict for both globals and locals so functions can reference each other
+try:
+    exec(ocr_code, exec_namespace, exec_namespace)
+except Exception as e:
+    print(f"[ERROR] Failed to extract OCR functions: {e}")
+    import traceback
+    traceback.print_exc()
+    exit(1)
 
 # Extract the functions we need
-extract_text_from_scanned_pdf = exec_locals['extract_text_from_scanned_pdf']
-validate_extraction = exec_locals['validate_extraction']
-batch_extract_scanned_pdfs = exec_locals.get('batch_extract_scanned_pdfs')
+extract_text_from_scanned_pdf = exec_namespace.get('extract_text_from_scanned_pdf')
+validate_extraction = exec_namespace.get('validate_extraction')
+batch_extract_scanned_pdfs = exec_namespace.get('batch_extract_scanned_pdfs')
+
+if not extract_text_from_scanned_pdf:
+    print("[ERROR] extract_text_from_scanned_pdf not found in extracted functions")
+    exit(1)
 
 
 def test_single_pdf(pdf_path, output_json_path=None, dpi=300):
@@ -96,7 +122,7 @@ def test_single_pdf(pdf_path, output_json_path=None, dpi=300):
 
     # Check if file exists
     if not os.path.exists(pdf_path):
-        print(f"❌ Error: File not found: {pdf_path}")
+        print(f"[ERROR] File not found: {pdf_path}")
         return
 
     # Extract paragraphs
@@ -110,17 +136,17 @@ def test_single_pdf(pdf_path, output_json_path=None, dpi=300):
     validation = validate_extraction(paragraphs)
 
     if validation['passed']:
-        print("✅ VALIDATION PASSED")
+        print("[PASS] VALIDATION PASSED")
     else:
-        print("⚠️  VALIDATION FAILED")
+        print("[FAIL] VALIDATION FAILED")
 
     if validation['issues']:
-        print("\n❌ Issues found:")
+        print("\n[X] Issues found:")
         for issue in validation['issues']:
             print(f"   - {issue}")
 
     if validation['warnings']:
-        print("\n⚡ Warnings:")
+        print("\n[!] Warnings:")
         for warning in validation['warnings']:
             print(f"   - {warning}")
 
@@ -168,13 +194,13 @@ def test_batch_scanned_folder(scanned_folder, output_json_path):
     print(f"Output: {output_json_path}\n")
 
     if not os.path.exists(scanned_folder):
-        print(f"❌ Error: Folder not found: {scanned_folder}")
+        print(f"[ERROR] Folder not found: {scanned_folder}")
         return
 
     # Run batch extraction
     results = batch_extract_scanned_pdfs(scanned_folder, output_json_path)
 
-    print(f"\n✅ Batch extraction complete!")
+    print(f"\n[OK] Batch extraction complete!")
     print(f"Total paragraphs: {len(results)}")
 
 
@@ -192,7 +218,7 @@ if __name__ == "__main__":
         pdf_files = list(SCANNED_FOLDER.glob("*.pdf"))
 
         if not pdf_files:
-            print("❌ No PDF files found in data/raw/scanned/")
+            print("[ERROR] No PDF files found in data/raw/scanned/")
             print(f"   Searched in: {SCANNED_FOLDER}")
         else:
             # Test with first PDF found
@@ -203,7 +229,7 @@ if __name__ == "__main__":
             )
 
             print("\n" + "="*80)
-            print("💡 TIP: To test other PDFs, modify the pdf_path in this script.")
+            print("[TIP] To test other PDFs, modify the pdf_path in this script.")
             print("="*80)
 
     elif TEST_MODE == "batch":
@@ -215,5 +241,5 @@ if __name__ == "__main__":
         )
 
     else:
-        print(f"❌ Invalid TEST_MODE: {TEST_MODE}")
+        print(f"[ERROR] Invalid TEST_MODE: {TEST_MODE}")
         print("   Options: 'single' or 'batch'")
