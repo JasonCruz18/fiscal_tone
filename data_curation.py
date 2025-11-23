@@ -327,7 +327,7 @@ def pdf_downloader(cf_urls, raw_pdf_folder, metadata_folder, metadata_json):
 
         # === Incremental update to metadata (even if interrupted later) ===
         temp_df = pd.concat([temp_df, pd.DataFrame([row])], ignore_index=True)
-        temp_df.to_json(metadata_path, orient='records', indent=2)
+        temp_df.to_json(metadata_path, orient='records', indent=2, force_ascii=False)
 
         # avoid rate limit
         time.sleep(1)
