@@ -340,6 +340,7 @@ def pdf_downloader(cf_urls, raw_pdf_folder, metadata_folder, metadata_json):
     final_df = pd.read_json(metadata_path, dtype=str)
     return final_df
 
+#%%
 cf_urls = [
     "https://cf.gob.pe/p/informes/",
     "https://cf.gob.pe/p/comunicados/"
@@ -349,7 +350,7 @@ metadata_df = pdf_downloader(
     cf_urls=cf_urls,
     raw_pdf_folder=raw_data_subfolder,
     metadata_folder=metadata_folder,
-    metadata_csv="cf_metadata"
+    metadata_json="cf_metadata"
 )
 
 # Delete selected PDFs
