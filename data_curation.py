@@ -45,7 +45,7 @@ input_data_subfolder = os.path.join(data_folder, 'input')  # Subfolder for savin
 output_data_subfolder = os.path.join(data_folder, 'output')
 
 # Additional folders for metadata, records, and alert tracking
-metadata_folder = 'metadata'  # Folder for storing metadata files like wr_metadata.csv.
+metadata_folder = 'metadata'  # Folder for storing metadata files like cf_metadata.json.
 
 # Create additional required folders
 for folder in [data_folder, raw_data_subfolder, input_data_subfolder, output_data_subfolder, metadata_folder]:
@@ -327,7 +327,7 @@ def pdf_downloader(cf_urls, raw_pdf_folder, metadata_folder, metadata_json):
 
         # === Incremental update to metadata (even if interrupted later) ===
         temp_df = pd.concat([temp_df, pd.DataFrame([row])], ignore_index=True)
-        temp_df.to_json(metadata_path, orient='records', indent=2, force_ascii=False)
+        temp_df.to_json(metadata_path, orient='records', indent=2, force_ascii=False, date_format='iso')
 
         # avoid rate limit
         time.sleep(1)
@@ -475,23 +475,23 @@ import os
 import pandas as pd
 import re
 
-def metadata_enrichment(classification_folder, metadata_folder, metadata_csv="cf_metadata"):
+def metadata_enrichment(classification_folder, metadata_folder, metadata_json="cf_metadata"):
     """
     Enriches metadata with information such as 'pdf_type', 'doc_type', 'doc_number', 'year', and 'month'.
-    
+
     Parameters:
     - classification_folder: str, the directory where 'editable' and 'scanned' subfolders exist.
-    - metadata_folder: str, the folder where the metadata CSV file is located.
-    - metadata_csv: str, the name of the CSV file containing metadata (without the '.csv' extension).
-    
+    - metadata_folder: str, the folder where the metadata JSON file is located.
+    - metadata_json: str, the name of the JSON file containing metadata (without the '.json' extension).
+
     Returns:
     - metadata_df: DataFrame with the enriched metadata.
     """
-    # Add .csv extension to metadata_csv if not provided
-    metadata_csv_path = os.path.join(metadata_folder, f"{metadata_csv}.csv")
+    # Add .json extension to metadata_json if not provided
+    metadata_json_path = os.path.join(metadata_folder, f"{metadata_json}.json")
 
-    # Load the metadata CSV file
-    metadata_df = pd.read_csv(metadata_csv_path)
+    # Load the metadata JSON file
+    metadata_df = pd.read_json(metadata_json_path)
 
     # Ensure 'pdf_type', 'doc_type', 'doc_number', 'year' and 'month' columns exist
     if 'pdf_type' not in metadata_df.columns:
@@ -526,13 +526,16 @@ def metadata_enrichment(classification_folder, metadata_folder, metadata_csv="cf
 
     # Function to extract 'month' from 'date' column (assuming 'date' is in "YYYY-MM-DD" format)
     def extract_month(row):
-        date_str = row["date"]
-        if pd.notna(date_str):  # Check if the date is not NaN
-            # Extract month from the date string (assuming format is "YYYY-MM-DD")
+        date_val = row["date"]
+        if pd.notna(date_val):  # Check if the date is not NaN
+            # Check if it's already a Timestamp object (pandas auto-converts dates)
+            if isinstance(date_val, pd.Timestamp):
+                return date_val.month
+            # If it's a string, extract month from the date string
             try:
-                month = int(date_str.split('-')[1])  # Extract the month (second part of the date)
+                month = int(str(date_val).split('-')[1])  # Extract the month (second part of the date)
                 return month
-            except IndexError:
+            except (IndexError, ValueError):
                 return None
         return None
 
@@ -567,20 +570,19 @@ def metadata_enrichment(classification_folder, metadata_folder, metadata_csv="cf
     # Reorder columns if they exist
     metadata_df = metadata_df[column_order]
 
-    # Save the enriched metadata to a new CSV file
-    enriched_metadata_path = os.path.join(metadata_folder, f"enriched_{metadata_csv}.csv")
-    metadata_df.to_csv(enriched_metadata_path, index=False)
+    # Save the enriched metadata back to the original JSON file (replacing it)
+    metadata_df.to_json(metadata_json_path, orient='records', indent=2, force_ascii=False, date_format='iso')
 
-    print(f"📑 Metadata enriched and saved to: '{enriched_metadata_path}'")
+    print(f"📑 Metadata enriched and saved to: '{metadata_json_path}'")
     
     return metadata_df
 
 # Define the folder paths
 classification_folder = raw_data_subfolder
 metadata_folder = metadata_folder
-metadata_csv = "cf_metadata"  # Note: without the ".csv" extension
+metadata_json = "cf_metadata"  # Note: without the ".json" extension
 
-updated_metadata_df = metadata_enrichment(classification_folder, metadata_folder, metadata_csv)
+updated_metadata_df = metadata_enrichment(classification_folder, metadata_folder, metadata_json)
 
 
 # 2. Data extraction
@@ -591,56 +593,286 @@ import pdfplumber
 import json
 from time import time as timer
 
-def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclude_bold=True, vertical_threshold=10):
+# ======================================================
+# Helper functions for improved text extraction
+# ======================================================
+
+def is_header_footer(word, page_height, page_width):
     """
-    Extracts raw text from a single editable PDF for testing purposes, recognizing new paragraphs based on vertical spacing.
-    
+    Detect if a word is part of header or footer based on position and content patterns.
+
+    Parameters:
+    - word: dict with 'text', 'top', 'x0' keys from pdfplumber
+    - page_height: height of the page
+    - page_width: width of the page
+
+    Returns:
+    - bool: True if word is header/footer, False otherwise
+    """
+    # Position-based detection
+    HEADER_MARGIN = 70  # Top 70 points of page
+    FOOTER_MARGIN = 70  # Bottom 70 points of page
+
+    # Check if in header region (top of page)
+    if word["top"] < HEADER_MARGIN:
+        return True
+
+    # Check if in footer region (bottom of page)
+    if word["top"] > page_height - FOOTER_MARGIN:
+        return True
+
+    # Content-based patterns for headers/footers
+    text = word["text"].strip()
+    footer_patterns = [
+        r"www\.cf\.gob\.pe",
+        r"Av\.\s*Contralmirante\s*Montero",
+        r"^\d+/\d+$",  # Page numbers like "1/6", "2/15"
+        r"^CONSEJO\s+FISCAL",
+        r"^Consejo\s+Fiscal\s+del\s+Perú",
+        r"Magdalena\s+del\s+Mar"
+    ]
+
+    for pattern in footer_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            return True
+
+    return False
+
+
+def has_tables_or_graphics(page):
+    """
+    Detect if a page contains tables or graphics that might interfere with text extraction.
+
+    Parameters:
+    - page: pdfplumber page object
+
+    Returns:
+    - bool: True if page has tables/graphics, False otherwise
+    """
+    # Check for embedded images (actual graphics/charts)
+    # Allow single image (typically the logo), but skip if multiple images
+    if len(page.images) > 1:
+        return True
+
+    # Check for table structures using pdfplumber's table detection
+    tables = page.find_tables()
+    if tables:
+        # Only skip if table is substantial (has actual data)
+        for table in tables:
+            if table.bbox:  # Has bounding box
+                # Calculate table size
+                width = table.bbox[2] - table.bbox[0]
+                height = table.bbox[3] - table.bbox[1]
+                # Skip if table takes up significant space
+                if width > 200 and height > 100:
+                    return True
+
+    # Check for horizontal/vertical lines (common in tables)
+    # Increased threshold - fiscal council docs have some decorative lines/borders
+    lines = page.lines
+    if len(lines) > 15:  # More than 15 lines suggests complex table structure
+        return True
+
+    return False
+
+
+def is_section_header(word, last_word, is_bold, vertical_gap_threshold=20):
+    """
+    Detect if a bold word is a section header vs inline emphasis.
+
+    Parameters:
+    - word: current word dict
+    - last_word: previous word dict (or None)
+    - is_bold: whether current word is bold
+    - vertical_gap_threshold: minimum gap to consider as new section
+
+    Returns:
+    - bool: True if this is likely a section header, False if inline emphasis
+    """
+    if not is_bold:
+        return False
+
+    # If there's a large vertical gap before this word, likely a header
+    if last_word is not None:
+        vertical_gap = word["top"] - last_word["top"]
+        if vertical_gap > vertical_gap_threshold:
+            return True
+
+    # Common section header patterns
+    text = word["text"].strip()
+    header_keywords = [
+        "Principales mensajes",
+        "Opinión del Consejo Fiscal",
+        "Opinión de CF",
+        "Conclusión",
+        "Recomendación",
+        "Introducción",
+        "Antecedentes"
+    ]
+
+    for keyword in header_keywords:
+        if keyword.lower() in text.lower():
+            return True
+
+    return False
+
+
+def is_first_page_title(word, page_num, page_height):
+    """
+    Detect if a word is part of the main document title on the first page.
+
+    Parameters:
+    - word: word dict
+    - page_num: current page number (1-indexed)
+    - page_height: page height
+
+    Returns:
+    - bool: True if this is part of the title, False otherwise
+    """
+    if page_num != 1:
+        return False
+
+    # Title is typically in the top portion of first page (but below header margin)
+    TITLE_REGION_TOP = 70  # Below header
+    TITLE_REGION_BOTTOM = 200  # Within top third of page
+
+    if TITLE_REGION_TOP < word["top"] < TITLE_REGION_BOTTOM:
+        # Check for title patterns
+        text = word["text"].strip()
+        title_patterns = [
+            r"^Informe\s+(?:CF\s+)?N[°º]",
+            r"^Comunicado\s+(?:CF\s+)?N[°º]",
+            r"^Pronunciamiento"
+        ]
+
+        for pattern in title_patterns:
+            if re.search(pattern, text, re.IGNORECASE):
+                return True
+
+    return False
+
+
+def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclude_bold=False, vertical_threshold=10):
+    """
+    Extracts raw text from a single editable PDF, extracting only main body paragraphs.
+
+    This function uses multiple filtering strategies to exclude headers, footers, titles,
+    section headers, and tables/graphics, while preserving emphasized terms in paragraphs.
+
     Parameters:
     - file_path: str, path to the single PDF file to be processed
     - FONT_MIN: float, minimum font size to consider (default 11.0)
     - FONT_MAX: float, maximum font size to consider (default 11.9)
-    - exclude_bold: bool, whether to exclude bold text (default True)
+    - exclude_bold: bool, whether to exclude ALL bold text (default False)
+                    When False, uses smart filtering to keep emphasized words but exclude headers
     - vertical_threshold: int, the minimum vertical space between lines to consider as a new paragraph (default 10)
 
-    Prints the extracted text from the PDF for inspection and saves it to a JSON file in the same folder.
+    Filtering applied:
+    - Font size range (FONT_MIN to FONT_MAX)
+    - Headers/footers by position (top/bottom 70pt margins)
+    - Headers/footers by content pattern (URLs, page numbers, institutional text)
+    - First-page document title
+    - Section headers (bold text with large vertical gaps)
+    - Tables and graphics (entire pages skipped)
+    - Anexo sections (stops extraction)
+
+    Prints the extracted text for inspection and saves it to a JSON file in the same folder.
     """
     t0 = timer()
 
     print("🧠 Starting text extraction...\n")
     all_records = []
+    pages_skipped = 0
 
     try:
         print(f"📄 Processing: {file_path}")
         with pdfplumber.open(file_path) as pdf:
             for page_num, page in enumerate(pdf.pages, start=1):
-                # Extract words with their size, vertical position, and fontname
-                words = page.extract_words(extra_attrs=["size", "top", "fontname"])
+                # Get page dimensions
+                page_height = page.height
+                page_width = page.width
 
-                # Filter out bold words if exclude_bold is True
-                clean_words = [w for w in words if FONT_MIN <= w["size"] <= FONT_MAX and ("Bold" not in w["fontname"] if exclude_bold else True)]
+                # Skip pages with tables or graphics
+                if has_tables_or_graphics(page):
+                    print(f"⏭️  Skipping page {page_num}: contains tables or graphics")
+                    pages_skipped += 1
+                    continue
+
+                # Extract words with their size, vertical position, and fontname
+                words = page.extract_words(extra_attrs=["size", "top", "fontname", "x0"])
+
+                # Enhanced filtering with multiple criteria
+                clean_words = []
+                last_word = None
+
+                for word in words:
+                    # Font size filter
+                    if not (FONT_MIN <= word["size"] <= FONT_MAX):
+                        continue
+
+                    # Header/footer filter
+                    if is_header_footer(word, page_height, page_width):
+                        continue
+
+                    # First-page title filter
+                    if is_first_page_title(word, page_num, page_height):
+                        continue
+
+                    # Bold text handling
+                    is_bold = "Bold" in word.get("fontname", "")
+
+                    if exclude_bold and is_bold:
+                        # Old behavior: exclude all bold
+                        continue
+                    elif is_bold:
+                        # Smart filtering: exclude section headers but keep emphasis
+                        if is_section_header(word, last_word, is_bold, vertical_gap_threshold=20):
+                            continue
+
+                    # Word passed all filters
+                    clean_words.append(word)
+                    last_word = word
+
                 if not clean_words:
                     continue
 
                 # Initialize variables for paragraph detection
                 page_text = []
                 paragraph_lines = []
-                last_top = None  # Keeps track of the vertical position of the previous word
+                last_top = None
+                last_word_text = ""
 
                 # Process each word and check vertical spacing between lines
                 for word in clean_words:
                     line_text = word["text"]
-                    top = word["top"]  # Vertical position of the word
+                    top = word["top"]
 
-                    # Detect if we have a new paragraph based on vertical spacing
-                    if last_top is not None and top - last_top > vertical_threshold:
-                        # New paragraph detected based on large vertical space
+                    # Enhanced paragraph break detection
+                    new_paragraph = False
+
+                    if last_top is not None:
+                        vertical_gap = top - last_top
+
+                        # Large gap = definite break
+                        if vertical_gap > vertical_threshold:
+                            new_paragraph = True
+                        # Sentence ending + moderate gap
+                        elif vertical_gap > vertical_threshold * 0.7 and last_word_text.endswith(('.', '!', '?')):
+                            new_paragraph = True
+                        # List item detection
+                        elif line_text.strip().startswith(('•', '-', '1.', '2.', '3.', 'i)', 'ii)', 'iii)', 'a)', 'b)')):
+                            new_paragraph = True
+
+                    if new_paragraph:
+                        # Add the previous paragraph
                         if paragraph_lines:
-                            page_text.append(" ".join(paragraph_lines))  # Add the previous paragraph
-                        paragraph_lines = [line_text]  # Start a new paragraph
+                            page_text.append(" ".join(paragraph_lines))
+                        paragraph_lines = [line_text]
                     else:
-                        paragraph_lines.append(line_text)  # Continue adding to the current paragraph
-                    
-                    last_top = top  # Update the last vertical position
+                        paragraph_lines.append(line_text)
+
+                    last_top = top
+                    last_word_text = line_text
 
                 # Add the last paragraph if exists
                 if paragraph_lines:
@@ -654,6 +886,13 @@ def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclud
                 if match:
                     full_page_text = full_page_text[:match.start()].strip()
                     print(f"🛑 'Anexo' detected on page {page_num}. Truncating content.")
+                    # Stop processing further pages after anexo
+                    all_records.append({
+                        "filename": os.path.basename(file_path),
+                        "page": page_num,
+                        "text": full_page_text
+                    })
+                    break
 
                 all_records.append({
                     "filename": os.path.basename(file_path),
@@ -682,7 +921,9 @@ def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclud
         print(f"❌ Error processing {file_path}: {e}")
 
     t1 = timer()
-    print(f"\n✅ Extraction complete. Total pages processed: {len(all_records)}")
+    print(f"\n✅ Extraction complete.")
+    print(f"📊 Pages with text extracted: {len(all_records)}")
+    print(f"⏭️  Pages skipped (tables/graphics): {pages_skipped}")
     print(f"⏱️ Time taken: {t1 - t0:.2f} seconds")
 
 # Example usage: specify the PDF file path
