@@ -912,12 +912,22 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
         # Extract words with relaxed filtering (need to see titles/headers)
         words = page.extract_words(extra_attrs=["size", "top", "fontname"])
 
-        # Filter by broader font size range (keywords appear as section headers at 11-13pt)
-        # Headers are typically slightly larger than body text
-        candidate_words = [
-            w for w in words
-            if 11.0 <= w["size"] <= 13.0  # Broader range to capture section headers
-        ]
+        # Check if this PDF has font size metadata
+        has_font_metadata = any("size" in w for w in words)
+
+        if has_font_metadata:
+            # Filter by broader font size range (keywords appear as section headers at 11-13pt)
+            # Headers are typically slightly larger than body text
+            candidate_words = [
+                w for w in words
+                if "size" in w and 11.0 <= w["size"] <= 13.0  # Broader range to capture section headers
+            ]
+        else:
+            # Fallback: Some PDFs lack font metadata - use all words for keyword search
+            # (Position filtering still applies: left-aligned check at x < 120pt)
+            candidate_words = words
+            if page_num == 2:  # Only print once
+                print("      ⚠️  No font metadata detected. Using position-based filtering only.")
 
         if not candidate_words:
             continue
@@ -1119,15 +1129,17 @@ def extract_text_from_single_pdf_v2(
                 # Keyword patterns that match various formats:
                 # - "Opinión del Consejo Fiscal..."
                 # - "Opinión del CF..."
+                # - "Opinión del CF sobre las proyecciones..." (with additional text)
                 # - "4. Opinión del Consejo Fiscal..." (Arabic numerals)
                 # - "II. Opinión del CF..." (Roman numerals)
                 # - "   Opinión del CF..." (with leading spaces)
                 #
                 # Roman numerals: I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, etc.
                 # NOTE: The (?:...)? makes the entire number part OPTIONAL
+                # NOTE: \b ensures word boundary (matches "CF" but not "CFO")
                 keywords = [
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal",  # Optional number + "Opinión del Consejo Fiscal"
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF"                # Optional number + "Opinión del CF"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal\b",  # Optional number + "Opinión del Consejo Fiscal"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b"                # Optional number + "Opinión del CF"
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 

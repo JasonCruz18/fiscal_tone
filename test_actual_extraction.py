@@ -15,14 +15,15 @@ if sys.platform == 'win32' and hasattr(sys.stdout, 'buffer'):
 sys.path.insert(0, r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone")
 from data_curation import extract_text_from_single_pdf_v2
 
-# Test file
-test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-suspension-de-reglas-fiscales-VF.pdf"
+# Test file - MMM PDF that previously failed keyword detection
+test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\CF-Informe-MMM2124-cNotaAclaratoria-28-de-agosto-VF-publicada.pdf"
 
 print("\n" + "="*100)
-print("TESTING ACTUAL EXTRACTION FUNCTION")
+print("TESTING FIXED KEYWORD DETECTION: MMM PDF")
 print("="*100)
 print(f"\nFile: {os.path.basename(test_file)}")
-print("Expected: Should start extraction from page 5 (keyword: '4. Opinión del Consejo Fiscal')")
+print("Expected: Should find 'Opinión del CF sobre...' on page 7 and start extraction there")
+print("Issue: PDF lacks font metadata → Fixed by using position-based filtering")
 print("\n" + "="*100 + "\n")
 
 try:
