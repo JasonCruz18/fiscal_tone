@@ -898,12 +898,13 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
                If keyword not found, returns (1, 0) to extract from beginning
 
     Note:
-        - Keywords appear as section headers at 11.0-13.0pt (slightly larger than body text)
+        - Keywords appear as section headers at 11.0-15.0pt (slightly larger than body text)
+        - Range expanded to 15pt to capture PDFs with larger section headers
         - Must be LEFT-ALIGNED (x < 120pt) to avoid centered titles on cover/TOC pages
         - Supports both Arabic numerals (1, 2, 3...) and Roman numerals (I, II, III...)
     """
     print("   🔍 Searching for 'Opinión del' keyword starting from page 2...")
-    print("      Requirements: LEFT-aligned (x < 120pt), font 11-13pt, from page 2+")
+    print("      Requirements: LEFT-aligned (x < 120pt), font 11-15pt, from page 2+")
 
     # Search from page 2 onwards (skip page 1 which may have summaries)
     for page_num, page in enumerate(pdf.pages[1:], start=2):  # Start from page 2
@@ -916,11 +917,12 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
         has_font_metadata = any("size" in w for w in words)
 
         if has_font_metadata:
-            # Filter by broader font size range (keywords appear as section headers at 11-13pt)
-            # Headers are typically slightly larger than body text
+            # Filter by broader font size range (keywords appear as section headers at 11-15pt)
+            # Headers are typically slightly larger than body text (11-12pt)
+            # Some PDFs use larger headers (13-15pt) - must capture these variants
             candidate_words = [
                 w for w in words
-                if "size" in w and 11.0 <= w["size"] <= 13.0  # Broader range to capture section headers
+                if "size" in w and 11.0 <= w["size"] <= 15.0  # Expanded range to capture larger section headers
             ]
         else:
             # Fallback: Some PDFs lack font metadata - use all words for keyword search
@@ -936,6 +938,8 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
         # Group words by vertical position (same line)
         lines = {}
         for word in candidate_words:
+            if "top" not in word:
+                continue  # Skip words without position data
             top = round(word["top"], 1)  # Round to group words on same line
             if top not in lines:
                 lines[top] = []
