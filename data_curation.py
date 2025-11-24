@@ -1009,7 +1009,7 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
 def extract_text_from_single_pdf_v2(
     file_path,
     FONT_MIN=10.5,  # Lowered to capture ~11pt text (actual 10.98-11.02pt due to floating-point precision)
-    FONT_MAX=14.5,  # Increased to capture section headers (12.0-14.0pt) in Pronunciamientos
+    FONT_MAX=11.9,  # Increased to capture section headers (12.0-14.0pt) in Pronunciamientos
     exclude_bold=False,
     vertical_threshold=15,
     first_page_header_cutoff=100,
@@ -1329,7 +1329,7 @@ def extract_text_from_editable_pdfs(
     output_folder="data/raw",
     output_filename="all_extracted_text.json",
     FONT_MIN=10.5,
-    FONT_MAX=14.5,
+    FONT_MAX=11.9,
     exclude_bold=False,
     vertical_threshold=15,
     first_page_header_cutoff=100,
