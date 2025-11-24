@@ -96,6 +96,7 @@ for folder in [
 
 import time
 from timeit import default_timer as timer
+import glob
 import requests
 import pandas as pd
 from urllib.parse import urlparse, parse_qs, unquote
@@ -1170,8 +1171,8 @@ def extract_text_from_single_pdf_v2(
                 # NOTE: The (?:...)? makes the entire number part OPTIONAL
                 # NOTE: \b ensures word boundary (matches "CF" but not "CFO")
                 keywords = [
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal\b",  # Optional number + "Opinión del Consejo Fiscal"
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b"                # Optional number + "Opinión del CF"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del? Consejo Fiscal\b",  # Optional number + "Opinión de(l) Consejo Fiscal"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del? CF\b"                # Optional number + "Opinión de(l) CF"
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 
@@ -1320,6 +1321,233 @@ def extract_text_from_single_pdf_v2(
 
     t1 = timer()
     print(f"\n✅ Extraction complete. Total pages processed: {len(all_records)}")
+    print(f"⏱️ Time taken: {t1 - t0:.2f} seconds")
+
+
+def extract_text_from_editable_pdfs(
+    editable_folder="data/raw/editable",
+    output_folder="data/raw",
+    output_filename="all_extracted_text.json",
+    FONT_MIN=10.5,
+    FONT_MAX=14.5,
+    exclude_bold=False,
+    vertical_threshold=15,
+    first_page_header_cutoff=100,
+    subsequent_header_cutoff=70,
+    footer_cutoff_distance=100,
+    last_page_footer_cutoff=120,
+    left_margin=70,
+    right_margin=70,
+    exclude_specific_sizes=True,
+    search_opinion_keyword=True
+):
+    """
+    Extract text from ALL editable PDFs in a folder and save to a single consolidated JSON file.
+
+    This function loops through all PDF files in the editable folder, applies the same
+    extraction logic as extract_text_from_single_pdf_v2(), and saves all results to a
+    single JSON file with structure:
+    [
+        {"pdf_filename": "doc1.pdf", "page": 1, "text": "..."},
+        {"pdf_filename": "doc1.pdf", "page": 2, "text": "..."},
+        {"pdf_filename": "doc2.pdf", "page": 1, "text": "..."},
+        ...
+    ]
+
+    Parameters:
+        editable_folder: str, default="data/raw/editable"
+            Path to folder containing editable PDF files
+
+        output_folder: str, default="data/raw"
+            Path to folder where consolidated JSON will be saved
+
+        output_filename: str, default="all_extracted_text.json"
+            Name of the output JSON file
+
+        All other parameters: Same as extract_text_from_single_pdf_v2()
+            See extract_text_from_single_pdf_v2() documentation for details
+
+    Returns:
+        None (saves consolidated JSON file to disk)
+
+    Output File Structure:
+        data/raw/all_extracted_text.json with format:
+        [
+            {
+                "pdf_filename": "documento1.pdf",
+                "page": 1,
+                "text": "paragraph1\\n\\nparagraph2..."
+            },
+            ...
+        ]
+    """
+    t0 = timer()
+
+    # Get all PDF files from editable folder
+    pdf_files = glob.glob(os.path.join(editable_folder, "*.pdf"))
+
+    if not pdf_files:
+        print(f"⚠️ No PDF files found in {editable_folder}")
+        return
+
+    print("="*80)
+    print(f"BATCH TEXT EXTRACTION FROM EDITABLE PDFs")
+    print("="*80)
+    print(f"Source folder: {editable_folder}")
+    print(f"Output file: {os.path.join(output_folder, output_filename)}")
+    print(f"Found {len(pdf_files)} PDF files")
+    print("="*80)
+    print()
+
+    # Excluded font sizes (footnotes, captions, page numbers)
+    EXCLUDED_SIZES = [5.5, 6.0, 6.5, 7.0, 7.9, 8.4, 8.5, 9.5]
+
+    # Aggregate all records from all PDFs
+    all_records = []
+    processed_count = 0
+    failed_count = 0
+
+    for pdf_path in pdf_files:
+        pdf_filename = os.path.basename(pdf_path)
+        print(f"\n{'─'*80}")
+        print(f"[{processed_count + 1}/{len(pdf_files)}] Processing: {pdf_filename}")
+        print('─'*80)
+
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                total_pages = len(pdf.pages)
+
+                # Keyword search (if enabled)
+                start_page = 1
+                start_top_position = 0
+
+                if search_opinion_keyword:
+                    print(f"   🔍 Searching for 'Opinión del' keyword...")
+                    keywords = [
+                        r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del? Consejo Fiscal\b",
+                        r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del? CF\b"
+                    ]
+                    start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
+
+                    if start_page > 1:
+                        print(f"      ✅ Starting from page {start_page} (skipping pages 1-{start_page-1})")
+                    else:
+                        print(f"      ℹ️ No keyword found. Extracting from page 1.")
+
+                # Extract text from each page
+                page_records = []
+
+                for page_num, page in enumerate(pdf.pages, start=1):
+                    # Skip pages before start_page
+                    if page_num < start_page:
+                        continue
+
+                    page_width = float(page.width)
+                    page_height = float(page.height)
+
+                    # Determine header cutoff
+                    header_cutoff = first_page_header_cutoff if page_num == 1 else subsequent_header_cutoff
+
+                    # Determine footer cutoff
+                    if page_num == total_pages:
+                        footer_cutoff = page_height - last_page_footer_cutoff
+                    else:
+                        footer_cutoff = page_height - footer_cutoff_distance
+
+                    # Extract words
+                    words = page.extract_words(extra_attrs=["size", "top", "fontname"])
+
+                    # Adjust header cutoff if this is the keyword start page
+                    effective_header_cutoff = header_cutoff
+                    if page_num == start_page and start_top_position > 0:
+                        effective_header_cutoff = max(start_top_position - 5, 0)
+
+                    # Apply filters
+                    clean_words = [
+                        w for w in words
+                        if (
+                            FONT_MIN <= w["size"] <= FONT_MAX
+                            and (round(w["size"], 1) not in EXCLUDED_SIZES if exclude_specific_sizes else True)
+                            and ("Bold" not in w["fontname"] if exclude_bold else True)
+                            and effective_header_cutoff < w["top"] < footer_cutoff
+                            and left_margin < w.get("x0", 0) < (page_width - right_margin)
+                        )
+                    ]
+
+                    if not clean_words:
+                        continue
+
+                    # Build paragraphs
+                    page_text = []
+                    paragraph_lines = []
+                    last_top = None
+
+                    for word in clean_words:
+                        line_text = word["text"]
+                        top = word["top"]
+
+                        if last_top is not None and abs(top - last_top) > vertical_threshold:
+                            # New paragraph detected
+                            if paragraph_lines:
+                                page_text.append(" ".join(paragraph_lines))
+                                paragraph_lines = []
+
+                        paragraph_lines.append(line_text)
+                        last_top = top
+
+                    # Add final paragraph
+                    if paragraph_lines:
+                        page_text.append(" ".join(paragraph_lines))
+
+                    # Join paragraphs
+                    full_page_text = "\n\n".join(page_text)
+
+                    # Stop at "Anexo" section
+                    match = re.search(r"(?mi)^ *Anexos?\b[\s\w]*:?", full_page_text)
+                    if match:
+                        full_page_text = full_page_text[:match.start()].strip()
+
+                    if full_page_text:
+                        page_records.append({
+                            "pdf_filename": pdf_filename,
+                            "page": page_num,
+                            "text": full_page_text
+                        })
+
+                if page_records:
+                    all_records.extend(page_records)
+                    total_chars = sum(len(r['text']) for r in page_records)
+                    print(f"   ✅ Extracted {len(page_records)} pages ({total_chars} chars)")
+                    processed_count += 1
+                else:
+                    print(f"   ⚠️ No text extracted")
+                    failed_count += 1
+
+        except Exception as e:
+            print(f"   ❌ Error: {e}")
+            failed_count += 1
+
+    # Save consolidated JSON
+    if not all_records:
+        print("\n⚠️ No records extracted from any PDF")
+        return
+
+    output_path = os.path.join(output_folder, output_filename)
+    os.makedirs(output_folder, exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(all_records, f, ensure_ascii=False, indent=4)
+
+    t1 = timer()
+
+    print("\n" + "="*80)
+    print("BATCH EXTRACTION COMPLETE")
+    print("="*80)
+    print(f"✅ Processed: {processed_count}/{len(pdf_files)} PDFs")
+    print(f"❌ Failed: {failed_count}/{len(pdf_files)} PDFs")
+    print(f"📄 Total pages extracted: {len(all_records)}")
+    print(f"📊 Total characters: {sum(len(r['text']) for r in all_records):,}")
+    print(f"📂 Output file: {output_path}")
     print(f"⏱️ Time taken: {t1 - t0:.2f} seconds")
 
 

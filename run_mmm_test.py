@@ -16,7 +16,7 @@ builtins.input = lambda *args: "."
 from data_curation import extract_text_from_single_pdf_v2
 
 # Test file
-test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-DCRF-2020-publicar.pdf"
+test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-MMM2022-vf.pdf"
 
 # Delete old JSON
 json_file = test_file.replace('.pdf', '_v2.json')
@@ -39,7 +39,7 @@ print()
 # Run extraction
 extract_text_from_single_pdf_v2(
     test_file,
-    FONT_MIN=11.0,
+    FONT_MIN=10.5,
     FONT_MAX=11.9,
     exclude_bold=False,
     vertical_threshold=15,
