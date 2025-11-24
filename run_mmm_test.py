@@ -16,7 +16,7 @@ builtins.input = lambda *args: "."
 from data_curation import extract_text_from_single_pdf_v2
 
 # Test file
-test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-MMM2022-vf.pdf"
+test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-DCRF-2020-publicar.pdf"
 
 # Delete old JSON
 json_file = test_file.replace('.pdf', '_v2.json')

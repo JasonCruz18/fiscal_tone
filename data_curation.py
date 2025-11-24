@@ -1007,8 +1007,8 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
 
 def extract_text_from_single_pdf_v2(
     file_path,
-    FONT_MIN=11.0,
-    FONT_MAX=11.9,
+    FONT_MIN=10.5,  # Lowered to capture ~11pt text (actual 10.98-11.02pt due to floating-point precision)
+    FONT_MAX=14.5,  # Increased to capture section headers (12.0-14.0pt) in Pronunciamientos
     exclude_bold=False,
     vertical_threshold=15,
     first_page_header_cutoff=100,
@@ -1171,9 +1171,7 @@ def extract_text_from_single_pdf_v2(
                 # NOTE: \b ensures word boundary (matches "CF" but not "CFO")
                 keywords = [
                     r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal\b",  # Optional number + "Opinión del Consejo Fiscal"
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b",                # Optional number + "Opinión del CF"
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión de Consejo Fiscal\b",
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión de CF\b",
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b"                # Optional number + "Opinión del CF"
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 
