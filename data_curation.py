@@ -1171,7 +1171,9 @@ def extract_text_from_single_pdf_v2(
                 # NOTE: \b ensures word boundary (matches "CF" but not "CFO")
                 keywords = [
                     r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal\b",  # Optional number + "Opinión del Consejo Fiscal"
-                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b"                # Optional number + "Opinión del CF"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF\b",                # Optional number + "Opinión del CF"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión de Consejo Fiscal\b",
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión de CF\b",
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 

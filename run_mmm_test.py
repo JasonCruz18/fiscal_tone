@@ -1,6 +1,7 @@
 """
 Simple test runner for MMM PDF - no complex imports
 """
+#%%
 import sys
 import os
 
@@ -15,7 +16,7 @@ builtins.input = lambda *args: "."
 from data_curation import extract_text_from_single_pdf_v2
 
 # Test file
-test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\CF-Informe-MMM2124-cNotaAclaratoria-28-de-agosto-VF-publicada.pdf"
+test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Pronunciamiento-MMM2022-vf.pdf"
 
 # Delete old JSON
 json_file = test_file.replace('.pdf', '_v2.json')
@@ -73,3 +74,5 @@ if os.path.exists(json_file):
         print(f"\n❌❌❌ FAILED! Extraction started from page {data[0]['page']} (expected 7)")
 else:
     print(f"❌ JSON not found")
+
+# %%
