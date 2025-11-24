@@ -873,59 +873,132 @@ def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclud
     print(f"⏱️ Time taken: {t1 - t0:.2f} seconds")
 
 
+def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
+    """
+    Searches for 'Opinión del Consejo Fiscal' or 'Opinión del CF' keywords starting from page 2.
+
+    The Fiscal Council's actual opinion often starts after introductory/legal content,
+    marked by these specific headers. This function locates where the opinion begins.
+
+    Args:
+        pdf: pdfplumber PDF object
+        keywords: list of regex patterns to search (e.g., [r"^Opinión del Consejo Fiscal", r"^Opinión del CF"])
+        font_min: minimum font size for body text (11.0) - used as reference
+        font_max: maximum font size for body text (11.9) - used as reference
+
+    Returns:
+        tuple: (start_page, start_top_position) where extraction should begin
+               If keyword not found, returns (1, 0) to extract from beginning
+
+    Note:
+        The keywords often appear as section headers at 11.0-13.0pt (slightly larger than body text),
+        so we search a broader range than just the body text font size.
+    """
+    print("   🔍 Searching for 'Opinión del' keyword starting from page 2...")
+
+    # Search from page 2 onwards (skip page 1 which may have summaries)
+    for page_num, page in enumerate(pdf.pages[1:], start=2):  # Start from page 2
+        # Extract words with relaxed filtering (need to see titles/headers)
+        words = page.extract_words(extra_attrs=["size", "top", "fontname"])
+
+        # Filter by broader font size range (keywords appear as section headers at 11-13pt)
+        # Headers are typically slightly larger than body text
+        candidate_words = [
+            w for w in words
+            if 11.0 <= w["size"] <= 13.0  # Broader range to capture section headers
+        ]
+
+        if not candidate_words:
+            continue
+
+        # Reconstruct text line by line to check for keyword at line start
+        # Group words by vertical position (same line)
+        lines = {}
+        for word in candidate_words:
+            top = round(word["top"], 1)  # Round to group words on same line
+            if top not in lines:
+                lines[top] = []
+            lines[top].append(word)
+
+        # Check each line for keyword at the beginning
+        for top_pos in sorted(lines.keys()):
+            line_words = sorted(lines[top_pos], key=lambda w: w.get("x0", 0))
+            line_text = " ".join([w["text"] for w in line_words]).strip()
+
+            # Check if any keyword pattern matches at line start
+            for keyword_pattern in keywords:
+                if re.match(keyword_pattern, line_text, re.IGNORECASE):
+                    print(f"      ✓ Found keyword on page {page_num}: '{line_text[:60]}...'")
+                    print(f"      → Starting extraction from page {page_num}, position Y={top_pos}pt")
+                    return (page_num, top_pos)
+
+    # Keyword not found - extract from beginning
+    print("      ℹ️ Keyword not found. Extracting from page 1.")
+    return (1, 0)
+
+
 def extract_text_from_single_pdf_v2(
     file_path,
-    FONT_MIN=10.5,
-    FONT_MAX=11.5,
+    FONT_MIN=11.0,
+    FONT_MAX=11.9,
     exclude_bold=False,
-    vertical_threshold=10,
-    first_page_header_cutoff=150,
-    subsequent_header_cutoff=100,
+    vertical_threshold=15,
+    first_page_header_cutoff=100,
+    subsequent_header_cutoff=70,
     footer_cutoff_distance=100,
+    last_page_footer_cutoff=120,
     left_margin=70,
     right_margin=70,
-    exclude_specific_sizes=True
+    exclude_specific_sizes=True,
+    search_opinion_keyword=True
 ):
     """
-    Enhanced text extraction from editable PDFs with position-based filtering.
+    Enhanced text extraction from editable PDFs with position-based filtering and keyword detection.
 
     This version improves upon extract_text_from_single_pdf() by adding spatial filtering
     to exclude headers, footers, footnotes, and margin annotations based on their position
-    on the page. Designed specifically for Peru's Consejo Fiscal documents.
+    on the page. Additionally, it can search for "Opinión del Consejo Fiscal" keywords to
+    extract only the Fiscal Council's actual opinion, skipping preliminary content.
 
     Key Improvements over v1:
         ✓ Position-based header exclusion (first page vs subsequent pages)
         ✓ Position-based footer exclusion (page numbers, URLs, bottom footnotes)
+        ✓ Last page stricter footer filtering (signatures, dates, captions)
         ✓ Horizontal margin filtering (excludes page numbers and margin notes)
         ✓ Explicit font size exclusions (8.4pt, 8.5pt, 9.5pt footnotes/captions)
-        ✓ Expanded font range (10.5-11.5pt captures variations and emphasis)
+        ✓ Keyword-based extraction start (finds "Opinión del CF" from page 2 onwards)
         ✓ Bold text inclusion by default (preserves inline emphasis for complete narrative)
 
     Parameters:
         file_path: str
             Path to the single editable PDF file to process
 
-        FONT_MIN: float, default=10.5
-            Minimum font size to consider (expanded from 11.0 to capture variations)
+        FONT_MIN: float, default=11.0
+            Minimum font size to consider for main body text
 
-        FONT_MAX: float, default=11.5
-            Maximum font size to consider (expanded from 11.9 to include 11.5pt emphasis)
+        FONT_MAX: float, default=11.9
+            Maximum font size to consider for main body text
 
         exclude_bold: bool, default=False
             Whether to exclude bold text. False preserves inline emphasis (11.0pt bold)
             for complete narrative flow, important for fiscal tone analysis.
 
-        vertical_threshold: int, default=10
+        vertical_threshold: int, default=15
             Minimum vertical space (pixels) between words to detect paragraph break
 
-        first_page_header_cutoff: int, default=150
-            Y-position cutoff for first page (excludes top 150pt for titles/headers)
+        first_page_header_cutoff: int, default=100
+            Y-position cutoff for first page (excludes top 100pt for titles/headers)
 
-        subsequent_header_cutoff: int, default=100
-            Y-position cutoff for pages 2+ (excludes top 100pt)
+        subsequent_header_cutoff: int, default=70
+            Y-position cutoff for pages 2+ (excludes top 70pt)
 
-        footer_cutoff_distance: int, default=100
+        footer_cutoff_distance: int, default=120
             Distance from page bottom to exclude (removes footers, page numbers, URLs)
+
+        last_page_footer_cutoff: int, default=400
+            Distance from bottom for LAST PAGE ONLY (excludes signatures, dates, captions)
+            More aggressive filtering to remove "Lima, DD de MONTH de YYYY", signatures,
+            "Presidente Consejo Fiscal", graph/table captions, etc.
 
         left_margin: int, default=70
             Left margin cutoff in points (excludes page numbers in left margin)
@@ -936,6 +1009,12 @@ def extract_text_from_single_pdf_v2(
         exclude_specific_sizes: bool, default=True
             If True, explicitly excludes common footnote/caption sizes:
             {9.5, 8.5, 8.4, 7.9, 7.0, 6.5, 6.0, 5.5}pt
+
+        search_opinion_keyword: bool, default=True
+            If True, searches for "Opinión del Consejo Fiscal" or "Opinión del CF" keywords
+            starting from page 2. If found, extraction begins from that keyword onwards.
+            If not found, extracts normally from page 1.
+            Keywords must appear at the beginning of a line with font size 11.0-11.9pt.
 
     Returns:
         None (prints extracted text and saves to JSON file in same directory as PDF)
@@ -997,25 +1076,60 @@ def extract_text_from_single_pdf_v2(
         print(f"   Position filtering: ENABLED")
         print(f"   Header cutoff: {first_page_header_cutoff}pt (page 1), {subsequent_header_cutoff}pt (others)")
         print(f"   Footer cutoff: {footer_cutoff_distance}pt from bottom")
+        print(f"   Last page footer: {last_page_footer_cutoff}pt from bottom (signatures/dates/captions)")
         print(f"   Margins: {left_margin}pt (left), {right_margin}pt (right)")
         if exclude_specific_sizes:
             print(f"   Excluded sizes: {sorted(EXCLUDED_SIZES)}")
         print()
 
         with pdfplumber.open(file_path) as pdf:
+            total_pages = len(pdf.pages)
+
+            # Step 1: Search for "Opinión del" keyword to find extraction start point
+            start_page = 1
+            start_top_position = 0
+
+            if search_opinion_keyword:
+                keywords = [
+                    r"^Opinión del Consejo Fiscal",
+                    r"^Opinión del CF"
+                ]
+                start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
+
+            print()
+
+            # Step 2: Extract text from determined starting point
+            keyword_found_on_current_page = False
+
             for page_num, page in enumerate(pdf.pages, start=1):
+                # Skip pages before the keyword start page
+                if page_num < start_page:
+                    continue
+
                 page_height = page.height
                 page_width = page.width
 
                 # Determine header cutoff based on page number
                 header_cutoff = first_page_header_cutoff if page_num == 1 else subsequent_header_cutoff
-                footer_cutoff = page_height - footer_cutoff_distance
 
-                print(f"   Page {page_num}: {page_width:.1f}x{page_height:.1f}pt (header>{header_cutoff}pt, footer<{footer_cutoff:.1f}pt)")
+                # Determine footer cutoff (stricter for last page)
+                if page_num == total_pages:
+                    footer_cutoff = page_height - last_page_footer_cutoff
+                    print(f"   Page {page_num} (LAST): {page_width:.1f}x{page_height:.1f}pt (header>{header_cutoff}pt, footer<{footer_cutoff:.1f}pt - STRICT)")
+                else:
+                    footer_cutoff = page_height - footer_cutoff_distance
+                    print(f"   Page {page_num}: {page_width:.1f}x{page_height:.1f}pt (header>{header_cutoff}pt, footer<{footer_cutoff:.1f}pt)")
 
                 # Extract words with their attributes
                 # NOTE: Do NOT request "x0" in extra_attrs as it causes character-level extraction in some PDFs
                 words = page.extract_words(extra_attrs=["size", "top", "fontname"])
+
+                # If this is the start page with keyword, adjust header cutoff to keyword position
+                effective_header_cutoff = header_cutoff
+                if page_num == start_page and start_top_position > 0:
+                    # Start extraction from keyword position (slightly before to include the keyword itself)
+                    effective_header_cutoff = max(start_top_position - 5, 0)
+                    print(f"      → Keyword-adjusted header: {effective_header_cutoff:.1f}pt")
 
                 # Apply comprehensive filtering
                 # NOTE: x0 is available by default in word dict (left edge of word bounding box)
@@ -1032,7 +1146,8 @@ def extract_text_from_single_pdf_v2(
                         and ("Bold" not in w["fontname"] if exclude_bold else True)
 
                         # Vertical position filtering (headers and footers)
-                        and header_cutoff < w["top"] < footer_cutoff
+                        # Use effective_header_cutoff which may be adjusted for keyword position
+                        and effective_header_cutoff < w["top"] < footer_cutoff
 
                         # Horizontal position filtering (margins)
                         # x0 is the left edge of the word's bounding box (available by default)

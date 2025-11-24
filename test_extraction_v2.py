@@ -4,7 +4,7 @@ Test script for comparing extract_text_from_single_pdf vs extract_text_from_sing
 This script isolates and tests only the text extraction functions to validate
 the improvements in v2 (position-based filtering for headers/footers/footnotes).
 """
-
+#%%
 import os
 import sys
 import re
@@ -12,8 +12,8 @@ import json
 import pdfplumber
 from time import time as timer
 
-# Set UTF-8 encoding for Windows console
-if sys.platform == 'win32':
+# Set UTF-8 encoding for Windows console (skip in Jupyter/IPython environments)
+if sys.platform == 'win32' and hasattr(sys.stdout, 'buffer'):
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
@@ -93,13 +93,13 @@ def extract_text_from_single_pdf(file_path, FONT_MIN=11.0, FONT_MAX=11.9, exclud
 
 def extract_text_from_single_pdf_v2(
     file_path,
-    FONT_MIN=10.5,
-    FONT_MAX=11.5,
+    FONT_MIN=11.0,
+    FONT_MAX=11.9,
     exclude_bold=False,
-    vertical_threshold=10,
-    first_page_header_cutoff=150,
-    subsequent_header_cutoff=100,
-    footer_cutoff_distance=100,
+    vertical_threshold=15,
+    first_page_header_cutoff=100,
+    subsequent_header_cutoff=70,
+    footer_cutoff_distance=120,
     left_margin=70,
     right_margin=70,
     exclude_specific_sizes=True
@@ -251,7 +251,7 @@ def compare_extractions(v1_records, v2_records):
 
 if __name__ == "__main__":
     # Test file path
-    test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Comunicado-Congreso-vf.pdf"
+    test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Informe-Escenarios-_8.6.2020_FINAL.pdf"
 
     print("\n" + "="*100)
     print("PDF TEXT EXTRACTION COMPARISON TEST")
@@ -276,10 +276,10 @@ if __name__ == "__main__":
     print("-"*100)
     v2_results = extract_text_from_single_pdf_v2(
         test_file,
-        FONT_MIN=10.5,
-        FONT_MAX=11.5,
+        FONT_MIN=11.0,
+        FONT_MAX=11.9,
         exclude_bold=False,
-        vertical_threshold=10
+        vertical_threshold=15
     )
 
     # Compare results
@@ -287,3 +287,4 @@ if __name__ == "__main__":
         compare_extractions(v1_results, v2_results)
 
     print("\n✅ Test complete!")
+
