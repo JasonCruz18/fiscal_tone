@@ -967,6 +967,32 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
             # Check if any keyword pattern matches at line start
             for keyword_pattern in keywords:
                 if re.match(keyword_pattern, line_text, re.IGNORECASE):
+                    # ADDITIONAL CHECK: Detect multi-line centered titles
+                    # Long centered titles often span 2 lines:
+                    #   Line 1: "Opinión del Consejo Fiscal sobre el Marco..." (X=91pt - appears left-aligned)
+                    #   Line 2: "Multianual 2021-2024" (X > 120pt - centered continuation)
+                    # True section headers are single-line or have ALL lines left-aligned
+
+                    # Look for continuation line within next 30pt vertical distance
+                    continuation_is_centered = False
+                    for continuation_top in range(int(top_pos) + 10, int(top_pos) + 35):
+                        if continuation_top in lines:
+                            continuation_words = sorted(lines[continuation_top], key=lambda w: w.get("x0", 0))
+                            if continuation_words:
+                                continuation_x = continuation_words[0].get("x0", 0)
+                                # If continuation line is centered (X > 120pt), this is a multi-line title
+                                if continuation_x >= 120:
+                                    continuation_is_centered = True
+                                    print(f"      ⚠️  Skipping page {page_num}: Multi-line centered title detected")
+                                    print(f"         Line 1: X={first_word_x:.1f}pt (appears left-aligned)")
+                                    print(f"         Line 2: X={continuation_x:.1f}pt (centered continuation)")
+                                    break
+
+                    if continuation_is_centered:
+                        # Skip this match - it's a document title, not a section header
+                        break
+
+                    # Valid match - no centered continuation found
                     print(f"      ✓ Found keyword on page {page_num}: '{line_text[:70]}...'")
                     print(f"      ✓ Position: Y={top_pos:.1f}pt, X={first_word_x:.1f}pt (LEFT-aligned)")
                     print(f"      → Starting extraction from page {page_num}, position Y={top_pos}pt")
@@ -1147,6 +1173,13 @@ def extract_text_from_single_pdf_v2(
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 
+                # DEBUG: Show what start_page was returned
+                print(f"\n   🔍 DEBUG: Keyword search returned start_page={start_page}, start_top_position={start_top_position:.1f}pt")
+                if start_page > 1:
+                    print(f"   ✅ Will skip pages 1-{start_page-1}")
+                else:
+                    print(f"   ⚠️  Starting from page 1 (keyword not found or disabled)")
+
             print()
 
             # Step 2: Extract text from determined starting point
@@ -1155,6 +1188,7 @@ def extract_text_from_single_pdf_v2(
             for page_num, page in enumerate(pdf.pages, start=1):
                 # Skip pages before the keyword start page
                 if page_num < start_page:
+                    print(f"      [SKIPPED] Page {page_num} < start_page {start_page}")
                     continue
 
                 page_height = page.height
