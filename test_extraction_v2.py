@@ -99,7 +99,7 @@ def extract_text_from_single_pdf_v2(
     vertical_threshold=15,
     first_page_header_cutoff=100,
     subsequent_header_cutoff=70,
-    footer_cutoff_distance=120,
+    footer_cutoff_distance=110,
     left_margin=70,
     right_margin=70,
     exclude_specific_sizes=True
@@ -251,7 +251,7 @@ def compare_extractions(v1_records, v2_records):
 
 if __name__ == "__main__":
     # Test file path
-    test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Informe-Escenarios-_8.6.2020_FINAL.pdf"
+    test_file = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\CF-Informe-IAPM21-vF.pdf"
 
     print("\n" + "="*100)
     print("PDF TEXT EXTRACTION COMPARISON TEST")

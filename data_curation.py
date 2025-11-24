@@ -46,8 +46,15 @@
 # 1. ENVIRONMENT SETUP
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 
+import sys
 import os
 from pathlib import Path
+
+# Set UTF-8 encoding for Windows console output
+if sys.platform == 'win32' and hasattr(sys.stdout, 'buffer'):
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
 
 # --- Project Root and User Input ---
@@ -891,13 +898,17 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
                If keyword not found, returns (1, 0) to extract from beginning
 
     Note:
-        The keywords often appear as section headers at 11.0-13.0pt (slightly larger than body text),
-        so we search a broader range than just the body text font size.
+        - Keywords appear as section headers at 11.0-13.0pt (slightly larger than body text)
+        - Must be LEFT-ALIGNED (x < 120pt) to avoid centered titles on cover/TOC pages
+        - Supports both Arabic numerals (1, 2, 3...) and Roman numerals (I, II, III...)
     """
     print("   🔍 Searching for 'Opinión del' keyword starting from page 2...")
+    print("      Requirements: LEFT-aligned (x < 120pt), font 11-13pt, from page 2+")
 
     # Search from page 2 onwards (skip page 1 which may have summaries)
     for page_num, page in enumerate(pdf.pages[1:], start=2):  # Start from page 2
+        page_width = page.width
+
         # Extract words with relaxed filtering (need to see titles/headers)
         words = page.extract_words(extra_attrs=["size", "top", "fontname"])
 
@@ -925,10 +936,25 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
             line_words = sorted(lines[top_pos], key=lambda w: w.get("x0", 0))
             line_text = " ".join([w["text"] for w in line_words]).strip()
 
+            # Get x position of first word to check alignment
+            first_word_x = line_words[0].get("x0", 0)
+
+            # CRITICAL: Check if text is LEFT-ALIGNED (not centered)
+            # Left-aligned text starts at x=70-120pt (body text margin)
+            # Centered text starts at x=150-300pt (middle of page)
+            # For A4 (595pt width), center would be ~297pt
+            # For US Letter (612pt width), center would be ~306pt
+            is_left_aligned = first_word_x < 120  # Conservative threshold
+
+            if not is_left_aligned:
+                # Skip centered titles (likely cover page or TOC titles)
+                continue
+
             # Check if any keyword pattern matches at line start
             for keyword_pattern in keywords:
                 if re.match(keyword_pattern, line_text, re.IGNORECASE):
-                    print(f"      ✓ Found keyword on page {page_num}: '{line_text[:60]}...'")
+                    print(f"      ✓ Found keyword on page {page_num}: '{line_text[:70]}...'")
+                    print(f"      ✓ Position: Y={top_pos:.1f}pt, X={first_word_x:.1f}pt (LEFT-aligned)")
                     print(f"      → Starting extraction from page {page_num}, position Y={top_pos}pt")
                     return (page_num, top_pos)
 
@@ -1090,9 +1116,18 @@ def extract_text_from_single_pdf_v2(
             start_top_position = 0
 
             if search_opinion_keyword:
+                # Keyword patterns that match various formats:
+                # - "Opinión del Consejo Fiscal..."
+                # - "Opinión del CF..."
+                # - "4. Opinión del Consejo Fiscal..." (Arabic numerals)
+                # - "II. Opinión del CF..." (Roman numerals)
+                # - "   Opinión del CF..." (with leading spaces)
+                #
+                # Roman numerals: I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, etc.
+                # NOTE: The (?:...)? makes the entire number part OPTIONAL
                 keywords = [
-                    r"^Opinión del Consejo Fiscal",
-                    r"^Opinión del CF"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del Consejo Fiscal",  # Optional number + "Opinión del Consejo Fiscal"
+                    r"^\s*(?:(?:\d+|[IVX]+)\.?\s*)?Opinión del CF"                # Optional number + "Opinión del CF"
                 ]
                 start_page, start_top_position = find_opinion_keyword_position(pdf, keywords, FONT_MIN, FONT_MAX)
 
@@ -1246,7 +1281,7 @@ def extract_text_from_single_pdf_v2(
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 
 # Test file path
-test_file_path = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Comunicado-Congreso-vf.pdf"
+test_file_path = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Informe-DCRF2024-vf.pdf"
 
 print("\n" + "="*100)
 print("PDF TEXT EXTRACTION COMPARISON: v1 (original) vs v2 (enhanced)")
@@ -1269,19 +1304,21 @@ print("\n\n" + "-"*100)
 print("RUNNING ENHANCED FUNCTION (v2) - with position-based filtering")
 print("-"*100)
 
-# Run enhanced function with recommended defaults
+# Run enhanced function with user-specified parameters
 extract_text_from_single_pdf_v2(
     test_file_path,
-    FONT_MIN=10.5,
-    FONT_MAX=11.5,
-    exclude_bold=False,
-    vertical_threshold=10,
-    first_page_header_cutoff=150,
-    subsequent_header_cutoff=100,
-    footer_cutoff_distance=100,
+    FONT_MIN=11.0,                      # User-specified: body text only
+    FONT_MAX=11.9,                      # User-specified: body text only
+    exclude_bold=False,                 # User-specified: include emphasis
+    vertical_threshold=15,              # User-specified: paragraph spacing
+    first_page_header_cutoff=100,       # User-specified: first page header
+    subsequent_header_cutoff=70,        # User-specified: subsequent headers
+    footer_cutoff_distance=100,         # User-specified: footer exclusion
+    last_page_footer_cutoff=120,        # User-specified: last page signatures/dates
     left_margin=70,
     right_margin=70,
-    exclude_specific_sizes=True
+    exclude_specific_sizes=True,
+    search_opinion_keyword=True         # Enable keyword-based extraction start
 )
 
 print("\n\n" + "="*100)

@@ -46,8 +46,8 @@ for filename, description in test_pdfs:
             vertical_threshold=15,
             first_page_header_cutoff=100,
             subsequent_header_cutoff=70,
-            footer_cutoff_distance=120,
-            last_page_footer_cutoff=400,
+            footer_cutoff_distance=100,
+            last_page_footer_cutoff=120,
             search_opinion_keyword=True
         )
         print("\n✅ Extraction completed successfully")
