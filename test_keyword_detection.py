@@ -1,7 +1,7 @@
 """
 Test script for keyword detection and enhanced extraction v2
 """
-
+#%%
 import sys
 import os
 # Add parent directory to path to import from data_curation
