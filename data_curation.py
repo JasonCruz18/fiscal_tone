@@ -975,16 +975,18 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
 
                     # Look for continuation line within next 30pt vertical distance
                     continuation_is_centered = False
-                    for continuation_top in range(int(top_pos) + 10, int(top_pos) + 35):
-                        if continuation_top in lines:
-                            continuation_words = sorted(lines[continuation_top], key=lambda w: w.get("x0", 0))
+                    # Check actual line positions (sorted keys) that come after current line
+                    for potential_continuation_top in sorted(lines.keys()):
+                        # Only check lines that are below current line (within 10-30pt vertical distance)
+                        if potential_continuation_top > top_pos and potential_continuation_top <= top_pos + 30:
+                            continuation_words = sorted(lines[potential_continuation_top], key=lambda w: w.get("x0", 0))
                             if continuation_words:
                                 continuation_x = continuation_words[0].get("x0", 0)
                                 # If continuation line is centered (X > 120pt), this is a multi-line title
                                 if continuation_x >= 120:
                                     continuation_is_centered = True
                                     print(f"      ⚠️  Skipping page {page_num}: Multi-line centered title detected")
-                                    print(f"         Line 1: X={first_word_x:.1f}pt (appears left-aligned)")
+                                    print(f"         Line 1: '{line_text[:50]}...' at X={first_word_x:.1f}pt")
                                     print(f"         Line 2: X={continuation_x:.1f}pt (centered continuation)")
                                     break
 
