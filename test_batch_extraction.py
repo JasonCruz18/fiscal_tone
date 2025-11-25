@@ -27,7 +27,7 @@ print()
 extract_text_from_editable_pdfs(
     editable_folder="data/raw/editable",
     output_folder="data/raw",
-    output_filename="scanned_pdfs_extracted_text.json",
+    output_filename="editable_pdfs_extracted_text.json",
     search_opinion_keyword=True  # Enable keyword-based filtering
 )
 
