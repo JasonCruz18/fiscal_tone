@@ -1,0 +1,103 @@
+================================================================================
+TEXT CLEANING PATTERN ANALYSIS
+================================================================================
+Total records: 336
+
+--------------------------------------------------------------------------------
+PATTERN 1: Trailing/Extra Spaces
+--------------------------------------------------------------------------------
+Records with trailing spaces: 0/336 (0.0%)
+Records with multiple consecutive spaces: 0/336 (0.0%)
+
+--------------------------------------------------------------------------------
+PATTERN 2: Rare Symbols and Characters
+--------------------------------------------------------------------------------
+Symbol frequencies:
+  '…': 5 records (1.5%)
+  '•': 4 records (1.2%)
+  '➢': 1 records (0.3%)
+  'Ø': 1 records (0.3%)
+
+--------------------------------------------------------------------------------
+PATTERN 3: Enumeration Patterns
+--------------------------------------------------------------------------------
+Records with enumeration patterns (sample of 50): 22/50
+Examples:
+  ..., a retirar hasta 4UIT (S/ 18 400) de los fondos para su jubilación gestionados por l...
+  ...o plazo está condicionado a: (i) la evolución de la pandemia y el surgimiento de nu...
+  ...s por los siguientes motivos: 1) contrastan con la previsión de un contexto interna...
+  ...tiples beneficios tales como: i) reducir el pago de intereses, lo que permite reasi...
+  ...stitucionales que establecen: a) la prohibición de crear o aumentar el gasto públic...
+
+--------------------------------------------------------------------------------
+PATTERN 4: Short Lines Without Ending Period
+--------------------------------------------------------------------------------
+Examples of short lines without ending period (< 50 chars):
+  [24 chars] Lima, 23 de mayo de 2022
+  [23 chars] CONSEJO FISCAL DEL PERÚ
+  [28 chars] Análisis de riesgos fiscales
+  [12 chars] Conclusiones
+  [27 chars] Análisis del Consejo Fiscal
+  [12 chars] Conclusiones
+  [46 chars] Escenario macroeconómico internacional y local
+  [17 chars] Finanzas públicas
+  [29 chars] Proyecciones fiscales del MMM
+  [26 chars] Lima, 14 de agosto de 2020
+
+--------------------------------------------------------------------------------
+PATTERN 5: All-Uppercase Lines (Names, Signatures)
+--------------------------------------------------------------------------------
+Examples of all-uppercase lines:
+  CONSEJO FISCAL DEL PERÚ
+  WALDO EPIFANIO MENDOZA BELLIDO
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERÚ
+  CONSEJO FISCAL DEL PERU
+  CONSEJO FISCAL DEL PERÚ
+
+--------------------------------------------------------------------------------
+PATTERN 6: Date Patterns
+--------------------------------------------------------------------------------
+Examples of date patterns:
+  Lima, 23 de mayo de 2022
+  Lima, 14 de agosto de 2020
+  Lima, 16 de setiembre de 2020
+  Lima, 15 de agosto de 2018
+  Lima, 15 de agosto de 2019
+  Lima, 24 de mayo de 2018
+  Lima, 20 de enero de 2025
+  Lima, 01 de febrero de 2024
+  Lima, 02 de marzo de 2023
+  Lima, 24 de abril de 2025
+
+--------------------------------------------------------------------------------
+PATTERN 7: Graph/Table Titles
+--------------------------------------------------------------------------------
+Examples of graph/table titles:
+  gráfico N° 1.A). Dicha cantidad de leyes con impacto fiscal adverso más que triplica el número de le
+  gráfico N° 1.A). Dicha cantidad de leyes con impacto fiscal adverso más que triplica el número de le
+
+--------------------------------------------------------------------------------
+PATTERN 8: Chart Labels
+--------------------------------------------------------------------------------
+Examples of chart labels:
+
+--------------------------------------------------------------------------------
+PATTERN 9: Dotted Lines (Signature Lines)
+--------------------------------------------------------------------------------
+Records with dotted lines (sample of 100): 1/100
+Examples:
+  ...4 de mayo de 2018.\n\n………………………………………………………….. WALDO EPIFANIO MENDOZA BELLIDO Presid...
+
+================================================================================
+SUMMARY: Words per Record
+================================================================================
+Average words per record: 396.8
+Min words: 36
+Max words: 703
+
+Very short records (< 20 words): 0
