@@ -8,11 +8,16 @@ to process all PDFs in data/raw/editable and save to a consolidated JSON.
 import sys
 import os
 
+# IMPORTANT: Clear cached module to ensure latest code is loaded
+if 'data_curation' in sys.modules:
+    del sys.modules['data_curation']
+
 sys.path.insert(0, r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone")
 
 import builtins
 builtins.input = lambda *args: "."
 
+# Import after clearing cache to get fresh code
 from data_curation import extract_text_from_editable_pdfs
 
 # Run batch extraction with default parameters

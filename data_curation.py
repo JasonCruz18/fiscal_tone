@@ -1199,6 +1199,19 @@ def extract_text_from_single_pdf_v2(
                 page_height = page.height
                 page_width = page.width
 
+                # ⚠️ EARLY ANEXO DETECTION: Check raw page text BEFORE font filtering
+                # Some PDFs have "ANEXO" in large fonts that get filtered out, but we still need to detect it
+                # Use extract_text() which doesn't depend on font filtering
+                raw_page_text = page.extract_text()
+                if raw_page_text:
+                    # Check if page starts with "ANEXO" (any case, with optional number/roman numeral)
+                    # More robust pattern that handles: ANEXO, Anexo, ANEXOS, Anexos, ANEXO 1, ANEXO I, etc.
+                    anexo_start_pattern = r"^\s*ANEXOS?(?:\s+(?:[IVXLCDM]+|\d+))?\s*:?"
+                    if re.match(anexo_start_pattern, raw_page_text, re.IGNORECASE):
+                        print(f"   Page {page_num}: Anexo section detected (page starts with 'ANEXO')")
+                        print(f"      ⏹️  Stopping extraction. Skipping page {page_num} and all subsequent pages.")
+                        break
+
                 # Determine header cutoff based on page number
                 header_cutoff = first_page_header_cutoff if page_num == 1 else subsequent_header_cutoff
 
@@ -1455,6 +1468,15 @@ def extract_text_from_editable_pdfs(
 
                     page_width = float(page.width)
                     page_height = float(page.height)
+
+                    # ⚠️ EARLY ANEXO DETECTION: Check raw page text BEFORE font filtering
+                    raw_page_text = page.extract_text()
+                    if raw_page_text:
+                        # Check if page starts with "ANEXO" (any case, with optional number/roman numeral)
+                        anexo_start_pattern = r"^\s*ANEXOS?(?:\s+(?:[IVXLCDM]+|\d+))?\s*:?"
+                        if re.match(anexo_start_pattern, raw_page_text, re.IGNORECASE):
+                            # Stop processing this PDF - Anexo section reached
+                            break
 
                     # Determine header cutoff
                     header_cutoff = first_page_header_cutoff if page_num == 1 else subsequent_header_cutoff
