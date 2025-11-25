@@ -1893,5 +1893,645 @@ def extract_text_from_editable_pdfs_incremental(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
+# 8. TEXT CLEANING PIPELINE
+# ═══════════════════════════════════════════════════════════════════════════════════════════
+
+def clean_extracted_text(text: str, aggressive: bool = False) -> dict:
+    """
+    Execute an 8-step ordered text cleaning pipeline on extracted PDF text.
+
+    This function removes noise patterns like signatures, dates, section headers,
+    graph/table titles, and rare symbols. The order of steps is critical to prevent
+    pattern interference.
+
+    Args:
+        text: Raw extracted text from PDF
+        aggressive: If True, includes Step 9 (enumeration removal) - NOT RECOMMENDED
+
+    Returns:
+        Dictionary with:
+            - 'cleaned_text': Cleaned text ready for paragraph segmentation
+            - 'original_length': Original character count
+            - 'cleaned_length': Cleaned character count
+            - 'reduction_pct': Percentage reduction in characters
+            - 'steps_applied': List of step names applied
+
+    Steps:
+        1. Remove dotted signature lines
+        2. Remove date + signature blocks
+        3. Remove standalone uppercase lines
+        4. Remove standalone section headers
+        5. Remove graph/table titles
+        6. Remove chart sub-labels
+        7. Replace rare symbols
+        8. Normalize whitespace
+        9. Remove enumeration (optional, aggressive mode only)
+
+    Example:
+        >>> result = clean_extracted_text(raw_text)
+        >>> print(result['cleaned_text'])
+        >>> print(f"Reduced by {result['reduction_pct']:.1f}%")
+    """
+    if not text or not text.strip():
+        return {
+            'cleaned_text': text,
+            'original_length': len(text) if text else 0,
+            'cleaned_length': len(text) if text else 0,
+            'reduction_pct': 0.0,
+            'steps_applied': []
+        }
+
+    original_length = len(text)
+    steps_applied = []
+
+    # Step 1: Remove dotted signature lines
+    text = _remove_dotted_signatures(text)
+    steps_applied.append("Remove dotted signature lines")
+
+    # Step 2: Remove date + signature blocks
+    text = _remove_date_signature_blocks(text)
+    steps_applied.append("Remove date + signature blocks")
+
+    # Step 3: Remove standalone uppercase lines
+    text = _remove_uppercase_lines(text)
+    steps_applied.append("Remove standalone uppercase lines")
+
+    # Step 4: Remove standalone section headers
+    text = _remove_section_headers(text)
+    steps_applied.append("Remove standalone section headers")
+
+    # Step 5: Remove graph/table titles
+    text = _remove_graph_table_titles(text)
+    steps_applied.append("Remove graph/table titles")
+
+    # Step 6: Remove chart sub-labels
+    text = _remove_chart_labels(text)
+    steps_applied.append("Remove chart sub-labels")
+
+    # Step 7: Replace rare symbols
+    text = _replace_rare_symbols(text)
+    steps_applied.append("Replace rare symbols")
+
+    # Step 8: Normalize whitespace
+    text = _normalize_whitespace(text)
+    steps_applied.append("Normalize whitespace")
+
+    # Step 9: Remove enumeration (OPTIONAL - aggressive mode only)
+    if aggressive:
+        text = _remove_enumeration(text)
+        steps_applied.append("Remove enumeration (aggressive)")
+
+    cleaned_length = len(text)
+    reduction_pct = ((original_length - cleaned_length) / original_length * 100) if original_length > 0 else 0.0
+
+    return {
+        'cleaned_text': text,
+        'original_length': original_length,
+        'cleaned_length': cleaned_length,
+        'reduction_pct': reduction_pct,
+        'steps_applied': steps_applied
+    }
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# Helper Functions for Each Cleaning Step
+# ────────────────────────────────────────────────────────────────────────────
+
+def _remove_dotted_signatures(text: str) -> str:
+    """
+    STEP 1: Remove lines with 5+ consecutive dots followed by uppercase names.
+
+    Example: "\\n\\n………………………………………………………….. WALDO EPIFANIO MENDOZA BELLIDO"
+    """
+    pattern = r'\n*[\.…]{5,}[\s\n]*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]+)(?=\n|$)'
+    return re.sub(pattern, '', text)
+
+
+def _remove_date_signature_blocks(text: str) -> str:
+    """
+    STEP 2: Remove Lima date followed by uppercase organization/name.
+
+    Examples:
+        - "\\n\\nLima, 23 de mayo de 2022\\n\\nCONSEJO FISCAL DEL PERÚ"
+        - "\\n\\nLima, 15 de agosto de 2019\\n\\nWALDO MENDOZA BELLIDO"
+    """
+    pattern = r'\n*Lima,?\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}[\s\n]+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{10,})(?=\n|$)'
+    return re.sub(pattern, '', text)
+
+
+def _remove_uppercase_lines(text: str) -> str:
+    """
+    STEP 3: Remove lines with 3+ consecutive uppercase words.
+
+    Examples:
+        - "\\n\\nCONSEJO FISCAL DEL PERÚ\\n\\n"
+        - "\\n\\nWALDO EPIFANIO MENDOZA BELLIDO\\n\\n"
+
+    Excludes:
+        - Acronyms in parentheses: (PBI), (MEF)
+    """
+    pattern = r'\n\n([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){2,})\n\n'
+    return re.sub(pattern, '\n\n', text)
+
+
+def _remove_section_headers(text: str) -> str:
+    """
+    STEP 4: Remove short lines (< 50 chars, < 8 words) without ending period/colon.
+
+    Examples:
+        - "\\n\\nAnálisis de riesgos fiscales\\n\\n"
+        - "\\n\\nConclusiones\\n\\n"
+    """
+    paragraphs = text.split('\n\n')
+    cleaned_paragraphs = []
+
+    for para in paragraphs:
+        para_stripped = para.strip()
+
+        # Check if it's a section header
+        if _is_section_header(para_stripped):
+            continue  # Skip this paragraph
+        else:
+            cleaned_paragraphs.append(para)
+
+    return '\n\n'.join(cleaned_paragraphs)
+
+
+def _is_section_header(line: str) -> bool:
+    """
+    Determine if a line is a section header (should be removed).
+
+    Conditions:
+        - Length < 50 characters
+        - Word count < 8 words
+        - Starts with uppercase letter
+        - Does NOT end with period, colon, or semicolon
+        - Is NOT a date
+    """
+    if not line:
+        return False
+
+    words = line.split()
+
+    return (
+        len(line) > 0 and
+        len(line) < 50 and
+        len(words) > 0 and len(words) < 8 and
+        line[0].isupper() and
+        not line[-1] in '.;:' and
+        not re.match(r'Lima,?\s+\d{1,2}\s+de', line)
+    )
+
+
+def _remove_graph_table_titles(text: str) -> str:
+    """
+    STEP 5: Remove lines starting with "Gráfico", "Tabla", "Cuadro", "Figura" + number.
+
+    Examples:
+        - "Gráfico 1: Leyes con impacto fiscal adverso"
+        - "Tabla N° 1: escenarios de crecimiento 2020-2021"
+    """
+    pattern = r'\n*(Gráfico|Tabla|Cuadro|Figura)\s+N?°?\s*\d+[^\n]*\n*'
+    return re.sub(pattern, '\n', text, flags=re.IGNORECASE)
+
+
+def _remove_chart_labels(text: str) -> str:
+    """
+    STEP 6: Remove chart panel labels like (A), (B), A), B).
+
+    Examples:
+        - "(A) Crecimiento del PBI 2020-2021 (B) PBI trimestral"
+        - "A) Leyes con impacto fiscal negativo B) Leyes con impacto"
+
+    IMPORTANT: Must NOT match acronyms like (SPP), (CF), (MEF) - only standalone A), B), (A), (B)
+    """
+    # Pattern 1: Multiple labels with parentheses on same line
+    # Must start at beginning or after whitespace, not inside another parenthesis
+    # Example: "\n(A) text (B) text\n"
+    text = re.sub(r'\n+\([A-Z]\)\s[^\n]+\([A-Z]\)\s[^\n]*\n+', '\n', text)
+
+    # Pattern 2: Multiple labels without parentheses on same line
+    # Must be after newline or start, with space after the letter
+    # Example: "\nA) text B) text\n"
+    # Use word boundary to avoid matching inside acronyms like (AFP)
+    text = re.sub(r'\n+[A-Z]\)\s[^\n]+[A-Z]\)\s[^\n]*\n+', '\n', text)
+
+    # Pattern 3: Single chart label at start of very short line
+    # Only if it starts a new line (not mid-text)
+    text = re.sub(r'\n+\([A-Z]\)\s[^\n]{1,50}\n+', '\n', text)
+
+    return text
+
+
+def _replace_rare_symbols(text: str) -> str:
+    """
+    STEP 7: Replace rare symbols with spaces or normalized equivalents.
+
+    Symbols:
+        - Bullet points: •, ➢, ►, ■, ▪
+        - Special characters: Ø
+        - Horizontal ellipsis: … (replace with ...)
+    """
+    replacements = {
+        '•': ' ',
+        '➢': ' ',
+        '►': ' ',
+        '■': ' ',
+        '▪': ' ',
+        '□': ' ',
+        '◼': ' ',
+        '○': ' ',
+        '●': ' ',
+        '▫': ' ',
+        'Ø': ' ',
+        '…': '...',
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    return text
+
+
+def _normalize_whitespace(text: str) -> str:
+    """
+    STEP 8: Normalize whitespace artifacts from previous cleaning steps.
+
+    Actions:
+        1. Remove spaces before punctuation marks (. , ; : ! ?)
+        2. Replace multiple spaces with single space
+        3. Replace 3+ consecutive newlines with 2 newlines
+        4. Strip leading/trailing whitespace
+    """
+    # Remove spaces before punctuation marks
+    # Example: "permanentes . Contrario" -> "permanentes. Contrario"
+    text = re.sub(r'\s+([.,;:!?])', r'\1', text)
+
+    # Replace multiple spaces with single space
+    text = re.sub(r' {2,}', ' ', text)
+
+    # Replace 3+ consecutive newlines with double newlines
+    text = re.sub(r'\n{3,}', '\n\n', text)
+
+    # Strip leading/trailing whitespace
+    text = text.strip()
+
+    return text
+
+
+def _remove_enumeration(text: str) -> str:
+    """
+    STEP 9: Remove standalone enumeration patterns (OPTIONAL - NOT RECOMMENDED).
+
+    ⚠️ WARNING: This removes legitimate list items. Only use in aggressive mode.
+
+    Pattern: Standalone enumeration at line start
+    Example: "\\n\\na) \\n\\n" or "\\n\\n1) \\n\\n"
+    """
+    pattern = r'\n\n([a-z]|[ivxIVX]+|\d+)\)\s*\n\n'
+    return re.sub(pattern, '\n\n', text)
+
+
+def clean_extracted_text_batch(
+    input_json_path: str,
+    output_json_path: str,
+    aggressive: bool = False,
+    verbose: bool = True
+):
+    """
+    Apply text cleaning pipeline to all records in a JSON file.
+
+    This function processes a JSON file containing extracted PDF text (with fields
+    'pdf_filename', 'page', 'text') and creates a new JSON file with cleaned text.
+
+    Args:
+        input_json_path: Path to input JSON file (e.g., 'data/raw/editable_pdfs_extracted_text.json')
+        output_json_path: Path to output JSON file (e.g., 'data/raw/editable_pdfs_clean_extracted_text.json')
+        aggressive: If True, includes enumeration removal (not recommended)
+        verbose: If True, prints detailed statistics
+
+    Output JSON structure:
+        Each record contains:
+            - pdf_filename: Original PDF filename
+            - page: Page number
+            - text: Cleaned text
+            - original_length: Original character count
+            - cleaned_length: Cleaned character count
+            - reduction_pct: Percentage reduction
+
+    Example:
+        >>> clean_extracted_text_batch(
+        ...     input_json_path='data/raw/editable_pdfs_extracted_text.json',
+        ...     output_json_path='data/raw/editable_pdfs_clean_extracted_text.json'
+        ... )
+    """
+    import time
+    from collections import defaultdict
+
+    t0 = time.time()
+
+    print("=" * 80)
+    print("TEXT CLEANING PIPELINE - BATCH PROCESSING")
+    print("=" * 80)
+    print(f"Input file: {input_json_path}")
+    print(f"Output file: {output_json_path}")
+    print(f"Aggressive mode: {aggressive}")
+    print()
+
+    # Load input JSON
+    print(f"📂 Loading input file...")
+    with open(input_json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    print(f"✓ Loaded {len(data)} records")
+    print()
+
+    # Statistics tracking
+    step_stats = defaultdict(lambda: {'records_affected': 0, 'chars_removed': 0})
+
+    # Process each record
+    print("🧹 Cleaning text records...")
+    cleaned_data = []
+
+    for i, record in enumerate(data, 1):
+        if verbose and i % 50 == 0:
+            print(f"  Processing record {i}/{len(data)}...")
+
+        # Clean the text
+        original_text = record['text']
+        result = clean_extracted_text(original_text, aggressive=aggressive)
+
+        # Track statistics per step
+        if result['reduction_pct'] > 0:
+            # At least one step affected this record
+            for step_num, step_name in enumerate(result['steps_applied'], 1):
+                step_stats[step_num]['records_affected'] += 1
+
+        # Create cleaned record
+        cleaned_record = {
+            'pdf_filename': record['pdf_filename'],
+            'page': record['page'],
+            'text': result['cleaned_text'],
+            'original_length': result['original_length'],
+            'cleaned_length': result['cleaned_length'],
+            'reduction_pct': result['reduction_pct']
+        }
+
+        cleaned_data.append(cleaned_record)
+
+    print(f"✓ Completed processing {len(data)} records")
+    print()
+
+    # Calculate overall statistics
+    total_original_chars = sum(r['original_length'] for r in cleaned_data)
+    total_cleaned_chars = sum(r['cleaned_length'] for r in cleaned_data)
+    overall_reduction = ((total_original_chars - total_cleaned_chars) / total_original_chars * 100) if total_original_chars > 0 else 0
+
+    # Print statistics
+    if verbose:
+        print("=" * 80)
+        print("CLEANING STATISTICS")
+        print("=" * 80)
+        print(f"Total records processed: {len(data)}")
+        print(f"Total original characters: {total_original_chars:,}")
+        print(f"Total cleaned characters: {total_cleaned_chars:,}")
+        print(f"Characters removed: {total_original_chars - total_cleaned_chars:,}")
+        print(f"Overall reduction: {overall_reduction:.2f}%")
+        print()
+
+        # Average reduction per record
+        avg_reduction = sum(r['reduction_pct'] for r in cleaned_data) / len(cleaned_data) if cleaned_data else 0
+        print(f"Average reduction per record: {avg_reduction:.2f}%")
+
+        # Records with significant cleaning (>5% reduction)
+        significant_cleaning = [r for r in cleaned_data if r['reduction_pct'] > 5]
+        print(f"Records with >5% reduction: {len(significant_cleaning)}/{len(cleaned_data)} ({len(significant_cleaning)/len(cleaned_data)*100:.1f}%)")
+        print()
+
+    # Save output JSON
+    print(f"💾 Saving cleaned data to: {output_json_path}")
+    with open(output_json_path, 'w', encoding='utf-8') as f:
+        json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
+
+    t1 = time.time()
+
+    print(f"✓ Successfully saved {len(cleaned_data)} cleaned records")
+    print(f"⏱️  Time taken: {t1 - t0:.2f} seconds")
+    print()
+    print("=" * 80)
+
+
+def clean_extracted_text_batch_incremental(
+    input_json_path: str,
+    output_json_path: str,
+    aggressive: bool = False,
+    verbose: bool = True,
+    force_reclean: bool = False
+):
+    """
+    INCREMENTAL text cleaning: Only processes records that are NOT already in the output JSON file.
+
+    This function compares PDF filenames between input and output JSON files. Only NEW records
+    (filenames in input but not in output) are cleaned and appended to the existing cleaned data.
+
+    Key Benefits:
+        - ⚡ Faster: Skips already-cleaned records
+        - 💾 Efficient: Only cleans newly added PDFs
+        - 🔄 Incremental: Supports continuous pipeline updates
+        - 🛡️ Safe: Preserves existing cleaned data
+
+    Args:
+        input_json_path: Path to input JSON file (e.g., 'data/raw/all_extracted_text.json')
+        output_json_path: Path to output JSON file (e.g., 'data/raw/all_extracted_text_clean.json')
+        aggressive: If True, includes enumeration removal (not recommended)
+        verbose: If True, prints detailed statistics
+        force_reclean: If True, re-process ALL records (ignores existing output)
+
+    Workflow:
+        1. Load existing cleaned JSON (if exists)
+        2. Identify already-cleaned PDF filenames
+        3. Filter input for NEW records only
+        4. Clean only NEW records
+        5. Append new cleaned records to existing records
+        6. Save updated JSON
+
+    Example:
+        >>> # First run: cleans all records
+        >>> clean_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/all_extracted_text.json',
+        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        ... )
+        # Output: Cleaned 336 records
+
+        >>> # Second run: skips all (nothing new)
+        >>> clean_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/all_extracted_text.json',
+        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        ... )
+        # Output: All records already cleaned. Nothing to do!
+
+        >>> # After adding 5 new PDFs and extracting them:
+        >>> clean_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/all_extracted_text.json',
+        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        ... )
+        # Output: Cleaned 5 new records (336 existing + 5 new = 341 total)
+    """
+    import time
+    import os
+    from collections import defaultdict
+
+    t0 = time.time()
+
+    print("=" * 80)
+    print("INCREMENTAL TEXT CLEANING PIPELINE")
+    print("=" * 80)
+    print(f"Input file: {input_json_path}")
+    print(f"Output file: {output_json_path}")
+    print(f"Aggressive mode: {aggressive}")
+    print(f"Force re-clean: {force_reclean}")
+    print()
+
+    # Load input JSON
+    print(f"📂 Loading input file...")
+    with open(input_json_path, 'r', encoding='utf-8') as f:
+        input_data = json.load(f)
+
+    print(f"✓ Loaded {len(input_data)} records from input")
+    print()
+
+    # Load existing cleaned JSON (if exists and not forcing re-clean)
+    existing_records = []
+    already_cleaned_filenames = set()
+
+    if os.path.exists(output_json_path) and not force_reclean:
+        print(f"📂 Found existing cleaned data, loading...")
+        with open(output_json_path, 'r', encoding='utf-8') as f:
+            existing_records = json.load(f)
+
+        # Extract set of already-cleaned PDF filenames
+        already_cleaned_filenames = set(r['pdf_filename'] for r in existing_records)
+
+        print(f"✓ Loaded {len(existing_records)} existing cleaned records")
+        print(f"📊 Already cleaned PDFs: {len(already_cleaned_filenames)} unique filenames")
+        print()
+    else:
+        if force_reclean:
+            print("⚠️  Force re-clean mode: Will process all records")
+        else:
+            print("📝 No existing cleaned data found - will clean all records")
+        print()
+
+    # Identify NEW records (not already cleaned)
+    new_records = [
+        r for r in input_data
+        if r['pdf_filename'] not in already_cleaned_filenames
+    ]
+
+    # Check if there's anything to clean
+    if not new_records:
+        print("=" * 80)
+        print("✅ All records already cleaned. Nothing to do!")
+        print(f"   Existing: {len(existing_records)} records")
+        print("=" * 80)
+        return
+
+    print(f"🆕 New records to clean: {len(new_records)}")
+    print(f"   (Skipping {len(input_data) - len(new_records)} already-cleaned records)")
+    print()
+
+    # Show sample of new PDFs
+    if verbose and new_records:
+        new_pdfs = sorted(set(r['pdf_filename'] for r in new_records))
+        print(f"   New PDF filenames ({len(new_pdfs)}):")
+        for pdf in new_pdfs[:5]:
+            print(f"   • {pdf}")
+        if len(new_pdfs) > 5:
+            print(f"   ... and {len(new_pdfs) - 5} more")
+        print()
+
+    # Clean NEW records only
+    print("🧹 Cleaning NEW text records...")
+    print()
+
+    cleaned_new_records = []
+
+    for i, record in enumerate(new_records, 1):
+        if verbose and i % 50 == 0:
+            print(f"  Processing record {i}/{len(new_records)}...")
+
+        # Clean the text
+        original_text = record['text']
+        result = clean_extracted_text(original_text, aggressive=aggressive)
+
+        # Create cleaned record
+        cleaned_record = {
+            'pdf_filename': record['pdf_filename'],
+            'page': record['page'],
+            'text': result['cleaned_text'],
+            'original_length': result['original_length'],
+            'cleaned_length': result['cleaned_length'],
+            'reduction_pct': result['reduction_pct']
+        }
+
+        cleaned_new_records.append(cleaned_record)
+
+    print(f"✓ Completed cleaning {len(new_records)} new records")
+    print()
+
+    # Combine existing + new cleaned records
+    all_cleaned_records = existing_records + cleaned_new_records
+
+    # Calculate statistics for NEW records
+    total_original_chars = sum(r['original_length'] for r in cleaned_new_records)
+    total_cleaned_chars = sum(r['cleaned_length'] for r in cleaned_new_records)
+    overall_reduction = ((total_original_chars - total_cleaned_chars) / total_original_chars * 100) if total_original_chars > 0 else 0
+
+    # Print statistics
+    if verbose:
+        print("=" * 80)
+        print("CLEANING STATISTICS (NEW RECORDS ONLY)")
+        print("=" * 80)
+        print(f"New records cleaned: {len(cleaned_new_records)}")
+        print(f"Total original characters: {total_original_chars:,}")
+        print(f"Total cleaned characters: {total_cleaned_chars:,}")
+        print(f"Characters removed: {total_original_chars - total_cleaned_chars:,}")
+        print(f"Overall reduction: {overall_reduction:.2f}%")
+        print()
+
+        # Average reduction per record
+        avg_reduction = sum(r['reduction_pct'] for r in cleaned_new_records) / len(cleaned_new_records) if cleaned_new_records else 0
+        print(f"Average reduction per record: {avg_reduction:.2f}%")
+
+        # Records with significant cleaning (>5% reduction)
+        significant_cleaning = [r for r in cleaned_new_records if r['reduction_pct'] > 5]
+        print(f"Records with >5% reduction: {len(significant_cleaning)}/{len(cleaned_new_records)} ({len(significant_cleaning)/len(cleaned_new_records)*100:.1f}%)")
+        print()
+
+        print("=" * 80)
+        print("OVERALL STATISTICS (EXISTING + NEW)")
+        print("=" * 80)
+        print(f"Total records in output: {len(all_cleaned_records)}")
+        print(f"  - Existing (preserved): {len(existing_records)}")
+        print(f"  - New (just cleaned): {len(cleaned_new_records)}")
+        print()
+
+    # Save updated JSON
+    print(f"💾 Saving updated cleaned data to: {output_json_path}")
+    with open(output_json_path, 'w', encoding='utf-8') as f:
+        json.dump(all_cleaned_records, f, ensure_ascii=False, indent=2)
+
+    t1 = time.time()
+
+    print(f"✓ Successfully saved {len(all_cleaned_records)} cleaned records")
+    print(f"📊 Updated output file:")
+    print(f"   - Before: {len(existing_records)} records")
+    print(f"   - After: {len(all_cleaned_records)} records (+{len(cleaned_new_records)} new)")
+    print(f"⏱️  Time taken: {t1 - t0:.2f} seconds")
+    print()
+    print("=" * 80)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════
 # END OF PIPELINE
 # ═══════════════════════════════════════════════════════════════════════════════════════════
