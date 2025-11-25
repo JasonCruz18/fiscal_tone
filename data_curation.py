@@ -1338,7 +1338,7 @@ def extract_text_from_single_pdf_v2(
 def extract_text_from_editable_pdfs(
     editable_folder="data/raw/editable",
     output_folder="data/raw",
-    output_filename="all_extracted_text.json",
+    output_filename="scanned_pdfs_extracted_text.json",
     FONT_MIN=10.5,
     FONT_MAX=11.9,
     exclude_bold=False,
