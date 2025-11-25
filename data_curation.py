@@ -966,8 +966,10 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
                 continue
 
             # Check if any keyword pattern matches at line start
+            # NOTE: Case-sensitive matching (must start with uppercase "Opinión")
+            # This prevents false positives like "opinión del CF, esto revela..." in mid-sentence
             for keyword_pattern in keywords:
-                if re.match(keyword_pattern, line_text, re.IGNORECASE):
+                if re.match(keyword_pattern, line_text):
                     # ADDITIONAL CHECK: Detect multi-line centered titles
                     # Long centered titles often span 2 lines:
                     #   Line 1: "Opinión del Consejo Fiscal sobre el Marco..." (X=91pt - appears left-aligned)
@@ -1009,7 +1011,7 @@ def find_opinion_keyword_position(pdf, keywords, font_min, font_max):
 def extract_text_from_single_pdf_v2(
     file_path,
     FONT_MIN=10.5,  # Lowered to capture ~11pt text (actual 10.98-11.02pt due to floating-point precision)
-    FONT_MAX=11.9,  # Increased to capture section headers (12.0-14.0pt) in Pronunciamientos
+    FONT_MAX=11.9,  
     exclude_bold=False,
     vertical_threshold=15,
     first_page_header_cutoff=100,
@@ -1278,18 +1280,27 @@ def extract_text_from_single_pdf_v2(
                 full_page_text = "\n\n".join(page_text)
 
                 # Stop extraction at "Anexo" section
+                anexo_detected = False
                 match = re.search(r"(?mi)^ *Anexos?\b[\s\w]*:?", full_page_text)
                 if match:
                     full_page_text = full_page_text[:match.start()].strip()
                     print(f"      🛑 'Anexo' detected on page {page_num}. Truncating content.")
+                    anexo_detected = True
 
                 print(f"      ✓ Extracted {len(page_text)} paragraphs ({len(full_page_text)} chars)")
 
-                all_records.append({
-                    "filename": os.path.basename(file_path),
-                    "page": page_num,
-                    "text": full_page_text
-                })
+                # Add page record only if there's content
+                if full_page_text:
+                    all_records.append({
+                        "filename": os.path.basename(file_path),
+                        "page": page_num,
+                        "text": full_page_text
+                    })
+
+                # Stop processing subsequent pages after Anexo
+                if anexo_detected:
+                    print(f"      ⏹️  Stopping extraction. Skipping all pages after {page_num}.")
+                    break
 
         if not all_records:
             print("⚠️ No text extracted from the PDF.")
@@ -1503,9 +1514,11 @@ def extract_text_from_editable_pdfs(
                     full_page_text = "\n\n".join(page_text)
 
                     # Stop at "Anexo" section
+                    anexo_detected = False
                     match = re.search(r"(?mi)^ *Anexos?\b[\s\w]*:?", full_page_text)
                     if match:
                         full_page_text = full_page_text[:match.start()].strip()
+                        anexo_detected = True
 
                     if full_page_text:
                         page_records.append({
@@ -1513,6 +1526,10 @@ def extract_text_from_editable_pdfs(
                             "page": page_num,
                             "text": full_page_text
                         })
+
+                    # Stop processing subsequent pages after Anexo
+                    if anexo_detected:
+                        break
 
                 if page_records:
                     all_records.extend(page_records)
@@ -1552,690 +1569,10 @@ def extract_text_from_editable_pdfs(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
-# TESTING & COMPARISON SECTION
-# ═══════════════════════════════════════════════════════════════════════════════════════════
-#
-# This section compares the original extraction function with the enhanced v2 version
-# to validate improvements in header/footer/footnote filtering.
-#
-# ═══════════════════════════════════════════════════════════════════════════════════════════
-
-# Test file path
-test_file_path = r"C:\Users\Jason Cruz\OneDrive\Documentos\RA\CIUP\GitHub\FiscalTone\data\raw\editable\Informe-DCRF2024-vf.pdf"
-
-print("\n" + "="*100)
-print("PDF TEXT EXTRACTION COMPARISON: v1 (original) vs v2 (enhanced)")
-print("="*100)
-print(f"\nTest file: {os.path.basename(test_file_path)}")
-print("\n" + "-"*100)
-print("RUNNING ORIGINAL FUNCTION (v1)")
-print("-"*100)
-
-# Run original function
-extract_text_from_single_pdf(
-    test_file_path,
-    FONT_MIN=11.0,
-    FONT_MAX=11.9,
-    exclude_bold=False,
-    vertical_threshold=15
-)
-
-print("\n\n" + "-"*100)
-print("RUNNING ENHANCED FUNCTION (v2) - with position-based filtering")
-print("-"*100)
-
-# Run enhanced function with user-specified parameters
-extract_text_from_single_pdf_v2(
-    test_file_path,
-    FONT_MIN=11.0,                      # User-specified: body text only
-    FONT_MAX=11.9,                      # User-specified: body text only
-    exclude_bold=False,                 # User-specified: include emphasis
-    vertical_threshold=15,              # User-specified: paragraph spacing
-    first_page_header_cutoff=100,       # User-specified: first page header
-    subsequent_header_cutoff=70,        # User-specified: subsequent headers
-    footer_cutoff_distance=100,         # User-specified: footer exclusion
-    last_page_footer_cutoff=120,        # User-specified: last page signatures/dates
-    left_margin=70,
-    right_margin=70,
-    exclude_specific_sizes=True,
-    search_opinion_keyword=True         # Enable keyword-based extraction start
-)
-
-print("\n\n" + "="*100)
-print("COMPARISON COMPLETE")
-print("="*100)
-print("\n📊 Key Differences to Check:")
-print("   1. Footer removal: v2 should exclude 'www.cf.gob.pe' and page numbers")
-print("   2. Header removal: v2 should exclude document titles and large headers")
-print("   3. Footnote removal: v2 should exclude 8.4pt, 8.5pt footnote text")
-print("   4. Cleaner text: v2 should have fewer non-paragraph elements")
-print("\n💾 Output files:")
-print(f"   v1: {os.path.splitext(os.path.basename(test_file_path))[0]}.json")
-print(f"   v2: {os.path.splitext(os.path.basename(test_file_path))[0]}_v2.json")
-print("\n✅ Compare the JSON files to validate improvements!")
-print("="*100 + "\n")
-
-
-# ═══════════════════════════════════════════════════════════════════════════════════════════
 # 7. TEXT EXTRACTION FROM SCANNED PDFS (OCR)
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 
-try:
-    import pytesseract
-    from pdf2image import convert_from_path
-    from PIL import Image, ImageEnhance, ImageFilter
-except ImportError:
-    print("[WARN] OCR dependencies not installed. Run: pip install pytesseract pdf2image Pillow")
-    print("[WARN] Also install Tesseract OCR system binary: https://github.com/UB-Mannheim/tesseract/wiki")
 
-
-# --- Region of Interest (ROI) Definitions ---
-
-# Coordinate zones for cropping (in pixels at 300 DPI)
-ROI_PAGE_1 = {
-    'top': 250,      # Skip logo, document ID, title
-    'bottom': -100,  # Skip footer (from page bottom)
-    'left': 70,      # Standard left margin
-    'right': -70     # Standard right margin (from page right)
-}
-
-ROI_BODY = {
-    'top': 100,      # Skip logo header
-    'bottom': -100,  # Skip footer
-    'left': 70,
-    'right': -70
-}
-
-ROI_FINAL = {
-    'top': 100,      # Skip logo header
-    'bottom': -300,  # Larger exclusion for signature block
-    'left': 70,
-    'right': -70
-}
-
-
-# --- Image Preprocessing Functions ---
-
-def preprocess_page_image(image, page_num, total_pages):
-    """
-    Crops and enhances page image for optimal OCR quality.
-
-    Applies region-based cropping to exclude headers, footers, and margins,
-    then enhances contrast and applies denoising for better text recognition.
-
-    Args:
-        image: PIL Image object of the PDF page
-        page_num: int, current page number (1-indexed)
-        total_pages: int, total number of pages in document
-
-    Returns:
-        PIL Image: Cropped and enhanced image ready for OCR
-    """
-    width, height = image.size
-
-    # Select appropriate ROI based on page type
-    if page_num == 1:
-        roi = ROI_PAGE_1
-    elif page_num == total_pages:
-        roi = ROI_FINAL
-    else:
-        roi = ROI_BODY
-
-    # Crop to exclude headers/footers/margins
-    cropped = image.crop((
-        roi['left'],
-        roi['top'],
-        width + roi['right'],   # right is negative offset
-        height + roi['bottom']  # bottom is negative offset
-    ))
-
-    # Enhance contrast for better OCR accuracy
-    enhancer = ImageEnhance.Contrast(cropped)
-    enhanced = enhancer.enhance(1.5)
-
-    # Apply slight denoising
-    denoised = enhanced.filter(ImageFilter.MedianFilter(size=3))
-
-    return denoised
-
-
-def enhance_image_quality(image):
-    """
-    Additional image enhancement for low-quality scans.
-
-    Args:
-        image: PIL Image object
-
-    Returns:
-        PIL Image: Enhanced image with improved sharpness and brightness
-    """
-    # Increase sharpness
-    sharpener = ImageEnhance.Sharpness(image)
-    sharp = sharpener.enhance(1.5)
-
-    # Adjust brightness if needed
-    brightness_enhancer = ImageEnhance.Brightness(sharp)
-    bright = brightness_enhancer.enhance(1.1)
-
-    return bright
-
-
-# --- Text Cleaning Functions ---
-
-def remove_footer_patterns(text):
-    """
-    Removes footer text patterns that leak through ROI cropping.
-
-    Filters out:
-        - Address lines ("Av. República de Panamá...")
-        - Page numbers (e.g., "1/4", "5/7")
-        - Website URLs and phone numbers
-
-    Args:
-        text: str, raw OCR text
-
-    Returns:
-        str: Text with footer patterns removed
-    """
-    lines = text.split('\n')
-    cleaned_lines = []
-
-    for line in lines:
-        # Skip address lines
-        if re.search(r'Av\.\s*República\s+de\s+Panamá', line, re.IGNORECASE):
-            continue
-
-        # Skip page numbers (format: X/Y)
-        if re.search(r'^\s*\d+\s*/\s*\d+\s*$', line):
-            continue
-
-        # Skip short lines with page numbers
-        if re.search(r'\d+/\d+', line) and len(line) < 20:
-            continue
-
-        # Skip website/contact info
-        if re.search(r'www\.cf\.gob\.pe|Teléfono', line, re.IGNORECASE):
-            continue
-
-        cleaned_lines.append(line)
-
-    return '\n'.join(cleaned_lines)
-
-
-def remove_header_patterns(text):
-    """
-    Removes header text patterns that leak through ROI cropping.
-
-    Filters out:
-        - Document IDs ("Informe N° XXX-2016-CF")
-        - Institution names ("CONSEJO FISCAL")
-        - Watermark text ("PRESIDENTE")
-
-    Args:
-        text: str, raw OCR text
-
-    Returns:
-        str: Text with header patterns removed
-    """
-    lines = text.split('\n')
-    cleaned_lines = []
-
-    for line in lines:
-        # Skip document ID patterns
-        if re.search(r'Informe\s+N[°ºo]\s*\d+-\d{4}-CF', line, re.IGNORECASE):
-            continue
-
-        # Skip institution name (when it appears alone)
-        if re.search(r'^\s*CONSEJO\s+FISCAL\s*$', line, re.IGNORECASE):
-            continue
-
-        # Skip watermark text
-        if 'PRESIDENTE' in line and len(line) < 20:
-            continue
-
-        cleaned_lines.append(line)
-
-    return '\n'.join(cleaned_lines)
-
-
-def remove_section_headers(text):
-    """
-    Removes section headers like 'Antecedentes', 'Conclusiones', 'Riesgos'.
-
-    Based on user preference to extract only paragraph text without structural markers.
-
-    Args:
-        text: str, raw OCR text
-
-    Returns:
-        str: Text with section headers removed
-    """
-    # Common section headers in Consejo Fiscal documents
-    section_headers = [
-        r'^\s*Antecedentes\s*$',
-        r'^\s*Escenario\s+internacional\s+(y\s+)?local\s*$',
-        r'^\s*Proyecciones\s+fiscales\s*$',
-        r'^\s*Riesgos\s*$',
-        r'^\s*Conclusiones\s*$',
-        r'^\s*Recomendaciones\s*$',
-        r'^\s*Introducción\s*$',
-        r'^\s*Análisis\s*$',
-    ]
-
-    lines = text.split('\n')
-    cleaned_lines = []
-
-    for line in lines:
-        # Check if line matches any section header pattern
-        is_header = any(re.match(pattern, line, re.IGNORECASE) for pattern in section_headers)
-
-        if not is_header:
-            cleaned_lines.append(line)
-
-    return '\n'.join(cleaned_lines)
-
-
-def remove_footnotes(text):
-    """
-    Removes footnote markers and footnote content from text.
-
-    Footnotes appear as:
-        1. Superscript numbers in main text (removed via OCR artifact cleaning)
-        2. Numbered footnote content at page bottom (detected and truncated)
-
-    Args:
-        text: str, raw OCR text
-
-    Returns:
-        str: Text with footnotes removed
-    """
-    # Remove common OCR artifacts for superscript numbers
-    text = re.sub(r'[¹²³⁴⁵⁶⁷⁸⁹⁰]+', '', text)
-
-    # Detect footnote start pattern (line begins with digit + space + capital letter)
-    # This indicates transition from main text to footnotes
-    lines = text.split('\n')
-    main_content = []
-
-    for i, line in enumerate(lines):
-        # Detect footnote start: "1 Some footnote text..."
-        if re.match(r'^\s*\d+\s+[A-ZÁÉÍÓÚÑ]', line):
-            # Verify it's actually a footnote (short line or followed by more numbered lines)
-            if len(line) > 50:  # Likely still main text
-                main_content.append(line)
-            else:
-                # This and all following lines are footnotes, stop here
-                break
-        else:
-            main_content.append(line)
-
-    return '\n'.join(main_content)
-
-
-def stop_at_signature_or_anexo(text):
-    """
-    Truncates text at signature block or anexo section.
-
-    Stops extraction when encountering:
-        - Date line: "Lima, DD de MONTH de YYYY"
-        - Anexo headers: "ANEXO 1:", "Anexo:"
-
-    Args:
-        text: str, raw OCR text
-
-    Returns:
-        str: Text truncated before signature/anexo
-    """
-    # Pattern 1: Signature date line
-    signature_match = re.search(r'Lima,\s*\d+\s+de\s+\w+\s+de\s+\d{4}', text, re.IGNORECASE)
-    if signature_match:
-        text = text[:signature_match.start()].strip()
-
-    # Pattern 2: Anexo section
-    anexo_match = re.search(r'ANEXO\s*\d*\s*:', text, re.IGNORECASE)
-    if anexo_match:
-        text = text[:anexo_match.start()].strip()
-
-    return text
-
-
-def clean_ocr_text(text, page_num, total_pages):
-    """
-    Applies all cleaning filters to raw OCR text.
-
-    Multi-stage cleaning pipeline:
-        1. Remove footer patterns
-        2. Remove header patterns
-        3. Remove section headers
-        4. Remove footnotes
-        5. Stop at signature/anexo (final page only)
-
-    Args:
-        text: str, raw OCR text from page
-        page_num: int, current page number
-        total_pages: int, total pages in document
-
-    Returns:
-        str: Clean text ready for paragraph extraction
-    """
-    text = remove_footer_patterns(text)
-    text = remove_header_patterns(text)
-    text = remove_section_headers(text)
-    text = remove_footnotes(text)
-
-    # Only check for signature/anexo on final page
-    if page_num == total_pages:
-        text = stop_at_signature_or_anexo(text)
-
-    return text
-
-
-# --- Paragraph Extraction Functions ---
-
-def extract_main_paragraphs(text):
-    """
-    Extracts substantive paragraphs from cleaned OCR text.
-
-    Filters out:
-        - Short fragments (<50 characters)
-        - Table-like content (high digit ratio)
-        - Overly fragmented text (too many line breaks)
-
-    Args:
-        text: str, cleaned OCR text
-
-    Returns:
-        list of str: Substantive paragraphs only
-    """
-    # Split by double newlines or multiple blank lines
-    potential_paragraphs = re.split(r'\n\s*\n', text)
-
-    paragraphs = []
-
-    for para in potential_paragraphs:
-        para = para.strip()
-
-        # Filter 1: Skip if too short (likely not a real paragraph)
-        if len(para) < 50:
-            continue
-
-        # Filter 2: Skip if looks like a table (lots of numbers)
-        digit_count = sum(c.isdigit() for c in para)
-        if digit_count / len(para) > 0.3:
-            continue
-
-        # Filter 3: Skip if too many line breaks (fragmented OCR text)
-        line_break_count = para.count('\n')
-        if line_break_count / len(para) > 0.05:
-            continue
-
-        # Filter 4: Skip if too many short words (likely OCR artifacts)
-        words = para.split()
-        if words:
-            short_word_ratio = sum(1 for w in words if len(w) <= 2) / len(words)
-            if short_word_ratio > 0.4:
-                continue
-
-        # Clean up internal whitespace
-        para = re.sub(r'\s+', ' ', para)
-
-        paragraphs.append(para)
-
-    return paragraphs
-
-
-# --- Main Extraction Function ---
-
-def extract_text_from_scanned_pdf(file_path, dpi=300):
-    """
-    Extracts fiscal opinion paragraphs from scanned PDFs using OCR.
-
-    This function implements a comprehensive extraction pipeline specifically designed
-    for Peru's Consejo Fiscal scanned PDF documents:
-        1. Converts PDF pages to images at specified DPI
-        2. Crops images to exclude headers, footers, and margins
-        3. Enhances image quality for optimal OCR
-        4. Performs Tesseract OCR with Spanish language model
-        5. Cleans text to remove non-paragraph content
-        6. Extracts only substantive paragraphs with metadata
-
-    Args:
-        file_path: str, path to scanned PDF file
-        dpi: int, resolution for PDF to image conversion (default 300)
-
-    Returns:
-        list of dict: [{'text': paragraph, 'page': page_num, 'pdf_filename': filename}, ...]
-        Returns empty list if extraction fails or no paragraphs found
-
-    Example:
-        >>> results = extract_text_from_scanned_pdf('data/raw/scanned/Informe_001-2016.pdf')
-        >>> print(f"Extracted {len(results)} paragraphs")
-        >>> print(results[0]['text'][:100])
-    """
-    t0 = timer()
-
-    print(f"[OCR] Starting extraction from: {os.path.basename(file_path)}")
-    print(f"      DPI: {dpi}")
-
-    try:
-        # Step 1: Convert PDF to images
-        print("[OCR] Converting PDF pages to images...")
-        images = convert_from_path(file_path, dpi=dpi)
-        total_pages = len(images)
-        print(f"      Converted {total_pages} pages")
-
-        all_paragraphs = []
-
-        # Step 2: Process each page
-        for page_num, image in enumerate(images, start=1):
-            print(f"\n[OCR] Processing page {page_num}/{total_pages}...")
-
-            # Step 2a: Preprocess image (crop and enhance)
-            cropped = preprocess_page_image(image, page_num, total_pages)
-
-            # Step 2b: Perform OCR with Spanish language model
-            custom_config = r'--oem 3 --psm 6 -l spa'  # LSTM OCR, uniform text block, Spanish
-            page_text = pytesseract.image_to_string(cropped, config=custom_config)
-
-            # Step 2c: Clean OCR text
-            clean_text = clean_ocr_text(page_text, page_num, total_pages)
-
-            # Step 2d: Extract paragraphs from cleaned text
-            page_paragraphs = extract_main_paragraphs(clean_text)
-
-            print(f"      Extracted {len(page_paragraphs)} paragraphs")
-
-            # Step 2e: Add metadata to each paragraph
-            for para in page_paragraphs:
-                all_paragraphs.append({
-                    'text': para,
-                    'page': page_num,
-                    'pdf_filename': os.path.basename(file_path)
-                })
-
-        t1 = timer()
-
-        print(f"\n[DONE] Extraction complete!")
-        print(f"       Total paragraphs: {len(all_paragraphs)}")
-        print(f"       Time taken: {t1 - t0:.2f} seconds")
-
-        return all_paragraphs
-
-    except Exception as e:
-        print(f"[ERROR] OCR extraction failed: {e}")
-        import traceback
-        traceback.print_exc()
-        return []
-
-
-# --- Quality Validation Function ---
-
-def validate_extraction(paragraphs):
-    """
-    Validates extraction quality and identifies potential issues.
-
-    Checks for common extraction problems:
-        - Footer leakage
-        - Header leakage
-        - Page numbers in text
-        - Missing expected content
-        - Signature block leakage
-        - Anexo content leakage
-
-    Args:
-        paragraphs: list of dict, output from extract_text_from_scanned_pdf()
-
-    Returns:
-        dict: {'passed': bool, 'issues': list of str, 'warnings': list of str}
-    """
-    issues = []
-    warnings = []
-
-    if not paragraphs:
-        issues.append("No paragraphs extracted")
-        return {'passed': False, 'issues': issues, 'warnings': warnings}
-
-    # Combine all text for pattern checking
-    all_text = ' '.join([p['text'] for p in paragraphs])
-
-    # Check 1: No footer leakage
-    if re.search(r'Av\.\s*República\s+de\s+Panamá', all_text, re.IGNORECASE):
-        issues.append("Footer text detected (address)")
-
-    # Check 2: No page numbers
-    page_num_matches = re.findall(r'\d+/\d+', all_text)
-    if page_num_matches:
-        warnings.append(f"Page numbers detected: {page_num_matches[:3]}")
-
-    # Check 3: No signature block
-    if re.search(r'PRESIDENTE\s+DEL\s+CONSEJO\s+FISCAL', all_text, re.IGNORECASE):
-        issues.append("Signature block detected")
-
-    # Check 4: No anexo content
-    if re.search(r'Anexo\s+\d+:', all_text, re.IGNORECASE):
-        issues.append("Anexo section detected")
-
-    # Check 5: Expected content patterns
-    if 'informe' not in all_text.lower() and 'presente' not in all_text.lower():
-        warnings.append("Missing expected opening phrases")
-
-    # Check 6: Reasonable paragraph count
-    if len(paragraphs) < 3:
-        warnings.append(f"Low paragraph count: {len(paragraphs)}")
-
-    # Check 7: Reasonable text length
-    avg_length = sum(len(p['text']) for p in paragraphs) / len(paragraphs)
-    if avg_length < 100:
-        warnings.append(f"Suspiciously short paragraphs (avg: {avg_length:.0f} chars)")
-
-    passed = len(issues) == 0
-
-    return {
-        'passed': passed,
-        'issues': issues,
-        'warnings': warnings
-    }
-
-
-# --- Batch Processing Function ---
-
-def batch_extract_scanned_pdfs(scanned_folder, output_json_path, dpi=300):
-    """
-    Processes all scanned PDFs in a folder and saves results to JSON.
-
-    Args:
-        scanned_folder: str, path to folder containing scanned PDFs
-        output_json_path: str, path to save output JSON file
-        dpi: int, resolution for OCR (default 300)
-
-    Returns:
-        list of dict: All extracted paragraphs from all PDFs
-    """
-    t0 = timer()
-
-    all_results = []
-    pdf_files = [f for f in os.listdir(scanned_folder) if f.lower().endswith('.pdf')]
-
-    print(f"📚 Found {len(pdf_files)} scanned PDFs to process\n")
-
-    for i, filename in enumerate(pdf_files, start=1):
-        print(f"\n{'='*80}")
-        print(f"[{i}/{len(pdf_files)}] {filename}")
-        print('='*80)
-
-        file_path = os.path.join(scanned_folder, filename)
-        paragraphs = extract_text_from_scanned_pdf(file_path, dpi=dpi)
-
-        # Validate extraction
-        validation = validate_extraction(paragraphs)
-        if not validation['passed']:
-            print(f"⚠️  VALIDATION FAILED:")
-            for issue in validation['issues']:
-                print(f"   ❌ {issue}")
-        if validation['warnings']:
-            print(f"⚠️  Warnings:")
-            for warning in validation['warnings']:
-                print(f"   ⚡ {warning}")
-
-        all_results.extend(paragraphs)
-
-    # Save to JSON
-    with open(output_json_path, 'w', encoding='utf-8') as f:
-        json.dump(all_results, f, ensure_ascii=False, indent=2)
-
-    t1 = timer()
-
-    print(f"\n\n{'='*80}")
-    print("📊 BATCH PROCESSING SUMMARY")
-    print('='*80)
-    print(f"Total PDFs processed: {len(pdf_files)}")
-    print(f"Total paragraphs extracted: {len(all_results)}")
-    print(f"Output saved to: {output_json_path}")
-    print(f"Total time: {t1 - t0:.2f} seconds")
-
-    return all_results
-
-
-def run_scanned_pdf_extraction():
-    """
-    Runner function to execute batch OCR extraction on scanned PDFs.
-
-    Processes all PDFs in data/raw/scanned and saves results to JSON.
-    """
-    scanned_folder = "data/raw/scanned"
-    output_json_path = "data/raw/scanned_pdfs_extracted.json"
-
-    # Validate scanned folder exists
-    if not os.path.exists(scanned_folder):
-        print(f"❌ Error: Scanned folder not found at '{scanned_folder}'")
-        print(f"   Please create the folder or check the path.")
-        return None
-
-    # Check for PDF files
-    pdf_files = [f for f in os.listdir(scanned_folder) if f.lower().endswith('.pdf')]
-    if len(pdf_files) == 0:
-        print(f"⚠️  Warning: No PDF files found in '{scanned_folder}'")
-        print(f"   Please add scanned PDF files to process.")
-        return None
-
-    print(f"🚀 Starting OCR extraction process...")
-    print(f"   Source folder: {scanned_folder}")
-    print(f"   Output file: {output_json_path}")
-    print(f"   DPI: 300 (high quality)")
-    print()
-
-    # Execute batch extraction
-    results = batch_extract_scanned_pdfs(
-        scanned_folder=scanned_folder,
-        output_json_path=output_json_path,
-        dpi=300
-    )
-
-    print(f"\n✅ Extraction complete!")
-    print(f"   Total paragraphs extracted: {len(results)}")
-    print(f"   Results saved to: {output_json_path}")
-
-    return results
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════════════
