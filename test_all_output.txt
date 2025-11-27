@@ -1,0 +1,2436 @@
+Found 13 PDF files
+================================================================================
+
+================================================================================
+Testing: Informe-N°-001-2018-CF.pdf
+================================================================================
+
+Processing Informe-N°-001-2018-CF.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3254-3284 (92.8%-93.6%)
+  [MARGIN] Y=3284-3508 (93.6%-100.0%), Height=224px
+  [ZONES] Found 17 whitespace zones
+  [DEBUG] Address starts at Y=3254 (92.8%)
+  [DEBUG] Found 16 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3117-3254 (88.9%-92.8%), Height=137px, Distance=0px
+  [DEBUG]   2. Y=2981-3006 (85.0%-85.7%), Height=25px, Distance=248px
+  [DEBUG]   3. Y=2798-2824 (79.8%-80.5%), Height=26px, Distance=430px
+  [DEBUG]   4. Y=2572-2594 (73.3%-73.9%), Height=22px, Distance=660px
+  [DEBUG]   5. Y=2514-2548 (71.7%-72.6%), Height=34px, Distance=706px
+  [DEBUG] Closest large zone: Y=3117-3254 (88.9%-92.8%), Height=137px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3117-3254 (88.9%-92.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3117-3254 (88.9%-92.8%), Height=137px
+  [SEPARATOR] Found at Y=3117 (88.9%), Length=2.6%
+[+] Saved: Informe-N°-001-2018-CF_page1_final.png
+
+  Page 1: separator_segment, Cyan: 88.9%-92.8%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3260-3286 (92.9%-93.7%)
+  [MARGIN] Y=3286-3508 (93.7%-100.0%), Height=222px
+  [ZONES] Found 20 whitespace zones
+  [DEBUG] Address starts at Y=3260 (92.9%)
+  [DEBUG] Found 19 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3129-3260 (89.2%-92.9%), Height=131px, Distance=0px
+  [DEBUG]   2. Y=2991-3011 (85.3%-85.8%), Height=20px, Distance=249px
+  [DEBUG]   3. Y=2900-2922 (82.7%-83.3%), Height=22px, Distance=338px
+  [DEBUG]   4. Y=2750-2876 (78.4%-82.0%), Height=126px, Distance=384px
+  [DEBUG]   5. Y=2692-2746 (76.7%-78.3%), Height=54px, Distance=514px
+  [DEBUG] Closest large zone: Y=3129-3260 (89.2%-92.9%), Height=131px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3129-3260 (89.2%-92.9%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3129-3260 (89.2%-92.9%), Height=131px
+  [NO SEPARATOR] Using cyan zone base at Y=3260 (92.9%)
+[+] Saved: Informe-N°-001-2018-CF_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 89.2%-92.9%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3257-3288 (92.8%-93.7%)
+  [MARGIN] Y=3288-3508 (93.7%-100.0%), Height=220px
+  [ZONES] Found 11 whitespace zones
+  [DEBUG] Address starts at Y=3257 (92.8%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3129-3257 (89.2%-92.8%), Height=128px, Distance=0px
+  [DEBUG]   2. Y=2752-2776 (78.4%-79.1%), Height=24px, Distance=481px
+  [DEBUG]   3. Y=2620-2641 (74.7%-75.3%), Height=21px, Distance=616px
+  [DEBUG]   4. Y=2388-2414 (68.1%-68.8%), Height=26px, Distance=843px
+  [DEBUG]   5. Y=2150-2183 (61.3%-62.2%), Height=33px, Distance=1074px
+  [DEBUG] Closest large zone: Y=2010-2144 (57.3%-61.1%), Height=134px
+  [DEBUG] Found 5 zones between closest large zone and address:
+  [DEBUG]   1. Y=3129-3257 (89.2%-92.8%), Height=128px
+  [DEBUG]   2. Y=2150-2183 (61.3%-62.2%), Height=33px
+  [DEBUG]   3. Y=2388-2414 (68.1%-68.8%), Height=26px
+  [DEBUG]   4. Y=2752-2776 (78.4%-79.1%), Height=24px
+  [DEBUG]   5. Y=2620-2641 (74.7%-75.3%), Height=21px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2010-2144 (57.3%-61.1%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2010-2144 (57.3%-61.1%), Height=134px
+  [SEPARATOR] Found at Y=2142 (61.1%), Length=4.1%
+[+] Saved: Informe-N°-001-2018-CF_page3_final.png
+
+  Page 3: separator_segment, Cyan: 57.3%-61.1%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3264-3290 (93.0%-93.8%)
+  [MARGIN] Y=3290-3508 (93.8%-100.0%), Height=218px
+  [ZONES] Found 23 whitespace zones
+  [DEBUG] Address starts at Y=3264 (93.0%)
+  [DEBUG] Found 22 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3133-3264 (89.3%-93.0%), Height=131px, Distance=0px
+  [DEBUG]   2. Y=3041-3062 (86.7%-87.3%), Height=21px, Distance=202px
+  [DEBUG]   3. Y=2997-3024 (85.4%-86.2%), Height=27px, Distance=240px
+  [DEBUG]   4. Y=2951-2978 (84.1%-84.9%), Height=27px, Distance=286px
+  [DEBUG]   5. Y=2906-2926 (82.8%-83.4%), Height=20px, Distance=338px
+  [DEBUG] Closest large zone: Y=3133-3264 (89.3%-93.0%), Height=131px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3133-3264 (89.3%-93.0%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3133-3264 (89.3%-93.0%), Height=131px
+  [NO SEPARATOR] Using cyan zone base at Y=3264 (93.0%)
+[+] Saved: Informe-N°-001-2018-CF_page4_final.png
+
+  Page 4: cyan_zone_base, Cyan: 89.3%-93.0%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 5
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3254-3286 (92.8%-93.7%)
+  [MARGIN] Y=3286-3508 (93.7%-100.0%), Height=222px
+  [ZONES] Found 15 whitespace zones
+  [DEBUG] Address starts at Y=3254 (92.8%)
+  [DEBUG] Found 14 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3070-3254 (87.5%-92.8%), Height=184px, Distance=0px
+  [DEBUG]   2. Y=2894-2914 (82.5%-83.1%), Height=20px, Distance=340px
+  [DEBUG]   3. Y=2754-2778 (78.5%-79.2%), Height=24px, Distance=476px
+  [DEBUG]   4. Y=2522-2548 (71.9%-72.6%), Height=26px, Distance=706px
+  [DEBUG]   5. Y=2374-2410 (67.7%-68.7%), Height=36px, Distance=844px
+  [DEBUG] Closest large zone: Y=3070-3254 (87.5%-92.8%), Height=184px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3070-3254 (87.5%-92.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3070-3254 (87.5%-92.8%), Height=184px
+  [SEPARATOR] Found at Y=3093 (88.2%), Length=3.6%
+[+] Saved: Informe-N°-001-2018-CF_page5_final.png
+
+  Page 5: separator_segment, Cyan: 87.5%-92.8%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 6
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3252-3278 (92.7%-93.4%)
+  [MARGIN] Y=3278-3508 (93.4%-100.0%), Height=230px
+  [ZONES] Found 23 whitespace zones
+  [DEBUG] Address starts at Y=3252 (92.7%)
+  [DEBUG] Found 22 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3119-3252 (88.9%-92.7%), Height=133px, Distance=0px
+  [DEBUG]   2. Y=3075-3096 (87.7%-88.3%), Height=21px, Distance=156px
+  [DEBUG]   3. Y=2940-2960 (83.8%-84.4%), Height=20px, Distance=292px
+  [DEBUG]   4. Y=2894-2914 (82.5%-83.1%), Height=20px, Distance=338px
+  [DEBUG]   5. Y=2850-2871 (81.2%-81.8%), Height=21px, Distance=381px
+  [DEBUG] Closest large zone: Y=3119-3252 (88.9%-92.7%), Height=133px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3119-3252 (88.9%-92.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3119-3252 (88.9%-92.7%), Height=133px
+  [NO SEPARATOR] Using cyan zone base at Y=3252 (92.7%)
+[+] Saved: Informe-N°-001-2018-CF_page6_final.png
+
+  Page 6: cyan_zone_base, Cyan: 88.9%-92.7%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 7
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3249-3280 (92.6%-93.5%)
+  [MARGIN] Y=3280-3508 (93.5%-100.0%), Height=228px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3249 (92.6%)
+  [DEBUG] Found 11 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3118-3249 (88.9%-92.6%), Height=131px, Distance=0px
+  [DEBUG]   2. Y=2882-2908 (82.2%-82.9%), Height=26px, Distance=341px
+  [DEBUG]   3. Y=2702-2725 (77.0%-77.7%), Height=23px, Distance=524px
+  [DEBUG]   4. Y=2516-2544 (71.7%-72.5%), Height=28px, Distance=705px
+  [DEBUG]   5. Y=2482-2514 (70.8%-71.7%), Height=32px, Distance=735px
+  [DEBUG] Closest large zone: Y=1975-2182 (56.3%-62.2%), Height=207px
+  [DEBUG] Found 7 zones between closest large zone and address:
+  [DEBUG]   1. Y=3118-3249 (88.9%-92.6%), Height=131px
+  [DEBUG]   2. Y=2188-2224 (62.4%-63.4%), Height=36px
+  [DEBUG]   3. Y=2482-2514 (70.8%-71.7%), Height=32px
+  [DEBUG]   4. Y=2516-2544 (71.7%-72.5%), Height=28px
+  [DEBUG]   5. Y=2882-2908 (82.2%-82.9%), Height=26px
+  [DEBUG]   6. Y=2338-2362 (66.6%-67.3%), Height=24px
+  [DEBUG]   7. Y=2702-2725 (77.0%-77.7%), Height=23px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=1975-2182 (56.3%-62.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=1975-2182 (56.3%-62.2%), Height=207px
+  [NO SEPARATOR] Using cyan zone base at Y=2182 (62.2%)
+[+] Saved: Informe-N°-001-2018-CF_page7_final.png
+
+  Page 7: cyan_zone_base, Cyan: 56.3%-62.2%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 8
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3258-3284 (92.9%-93.6%)
+  [MARGIN] Y=3284-3508 (93.6%-100.0%), Height=224px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3258 (92.9%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3081-3258 (87.8%-92.9%), Height=177px, Distance=0px
+  [DEBUG]   2. Y=2989-3010 (85.2%-85.8%), Height=21px, Distance=248px
+  [DEBUG]   3. Y=2944-2964 (83.9%-84.5%), Height=20px, Distance=294px
+  [DEBUG]   4. Y=2898-2922 (82.6%-83.3%), Height=24px, Distance=336px
+  [DEBUG]   5. Y=2854-2874 (81.4%-81.9%), Height=20px, Distance=384px
+  [DEBUG] Closest large zone: Y=3081-3258 (87.8%-92.9%), Height=177px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=2044-2384 (58.3%-68.0%)
+  [DEBUG]   Footnote zone: Y=3081-3258 (87.8%-92.9%)
+  [FOOTNOTE] Detected at Y=3081-3258 (87.8%-92.9%)
+  [CYAN ZONE] Y=2044-2384 (58.3%-68.0%), Height=340px
+  [NO SEPARATOR] Using cyan zone base at Y=2384 (68.0%)
+[+] Saved: Informe-N°-001-2018-CF_page8_final.png
+
+  Page 8: cyan_zone_base, Cyan: 58.3%-68.0%, Footnote: True
+
+Processing Informe-N°-001-2018-CF.pdf - Page 9
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3241-3272 (92.4%-93.3%)
+  [MARGIN] Y=3272-3508 (93.3%-100.0%), Height=236px
+  [ZONES] Found 18 whitespace zones
+  [DEBUG] Address starts at Y=3241 (92.4%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3123-3241 (89.0%-92.4%), Height=118px, Distance=0px
+  [DEBUG]   2. Y=2886-2906 (82.3%-82.8%), Height=20px, Distance=335px
+  [DEBUG]   3. Y=2790-2810 (79.5%-80.1%), Height=20px, Distance=431px
+  [DEBUG]   4. Y=2734-2760 (77.9%-78.7%), Height=26px, Distance=481px
+  [DEBUG]   5. Y=2586-2622 (73.7%-74.7%), Height=36px, Distance=619px
+  [DEBUG] Closest large zone: Y=3123-3241 (89.0%-92.4%), Height=118px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3123-3241 (89.0%-92.4%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3123-3241 (89.0%-92.4%), Height=118px
+  [NO SEPARATOR] Using cyan zone base at Y=3241 (92.4%)
+[+] Saved: Informe-N°-001-2018-CF_page9_final.png
+
+  Page 9: cyan_zone_base, Cyan: 89.0%-92.4%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 10
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3254-3280 (92.8%-93.5%)
+  [MARGIN] Y=3280-3508 (93.5%-100.0%), Height=228px
+  [ZONES] Found 2 whitespace zones
+  [DEBUG] Address starts at Y=3254 (92.8%)
+  [DEBUG] Found 1 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=1754-3254 (50.0%-92.8%), Height=1500px, Distance=0px
+  [DEBUG] Closest large zone: Y=1754-3254 (50.0%-92.8%), Height=1500px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=1754-3254 (50.0%-92.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=1754-3254 (50.0%-92.8%), Height=1500px
+  [NO SEPARATOR] Using cyan zone base at Y=3254 (92.8%)
+[+] Saved: Informe-N°-001-2018-CF_page10_final.png
+
+  Page 10: cyan_zone_base, Cyan: 50.0%-92.8%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 11
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3253-3283 (92.7%-93.6%)
+  [MARGIN] Y=3283-3508 (93.6%-100.0%), Height=225px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3253 (92.7%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3110-3253 (88.7%-92.7%), Height=143px, Distance=0px
+  [DEBUG]   2. Y=2957-3034 (84.3%-86.5%), Height=77px, Distance=219px
+  [DEBUG]   3. Y=2888-2912 (82.3%-83.0%), Height=24px, Distance=341px
+  [DEBUG]   4. Y=2706-2822 (77.1%-80.4%), Height=116px, Distance=431px
+  [DEBUG]   5. Y=2626-2688 (74.9%-76.6%), Height=62px, Distance=565px
+  [DEBUG] Closest large zone: Y=1806-1960 (51.5%-55.9%), Height=154px
+  [DEBUG] Found 6 zones between closest large zone and address:
+  [DEBUG]   1. Y=3110-3253 (88.7%-92.7%), Height=143px
+  [DEBUG]   2. Y=2706-2822 (77.1%-80.4%), Height=116px
+  [DEBUG]   3. Y=2957-3034 (84.3%-86.5%), Height=77px
+  [DEBUG]   4. Y=2626-2688 (74.9%-76.6%), Height=62px
+  [DEBUG]   5. Y=2568-2596 (73.2%-74.0%), Height=28px
+  [DEBUG]   6. Y=2888-2912 (82.3%-83.0%), Height=24px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1806-1960 (51.5%-55.9%)
+  [DEBUG]   Footnote zone: Y=2706-2822 (77.1%-80.4%)
+  [FOOTNOTE] Detected at Y=2706-2822 (77.1%-80.4%)
+  [CYAN ZONE] Y=1806-1960 (51.5%-55.9%), Height=154px
+  [SEPARATOR] Found at Y=1959 (55.8%), Length=3.6%
+[+] Saved: Informe-N°-001-2018-CF_page11_final.png
+
+  Page 11: separator_segment, Cyan: 51.5%-55.9%, Footnote: True
+
+Processing Informe-N°-001-2018-CF.pdf - Page 12
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3252-3277 (92.7%-93.4%)
+  [MARGIN] Y=3277-3508 (93.4%-100.0%), Height=231px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3252 (92.7%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2838-3252 (80.9%-92.7%), Height=414px, Distance=0px
+  [DEBUG]   2. Y=2590-2772 (73.8%-79.0%), Height=182px, Distance=480px
+  [DEBUG]   3. Y=2438-2558 (69.5%-72.9%), Height=120px, Distance=694px
+  [DEBUG]   4. Y=2356-2418 (67.2%-68.9%), Height=62px, Distance=834px
+  [DEBUG]   5. Y=2162-2330 (61.6%-66.4%), Height=168px, Distance=922px
+  [DEBUG] Closest large zone: Y=2838-3252 (80.9%-92.7%), Height=414px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2838-3252 (80.9%-92.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2838-3252 (80.9%-92.7%), Height=414px
+  [NO SEPARATOR] Using cyan zone base at Y=3252 (92.7%)
+[+] Saved: Informe-N°-001-2018-CF_page12_final.png
+
+  Page 12: cyan_zone_base, Cyan: 80.9%-92.7%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 13
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3252-3284 (92.7%-93.6%)
+  [MARGIN] Y=3284-3508 (93.6%-100.0%), Height=224px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3252 (92.7%)
+  [DEBUG] Found 11 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3140-3252 (89.5%-92.7%), Height=112px, Distance=0px
+  [DEBUG]   2. Y=3092-3124 (88.1%-89.1%), Height=32px, Distance=128px
+  [DEBUG]   3. Y=2946-3076 (84.0%-87.7%), Height=130px, Distance=176px
+  [DEBUG]   4. Y=2700-2870 (77.0%-81.8%), Height=170px, Distance=382px
+  [DEBUG]   5. Y=2630-2654 (75.0%-75.7%), Height=24px, Distance=598px
+  [DEBUG] Closest large zone: Y=2700-2870 (77.0%-81.8%), Height=170px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=2946-3076 (84.0%-87.7%), Height=130px
+  [DEBUG]   2. Y=3140-3252 (89.5%-92.7%), Height=112px
+  [DEBUG]   3. Y=3092-3124 (88.1%-89.1%), Height=32px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2700-2870 (77.0%-81.8%)
+  [DEBUG]   Footnote zone: Y=3140-3252 (89.5%-92.7%)
+  [FOOTNOTE] Detected at Y=3140-3252 (89.5%-92.7%)
+  [CYAN ZONE] Y=2700-2870 (77.0%-81.8%), Height=170px
+  [NO SEPARATOR] Using cyan zone base at Y=2870 (81.8%)
+[+] Saved: Informe-N°-001-2018-CF_page13_final.png
+
+  Page 13: cyan_zone_base, Cyan: 77.0%-81.8%, Footnote: True
+
+Processing Informe-N°-001-2018-CF.pdf - Page 14
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3256-3282 (92.8%-93.6%)
+  [MARGIN] Y=3282-3508 (93.6%-100.0%), Height=226px
+  [ZONES] Found 11 whitespace zones
+  [DEBUG] Address starts at Y=3256 (92.8%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2978-3256 (84.9%-92.8%), Height=278px, Distance=0px
+  [DEBUG]   2. Y=2828-2914 (80.6%-83.1%), Height=86px, Distance=342px
+  [DEBUG]   3. Y=2770-2798 (79.0%-79.8%), Height=28px, Distance=458px
+  [DEBUG]   4. Y=2724-2752 (77.7%-78.4%), Height=28px, Distance=504px
+  [DEBUG]   5. Y=2678-2702 (76.3%-77.0%), Height=24px, Distance=554px
+  [DEBUG] Closest large zone: Y=2978-3256 (84.9%-92.8%), Height=278px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2978-3256 (84.9%-92.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2978-3256 (84.9%-92.8%), Height=278px
+  [NO SEPARATOR] Using cyan zone base at Y=3256 (92.8%)
+[+] Saved: Informe-N°-001-2018-CF_page14_final.png
+
+  Page 14: cyan_zone_base, Cyan: 84.9%-92.8%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 15
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3252-3282 (92.7%-93.6%)
+  [MARGIN] Y=3282-3508 (93.6%-100.0%), Height=226px
+  [ZONES] Found 10 whitespace zones
+  [DEBUG] Address starts at Y=3252 (92.7%)
+  [DEBUG] Found 9 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2972-3252 (84.7%-92.7%), Height=280px, Distance=0px
+  [DEBUG]   2. Y=2818-2900 (80.3%-82.7%), Height=82px, Distance=352px
+  [DEBUG]   3. Y=2752-2773 (78.4%-79.0%), Height=21px, Distance=479px
+  [DEBUG]   4. Y=2662-2686 (75.9%-76.6%), Height=24px, Distance=566px
+  [DEBUG]   5. Y=2616-2640 (74.6%-75.3%), Height=24px, Distance=612px
+  [DEBUG] Closest large zone: Y=2972-3252 (84.7%-92.7%), Height=280px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2972-3252 (84.7%-92.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2972-3252 (84.7%-92.7%), Height=280px
+  [NO SEPARATOR] Using cyan zone base at Y=3252 (92.7%)
+[+] Saved: Informe-N°-001-2018-CF_page15_final.png
+
+  Page 15: cyan_zone_base, Cyan: 84.7%-92.7%, Footnote: False
+
+Processing Informe-N°-001-2018-CF.pdf - Page 16
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3250-3276 (92.6%-93.4%)
+  [MARGIN] Y=3276-3508 (93.4%-100.0%), Height=232px
+  [ZONES] Found 10 whitespace zones
+  [DEBUG] Address starts at Y=3250 (92.6%)
+  [DEBUG] Found 9 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2826-3250 (80.6%-92.6%), Height=424px, Distance=0px
+  [DEBUG]   2. Y=2768-2796 (78.9%-79.7%), Height=28px, Distance=454px
+  [DEBUG]   3. Y=2724-2750 (77.7%-78.4%), Height=26px, Distance=500px
+  [DEBUG]   4. Y=2678-2698 (76.3%-76.9%), Height=20px, Distance=552px
+  [DEBUG]   5. Y=2532-2652 (72.2%-75.6%), Height=120px, Distance=598px
+  [DEBUG] Closest large zone: Y=2826-3250 (80.6%-92.6%), Height=424px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=1964-2274 (56.0%-64.8%)
+  [DEBUG]   Footnote zone: Y=2826-3250 (80.6%-92.6%)
+  [FOOTNOTE] Detected at Y=2826-3250 (80.6%-92.6%)
+  [CYAN ZONE] Y=1964-2274 (56.0%-64.8%), Height=310px
+  [NO SEPARATOR] Using cyan zone base at Y=2274 (64.8%)
+[+] Saved: Informe-N°-001-2018-CF_page16_final.png
+
+  Page 16: cyan_zone_base, Cyan: 56.0%-64.8%, Footnote: True
+
+  Summary: 16 pages, 4 with footnotes, 4 separators found
+
+================================================================================
+Testing: Informe_CF_N_001-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_001-2016.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3276-3302 (93.4%-94.1%)
+  [MARGIN] Y=3302-3508 (94.1%-100.0%), Height=206px
+  [ZONES] Found 19 whitespace zones
+  [DEBUG] Address starts at Y=3276 (93.4%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3198-3276 (91.2%-93.4%), Height=78px, Distance=0px
+  [DEBUG]   2. Y=3134-3168 (89.3%-90.3%), Height=34px, Distance=108px
+  [DEBUG]   3. Y=2785-3129 (79.4%-89.2%), Height=344px, Distance=147px
+  [DEBUG]   4. Y=2725-2753 (77.7%-78.5%), Height=28px, Distance=523px
+  [DEBUG]   5. Y=2665-2695 (76.0%-76.8%), Height=30px, Distance=581px
+  [DEBUG] Closest large zone: Y=2785-3129 (79.4%-89.2%), Height=344px
+  [DEBUG] Found 2 zones between closest large zone and address:
+  [DEBUG]   1. Y=3198-3276 (91.2%-93.4%), Height=78px
+  [DEBUG]   2. Y=3134-3168 (89.3%-90.3%), Height=34px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2785-3129 (79.4%-89.2%)
+  [DEBUG]   Footnote zone: Y=3198-3276 (91.2%-93.4%)
+  [FOOTNOTE] Detected at Y=3198-3276 (91.2%-93.4%)
+  [CYAN ZONE] Y=2785-3129 (79.4%-89.2%), Height=344px
+  [SEPARATOR] Found at Y=3128 (89.2%), Length=3.5%
+[+] Saved: Informe_CF_N_001-2016_page1_final.png
+
+  Page 1: separator_segment, Cyan: 79.4%-89.2%, Footnote: True
+
+Processing Informe_CF_N_001-2016.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3279-3305 (93.5%-94.2%)
+  [MARGIN] Y=3305-3508 (94.2%-100.0%), Height=203px
+  [ZONES] Found 19 whitespace zones
+  [DEBUG] Address starts at Y=3279 (93.5%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3075-3279 (87.7%-93.5%), Height=204px, Distance=0px
+  [DEBUG]   2. Y=3016-3052 (86.0%-87.0%), Height=36px, Distance=227px
+  [DEBUG]   3. Y=2955-2984 (84.2%-85.1%), Height=29px, Distance=295px
+  [DEBUG]   4. Y=2895-2925 (82.5%-83.4%), Height=30px, Distance=354px
+  [DEBUG]   5. Y=2835-2870 (80.8%-81.8%), Height=35px, Distance=409px
+  [DEBUG] Closest large zone: Y=3075-3279 (87.7%-93.5%), Height=204px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3075-3279 (87.7%-93.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3075-3279 (87.7%-93.5%), Height=204px
+  [NO SEPARATOR] Using cyan zone base at Y=3279 (93.5%)
+[+] Saved: Informe_CF_N_001-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 87.7%-93.5%, Footnote: False
+
+Processing Informe_CF_N_001-2016.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3274-3301 (93.3%-94.1%)
+  [MARGIN] Y=3301-3508 (94.1%-100.0%), Height=207px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3274 (93.3%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3139-3274 (89.5%-93.3%), Height=135px, Distance=0px
+  [DEBUG]   2. Y=3079-3115 (87.8%-88.8%), Height=36px, Distance=159px
+  [DEBUG]   3. Y=3019-3055 (86.1%-87.1%), Height=36px, Distance=219px
+  [DEBUG]   4. Y=2959-2995 (84.4%-85.4%), Height=36px, Distance=279px
+  [DEBUG]   5. Y=2771-2928 (79.0%-83.5%), Height=157px, Distance=346px
+  [DEBUG] Closest large zone: Y=2771-2928 (79.0%-83.5%), Height=157px
+  [DEBUG] Found 4 zones between closest large zone and address:
+  [DEBUG]   1. Y=3139-3274 (89.5%-93.3%), Height=135px
+  [DEBUG]   2. Y=2959-2995 (84.4%-85.4%), Height=36px
+  [DEBUG]   3. Y=3019-3055 (86.1%-87.1%), Height=36px
+  [DEBUG]   4. Y=3079-3115 (87.8%-88.8%), Height=36px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2771-2928 (79.0%-83.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2771-2928 (79.0%-83.5%), Height=157px
+  [NO SEPARATOR] Using cyan zone base at Y=2928 (83.5%)
+[+] Saved: Informe_CF_N_001-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 79.0%-83.5%, Footnote: False
+
+Processing Informe_CF_N_001-2016.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3275-3303 (93.4%-94.2%)
+  [MARGIN] Y=3303-3508 (94.2%-100.0%), Height=205px
+  [ZONES] Found 7 whitespace zones
+  [DEBUG] Address starts at Y=3275 (93.4%)
+  [DEBUG] Found 6 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2608-3275 (74.3%-93.4%), Height=667px, Distance=0px
+  [DEBUG]   2. Y=2513-2578 (71.6%-73.5%), Height=65px, Distance=697px
+  [DEBUG]   3. Y=2341-2483 (66.7%-70.8%), Height=142px, Distance=792px
+  [DEBUG]   4. Y=2044-2289 (58.3%-65.3%), Height=245px, Distance=986px
+  [DEBUG]   5. Y=1857-2017 (52.9%-57.5%), Height=160px, Distance=1258px
+  [DEBUG] Closest large zone: Y=2608-3275 (74.3%-93.4%), Height=667px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2608-3275 (74.3%-93.4%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2608-3275 (74.3%-93.4%), Height=667px
+  [SEPARATOR] Found at Y=3239 (92.3%), Length=2.1%
+[+] Saved: Informe_CF_N_001-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 74.3%-93.4%, Footnote: False
+
+  Summary: 4 pages, 1 with footnotes, 2 separators found
+
+================================================================================
+Testing: Informe_CF_N_002-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_002-2016.pdf - Page 1
+  [INFO] Page: 2480x3508
+  [ADDRESS] Y=3102-3128 (88.4%-89.2%)
+  [MARGIN] Y=3128-3508 (89.2%-100.0%), Height=380px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3102 (88.4%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3029-3102 (86.3%-88.4%), Height=73px, Distance=0px
+  [DEBUG]   2. Y=2982-3002 (85.0%-85.6%), Height=20px, Distance=100px
+  [DEBUG]   3. Y=2925-2955 (83.4%-84.2%), Height=30px, Distance=147px
+  [DEBUG]   4. Y=2774-2921 (79.1%-83.3%), Height=147px, Distance=181px
+  [DEBUG]   5. Y=2717-2743 (77.5%-78.2%), Height=26px, Distance=359px
+  [DEBUG] Closest large zone: Y=2774-2921 (79.1%-83.3%), Height=147px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=3029-3102 (86.3%-88.4%), Height=73px
+  [DEBUG]   2. Y=2925-2955 (83.4%-84.2%), Height=30px
+  [DEBUG]   3. Y=2982-3002 (85.0%-85.6%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2774-2921 (79.1%-83.3%)
+  [DEBUG]   Footnote zone: Y=3029-3102 (86.3%-88.4%)
+  [FOOTNOTE] Detected at Y=3029-3102 (86.3%-88.4%)
+  [CYAN ZONE] Y=2774-2921 (79.1%-83.3%), Height=147px
+  [NO SEPARATOR] Using cyan zone base at Y=2921 (83.3%)
+[+] Saved: Informe_CF_N_002-2016_page1_final.png
+
+  Page 1: cyan_zone_base, Cyan: 79.1%-83.3%, Footnote: True
+
+Processing Informe_CF_N_002-2016.pdf - Page 2
+  [INFO] Page: 2480x3508
+  [ADDRESS] Y=3106-3132 (88.5%-89.3%)
+  [MARGIN] Y=3132-3508 (89.3%-100.0%), Height=376px
+  [ZONES] Found 22 whitespace zones
+  [DEBUG] Address starts at Y=3106 (88.5%)
+  [DEBUG] Found 21 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3033-3106 (86.5%-88.5%), Height=73px, Distance=0px
+  [DEBUG]   2. Y=2986-3031 (85.1%-86.4%), Height=45px, Distance=75px
+  [DEBUG]   3. Y=2930-2957 (83.5%-84.3%), Height=27px, Distance=149px
+  [DEBUG]   4. Y=2824-2925 (80.5%-83.4%), Height=101px, Distance=181px
+  [DEBUG]   5. Y=2767-2795 (78.9%-79.7%), Height=28px, Distance=311px
+  [DEBUG] Closest large zone: Y=2824-2925 (80.5%-83.4%), Height=101px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=3033-3106 (86.5%-88.5%), Height=73px
+  [DEBUG]   2. Y=2986-3031 (85.1%-86.4%), Height=45px
+  [DEBUG]   3. Y=2930-2957 (83.5%-84.3%), Height=27px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2824-2925 (80.5%-83.4%)
+  [DEBUG]   Footnote zone: Y=3033-3106 (86.5%-88.5%)
+  [FOOTNOTE] Detected at Y=3033-3106 (86.5%-88.5%)
+  [CYAN ZONE] Y=2824-2925 (80.5%-83.4%), Height=101px
+  [NO SEPARATOR] Using cyan zone base at Y=2925 (83.4%)
+[+] Saved: Informe_CF_N_002-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 80.5%-83.4%, Footnote: True
+
+Processing Informe_CF_N_002-2016.pdf - Page 3
+  [INFO] Page: 2480x3508
+  [ADDRESS] Y=3107-3133 (88.6%-89.3%)
+  [MARGIN] Y=3133-3508 (89.3%-100.0%), Height=375px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3107 (88.6%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3034-3107 (86.5%-88.6%), Height=73px, Distance=0px
+  [DEBUG]   2. Y=2986-3008 (85.1%-85.7%), Height=22px, Distance=99px
+  [DEBUG]   3. Y=2890-2958 (82.4%-84.3%), Height=68px, Distance=149px
+  [DEBUG]   4. Y=2842-2862 (81.0%-81.6%), Height=20px, Distance=245px
+  [DEBUG]   5. Y=2794-2816 (79.6%-80.3%), Height=22px, Distance=291px
+  [DEBUG] Closest large zone: Y=2569-2733 (73.2%-77.9%), Height=164px
+  [DEBUG] Found 6 zones between closest large zone and address:
+  [DEBUG]   1. Y=3034-3107 (86.5%-88.6%), Height=73px
+  [DEBUG]   2. Y=2890-2958 (82.4%-84.3%), Height=68px
+  [DEBUG]   3. Y=2737-2766 (78.0%-78.8%), Height=29px
+  [DEBUG]   4. Y=2794-2816 (79.6%-80.3%), Height=22px
+  [DEBUG]   5. Y=2986-3008 (85.1%-85.7%), Height=22px
+  [DEBUG]   6. Y=2842-2862 (81.0%-81.6%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2569-2733 (73.2%-77.9%)
+  [DEBUG]   Footnote zone: Y=3034-3107 (86.5%-88.6%)
+  [FOOTNOTE] Detected at Y=3034-3107 (86.5%-88.6%)
+  [CYAN ZONE] Y=2569-2733 (73.2%-77.9%), Height=164px
+  [NO SEPARATOR] Using cyan zone base at Y=2733 (77.9%)
+[+] Saved: Informe_CF_N_002-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 73.2%-77.9%, Footnote: True
+
+Processing Informe_CF_N_002-2016.pdf - Page 4
+  [INFO] Page: 2480x3508
+  [ADDRESS] Y=3107-3133 (88.6%-89.3%)
+  [MARGIN] Y=3133-3508 (89.3%-100.0%), Height=375px
+  [ZONES] Found 2 whitespace zones
+  [DEBUG] Address starts at Y=3107 (88.6%)
+  [DEBUG] Found 1 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=1754-3107 (50.0%-88.6%), Height=1353px, Distance=0px
+  [DEBUG] Closest large zone: Y=1754-3107 (50.0%-88.6%), Height=1353px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=1754-3107 (50.0%-88.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=1754-3107 (50.0%-88.6%), Height=1353px
+  [SEPARATOR] Found at Y=3074 (87.6%), Length=2.4%
+[+] Saved: Informe_CF_N_002-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 50.0%-88.6%, Footnote: False
+
+  Summary: 4 pages, 3 with footnotes, 1 separators found
+
+================================================================================
+Testing: Informe_CF_N_003-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_003-2016.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3121-3147 (89.0%-89.7%)
+  [MARGIN] Y=3147-3508 (89.7%-100.0%), Height=361px
+  [ZONES] Found 16 whitespace zones
+  [DEBUG] Address starts at Y=3121 (89.0%)
+  [DEBUG] Found 15 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2993-3121 (85.3%-89.0%), Height=128px, Distance=0px
+  [DEBUG]   2. Y=2941-2965 (83.8%-84.5%), Height=24px, Distance=156px
+  [DEBUG]   3. Y=2616-2651 (74.6%-75.6%), Height=35px, Distance=470px
+  [DEBUG]   4. Y=2475-2609 (70.6%-74.4%), Height=134px, Distance=512px
+  [DEBUG]   5. Y=2417-2445 (68.9%-69.7%), Height=28px, Distance=676px
+  [DEBUG] Closest large zone: Y=2475-2609 (70.6%-74.4%), Height=134px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=2993-3121 (85.3%-89.0%), Height=128px
+  [DEBUG]   2. Y=2616-2651 (74.6%-75.6%), Height=35px
+  [DEBUG]   3. Y=2941-2965 (83.8%-84.5%), Height=24px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2475-2609 (70.6%-74.4%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2475-2609 (70.6%-74.4%), Height=134px
+  [SEPARATOR] Found at Y=2490 (71.0%), Length=2.2%
+[+] Saved: Informe_CF_N_003-2016_page1_final.png
+
+  Page 1: separator_segment, Cyan: 70.6%-74.4%, Footnote: False
+
+Processing Informe_CF_N_003-2016.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3123-3150 (89.0%-89.8%)
+  [MARGIN] Y=3150-3508 (89.8%-100.0%), Height=358px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3123 (89.0%)
+  [DEBUG] Found 11 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2995-3123 (85.4%-89.0%), Height=128px, Distance=0px
+  [DEBUG]   2. Y=2860-2881 (81.5%-82.1%), Height=21px, Distance=242px
+  [DEBUG]   3. Y=2591-2616 (73.9%-74.6%), Height=25px, Distance=507px
+  [DEBUG]   4. Y=2455-2479 (70.0%-70.7%), Height=24px, Distance=644px
+  [DEBUG]   5. Y=2192-2213 (62.5%-63.1%), Height=21px, Distance=910px
+  [DEBUG] Closest large zone: Y=2995-3123 (85.4%-89.0%), Height=128px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2995-3123 (85.4%-89.0%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2995-3123 (85.4%-89.0%), Height=128px
+  [NO SEPARATOR] Using cyan zone base at Y=3123 (89.0%)
+[+] Saved: Informe_CF_N_003-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 85.4%-89.0%, Footnote: False
+
+Processing Informe_CF_N_003-2016.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3125-3151 (89.1%-89.8%)
+  [MARGIN] Y=3151-3508 (89.8%-100.0%), Height=357px
+  [ZONES] Found 11 whitespace zones
+  [DEBUG] Address starts at Y=3125 (89.1%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2993-3125 (85.3%-89.1%), Height=132px, Distance=0px
+  [DEBUG]   2. Y=2899-2925 (82.6%-83.4%), Height=26px, Distance=200px
+  [DEBUG]   3. Y=2445-2480 (69.7%-70.7%), Height=35px, Distance=645px
+  [DEBUG]   4. Y=2233-2437 (63.7%-69.5%), Height=204px, Distance=688px
+  [DEBUG]   5. Y=2174-2197 (62.0%-62.6%), Height=23px, Distance=928px
+  [DEBUG] Closest large zone: Y=2233-2437 (63.7%-69.5%), Height=204px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=2993-3125 (85.3%-89.1%), Height=132px
+  [DEBUG]   2. Y=2445-2480 (69.7%-70.7%), Height=35px
+  [DEBUG]   3. Y=2899-2925 (82.6%-83.4%), Height=26px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2233-2437 (63.7%-69.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2233-2437 (63.7%-69.5%), Height=204px
+  [NO SEPARATOR] Using cyan zone base at Y=2437 (69.5%)
+[+] Saved: Informe_CF_N_003-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 63.7%-69.5%, Footnote: False
+
+Processing Informe_CF_N_003-2016.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3123-3149 (89.0%-89.8%)
+  [MARGIN] Y=3149-3508 (89.8%-100.0%), Height=359px
+  [ZONES] Found 18 whitespace zones
+  [DEBUG] Address starts at Y=3123 (89.0%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3007-3123 (85.7%-89.0%), Height=116px, Distance=0px
+  [DEBUG]   2. Y=2863-2889 (81.6%-82.4%), Height=26px, Distance=234px
+  [DEBUG]   3. Y=2827-2847 (80.6%-81.2%), Height=20px, Distance=276px
+  [DEBUG]   4. Y=2767-2801 (78.9%-79.8%), Height=34px, Distance=322px
+  [DEBUG]   5. Y=2683-2761 (76.5%-78.7%), Height=78px, Distance=362px
+  [DEBUG] Closest large zone: Y=1854-1976 (52.9%-56.3%), Height=122px
+  [DEBUG] Found 15 zones between closest large zone and address:
+  [DEBUG]   1. Y=3007-3123 (85.7%-89.0%), Height=116px
+  [DEBUG]   2. Y=2116-2200 (60.3%-62.7%), Height=84px
+  [DEBUG]   3. Y=2221-2305 (63.3%-65.7%), Height=84px
+  [DEBUG]   4. Y=2683-2761 (76.5%-78.7%), Height=78px
+  [DEBUG]   5. Y=2767-2801 (78.9%-79.8%), Height=34px
+  [DEBUG]   6. Y=2062-2092 (58.8%-59.6%), Height=30px
+  [DEBUG]   7. Y=2631-2661 (75.0%-75.9%), Height=30px
+  [DEBUG]   8. Y=2454-2483 (70.0%-70.8%), Height=29px
+  [DEBUG]   9. Y=2513-2542 (71.6%-72.5%), Height=29px
+  [DEBUG]   10. Y=2004-2032 (57.1%-57.9%), Height=28px
+  [DEBUG]   11. Y=2338-2366 (66.6%-67.4%), Height=28px
+  [DEBUG]   12. Y=2396-2424 (68.3%-69.1%), Height=28px
+  [DEBUG]   13. Y=2572-2600 (73.3%-74.1%), Height=28px
+  [DEBUG]   14. Y=2863-2889 (81.6%-82.4%), Height=26px
+  [DEBUG]   15. Y=2827-2847 (80.6%-81.2%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1854-1976 (52.9%-56.3%)
+  [DEBUG]   Footnote zone: Y=3007-3123 (85.7%-89.0%)
+  [FOOTNOTE] Detected at Y=3007-3123 (85.7%-89.0%)
+  [CYAN ZONE] Y=1854-1976 (52.9%-56.3%), Height=122px
+  [SEPARATOR] Found at Y=1906 (54.3%), Length=4.6%
+[+] Saved: Informe_CF_N_003-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 52.9%-56.3%, Footnote: True
+
+Processing Informe_CF_N_003-2016.pdf - Page 5
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3124-3150 (89.1%-89.8%)
+  [MARGIN] Y=3150-3508 (89.8%-100.0%), Height=358px
+  [ZONES] Found 6 whitespace zones
+  [DEBUG] Address starts at Y=3124 (89.1%)
+  [DEBUG] Found 5 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2412-3124 (68.8%-89.1%), Height=712px, Distance=0px
+  [DEBUG]   2. Y=2321-2383 (66.2%-67.9%), Height=62px, Distance=741px
+  [DEBUG]   3. Y=2268-2291 (64.7%-65.3%), Height=23px, Distance=833px
+  [DEBUG]   4. Y=1861-2267 (53.1%-64.6%), Height=406px, Distance=857px
+  [DEBUG]   5. Y=1754-1840 (50.0%-52.5%), Height=86px, Distance=1284px
+  [DEBUG] Closest large zone: Y=2412-3124 (68.8%-89.1%), Height=712px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=1861-2267 (53.1%-64.6%)
+  [DEBUG]   Footnote zone: Y=2412-3124 (68.8%-89.1%)
+  [FOOTNOTE] Detected at Y=2412-3124 (68.8%-89.1%)
+  [CYAN ZONE] Y=1861-2267 (53.1%-64.6%), Height=406px
+  [NO SEPARATOR] Using cyan zone base at Y=2267 (64.6%)
+[+] Saved: Informe_CF_N_003-2016_page5_final.png
+
+  Page 5: cyan_zone_base, Cyan: 53.1%-64.6%, Footnote: True
+
+  Summary: 5 pages, 2 with footnotes, 2 separators found
+
+================================================================================
+Testing: Informe_CF_N_004-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_004-2016.pdf - Page 1
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3156-3188 (90.0%-90.9%)
+  [MARGIN] Y=3188-3507 (90.9%-100.0%), Height=319px
+  [ZONES] Found 5 whitespace zones
+  [DEBUG] Address starts at Y=3156 (90.0%)
+  [DEBUG] Found 4 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3036-3156 (86.6%-90.0%), Height=120px, Distance=0px
+  [DEBUG]   2. Y=2858-2887 (81.5%-82.3%), Height=29px, Distance=269px
+  [DEBUG]   3. Y=2679-2703 (76.4%-77.1%), Height=24px, Distance=453px
+  [DEBUG]   4. Y=2028-2078 (57.8%-59.3%), Height=50px, Distance=1078px
+  [DEBUG] Closest large zone: Y=3036-3156 (86.6%-90.0%), Height=120px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3036-3156 (86.6%-90.0%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3036-3156 (86.6%-90.0%), Height=120px
+  [SEPARATOR] Found at Y=3038 (86.6%), Length=3.2%
+[+] Saved: Informe_CF_N_004-2016_page1_final.png
+
+  Page 1: separator_segment, Cyan: 86.5%-90.0%, Footnote: False
+
+Processing Informe_CF_N_004-2016.pdf - Page 2
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3158-3186 (90.0%-90.8%)
+  [MARGIN] Y=3186-3507 (90.8%-100.0%), Height=321px
+  [ZONES] Found 14 whitespace zones
+  [DEBUG] Address starts at Y=3158 (90.0%)
+  [DEBUG] Found 13 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3032-3158 (86.5%-90.0%), Height=126px, Distance=0px
+  [DEBUG]   2. Y=2943-2963 (83.9%-84.5%), Height=20px, Distance=195px
+  [DEBUG]   3. Y=2899-2919 (82.7%-83.2%), Height=20px, Distance=239px
+  [DEBUG]   4. Y=2854-2875 (81.4%-82.0%), Height=21px, Distance=283px
+  [DEBUG]   5. Y=2450-2471 (69.9%-70.5%), Height=21px, Distance=687px
+  [DEBUG] Closest large zone: Y=2157-2300 (61.5%-65.6%), Height=143px
+  [DEBUG] Found 6 zones between closest large zone and address:
+  [DEBUG]   1. Y=3032-3158 (86.5%-90.0%), Height=126px
+  [DEBUG]   2. Y=2305-2328 (65.7%-66.4%), Height=23px
+  [DEBUG]   3. Y=2450-2471 (69.9%-70.5%), Height=21px
+  [DEBUG]   4. Y=2854-2875 (81.4%-82.0%), Height=21px
+  [DEBUG]   5. Y=2899-2919 (82.7%-83.2%), Height=20px
+  [DEBUG]   6. Y=2943-2963 (83.9%-84.5%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2157-2300 (61.5%-65.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2157-2300 (61.5%-65.6%), Height=143px
+  [SEPARATOR] Found at Y=2299 (65.6%), Length=2.9%
+[+] Saved: Informe_CF_N_004-2016_page2_final.png
+
+  Page 2: separator_segment, Cyan: 61.5%-65.6%, Footnote: False
+
+Processing Informe_CF_N_004-2016.pdf - Page 3
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3161-3189 (90.1%-90.9%)
+  [MARGIN] Y=3189-3507 (90.9%-100.0%), Height=318px
+  [ZONES] Found 11 whitespace zones
+  [DEBUG] Address starts at Y=3161 (90.1%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3090-3161 (88.1%-90.1%), Height=71px, Distance=0px
+  [DEBUG]   2. Y=3046-3071 (86.9%-87.6%), Height=25px, Distance=90px
+  [DEBUG]   3. Y=2508-2529 (71.5%-72.1%), Height=21px, Distance=632px
+  [DEBUG]   4. Y=2373-2416 (67.7%-68.9%), Height=43px, Distance=745px
+  [DEBUG]   5. Y=2194-2214 (62.6%-63.1%), Height=20px, Distance=947px
+  [DEBUG] Closest large zone: Y=3090-3161 (88.1%-90.1%), Height=71px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3090-3161 (88.1%-90.1%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3090-3161 (88.1%-90.1%), Height=71px
+  [SEPARATOR] Found at Y=3091 (88.1%), Length=2.0%
+[+] Saved: Informe_CF_N_004-2016_page3_final.png
+
+  Page 3: separator_segment, Cyan: 88.1%-90.1%, Footnote: False
+
+Processing Informe_CF_N_004-2016.pdf - Page 4
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3173-3199 (90.5%-91.2%)
+  [MARGIN] Y=3199-3507 (91.2%-100.0%), Height=308px
+  [ZONES] Found 4 whitespace zones
+  [DEBUG] Address starts at Y=3173 (90.5%)
+  [DEBUG] Found 3 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=1983-3173 (56.5%-90.5%), Height=1190px, Distance=0px
+  [DEBUG]   2. Y=1891-1953 (53.9%-55.7%), Height=62px, Distance=1220px
+  [DEBUG]   3. Y=1753-1862 (50.0%-53.1%), Height=109px, Distance=1311px
+  [DEBUG] Closest large zone: Y=1983-3173 (56.5%-90.5%), Height=1190px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=1983-3173 (56.5%-90.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=1983-3173 (56.5%-90.5%), Height=1190px
+  [SEPARATOR] Found at Y=3139 (89.5%), Length=2.2%
+[+] Saved: Informe_CF_N_004-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 56.5%-90.5%, Footnote: False
+
+  Summary: 4 pages, 0 with footnotes, 4 separators found
+
+================================================================================
+Testing: Informe_CF_N_005-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_005-2016.pdf - Page 1
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3187-3217 (90.9%-91.7%)
+  [MARGIN] Y=3217-3507 (91.7%-100.0%), Height=290px
+  [ZONES] Found 18 whitespace zones
+  [DEBUG] Address starts at Y=3187 (90.9%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3119-3187 (88.9%-90.9%), Height=68px, Distance=0px
+  [DEBUG]   2. Y=2881-2905 (82.1%-82.8%), Height=24px, Distance=282px
+  [DEBUG]   3. Y=2729-2874 (77.8%-82.0%), Height=145px, Distance=313px
+  [DEBUG]   4. Y=2670-2690 (76.1%-76.7%), Height=20px, Distance=497px
+  [DEBUG]   5. Y=2611-2633 (74.5%-75.1%), Height=22px, Distance=554px
+  [DEBUG] Closest large zone: Y=2729-2874 (77.8%-82.0%), Height=145px
+  [DEBUG] Found 2 zones between closest large zone and address:
+  [DEBUG]   1. Y=3119-3187 (88.9%-90.9%), Height=68px
+  [DEBUG]   2. Y=2881-2905 (82.1%-82.8%), Height=24px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2729-2874 (77.8%-82.0%)
+  [DEBUG]   Footnote zone: Y=3119-3187 (88.9%-90.9%)
+  [FOOTNOTE] Detected at Y=3119-3187 (88.9%-90.9%)
+  [CYAN ZONE] Y=2729-2874 (77.8%-82.0%), Height=145px
+  [NO SEPARATOR] Using cyan zone base at Y=2874 (82.0%)
+[+] Saved: Informe_CF_N_005-2016_page1_final.png
+
+  Page 1: cyan_zone_base, Cyan: 77.8%-81.9%, Footnote: True
+
+Processing Informe_CF_N_005-2016.pdf - Page 2
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3177-3203 (90.6%-91.3%)
+  [MARGIN] Y=3203-3507 (91.3%-100.0%), Height=304px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3177 (90.6%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3103-3177 (88.5%-90.6%), Height=74px, Distance=0px
+  [DEBUG]   2. Y=3059-3084 (87.2%-87.9%), Height=25px, Distance=93px
+  [DEBUG]   3. Y=2969-2991 (84.7%-85.3%), Height=22px, Distance=186px
+  [DEBUG]   4. Y=2924-2946 (83.4%-84.0%), Height=22px, Distance=231px
+  [DEBUG]   5. Y=2824-2853 (80.5%-81.4%), Height=29px, Distance=324px
+  [DEBUG] Closest large zone: Y=1828-2820 (52.1%-80.4%), Height=992px
+  [DEBUG] Found 5 zones between closest large zone and address:
+  [DEBUG]   1. Y=3103-3177 (88.5%-90.6%), Height=74px
+  [DEBUG]   2. Y=2824-2853 (80.5%-81.4%), Height=29px
+  [DEBUG]   3. Y=3059-3084 (87.2%-87.9%), Height=25px
+  [DEBUG]   4. Y=2924-2946 (83.4%-84.0%), Height=22px
+  [DEBUG]   5. Y=2969-2991 (84.7%-85.3%), Height=22px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1828-2820 (52.1%-80.4%)
+  [DEBUG]   Footnote zone: Y=3103-3177 (88.5%-90.6%)
+  [FOOTNOTE] Detected at Y=3103-3177 (88.5%-90.6%)
+  [CYAN ZONE] Y=1828-2820 (52.1%-80.4%), Height=992px
+  [NO SEPARATOR] Using cyan zone base at Y=2820 (80.4%)
+[+] Saved: Informe_CF_N_005-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 52.1%-80.4%, Footnote: True
+
+Processing Informe_CF_N_005-2016.pdf - Page 3
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3148-3176 (89.8%-90.6%)
+  [MARGIN] Y=3176-3507 (90.6%-100.0%), Height=331px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3148 (89.8%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3083-3148 (87.9%-89.8%), Height=65px, Distance=0px
+  [DEBUG]   2. Y=3032-3055 (86.5%-87.1%), Height=23px, Distance=93px
+  [DEBUG]   3. Y=2844-2870 (81.1%-81.8%), Height=26px, Distance=278px
+  [DEBUG]   4. Y=2199-2838 (62.7%-80.9%), Height=639px, Distance=310px
+  [DEBUG]   5. Y=2106-2169 (60.1%-61.8%), Height=63px, Distance=979px
+  [DEBUG] Closest large zone: Y=2199-2838 (62.7%-80.9%), Height=639px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=3083-3148 (87.9%-89.8%), Height=65px
+  [DEBUG]   2. Y=2844-2870 (81.1%-81.8%), Height=26px
+  [DEBUG]   3. Y=3032-3055 (86.5%-87.1%), Height=23px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2199-2838 (62.7%-80.9%)
+  [DEBUG]   Footnote zone: Y=3083-3148 (87.9%-89.8%)
+  [FOOTNOTE] Detected at Y=3083-3148 (87.9%-89.8%)
+  [CYAN ZONE] Y=2199-2838 (62.7%-80.9%), Height=639px
+  [SEPARATOR] Found at Y=2200 (62.7%), Length=2.3%
+[+] Saved: Informe_CF_N_005-2016_page3_final.png
+
+  Page 3: separator_segment, Cyan: 62.7%-80.9%, Footnote: True
+
+  Summary: 3 pages, 3 with footnotes, 1 separators found
+
+================================================================================
+Testing: Informe_CF_N_006-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_006-2016.pdf - Page 1
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3417-3417 (97.4%-97.4%)
+  [MARGIN] Y=3417-3507 (97.4%-100.0%), Height=90px
+  [ZONES] Found 9 whitespace zones
+  [DEBUG] Address starts at Y=3417 (97.4%)
+  [DEBUG] Found 8 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3211-3407 (91.6%-97.1%), Height=196px, Distance=10px
+  [DEBUG]   2. Y=3120-3177 (89.0%-90.6%), Height=57px, Distance=240px
+  [DEBUG]   3. Y=2963-3057 (84.5%-87.2%), Height=94px, Distance=360px
+  [DEBUG]   4. Y=2852-2896 (81.3%-82.6%), Height=44px, Distance=521px
+  [DEBUG]   5. Y=2747-2846 (78.3%-81.2%), Height=99px, Distance=571px
+  [DEBUG] Closest large zone: Y=3211-3407 (91.6%-97.1%), Height=196px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3211-3407 (91.6%-97.1%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3211-3407 (91.6%-97.1%), Height=196px
+  [SEPARATOR] Found at Y=3211 (91.6%), Length=6.4%
+[+] Saved: Informe_CF_N_006-2016_page1_final.png
+
+  Page 1: separator_segment, Cyan: 91.5%-97.1%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 2
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3257-3285 (92.9%-93.7%)
+  [MARGIN] Y=3285-3507 (93.7%-100.0%), Height=222px
+  [ZONES] Found 23 whitespace zones
+  [DEBUG] Address starts at Y=3257 (92.9%)
+  [DEBUG] Found 22 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3124-3257 (89.1%-92.9%), Height=133px, Distance=0px
+  [DEBUG]   2. Y=3079-3099 (87.8%-88.4%), Height=20px, Distance=158px
+  [DEBUG]   3. Y=3034-3054 (86.5%-87.1%), Height=20px, Distance=203px
+  [DEBUG]   4. Y=2976-3008 (84.9%-85.8%), Height=32px, Distance=249px
+  [DEBUG]   5. Y=2832-2972 (80.8%-84.7%), Height=140px, Distance=285px
+  [DEBUG] Closest large zone: Y=2832-2972 (80.8%-84.7%), Height=140px
+  [DEBUG] Found 4 zones between closest large zone and address:
+  [DEBUG]   1. Y=3124-3257 (89.1%-92.9%), Height=133px
+  [DEBUG]   2. Y=2976-3008 (84.9%-85.8%), Height=32px
+  [DEBUG]   3. Y=3034-3054 (86.5%-87.1%), Height=20px
+  [DEBUG]   4. Y=3079-3099 (87.8%-88.4%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2832-2972 (80.8%-84.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2832-2972 (80.8%-84.7%), Height=140px
+  [SEPARATOR] Found at Y=2971 (84.7%), Length=4.7%
+[+] Saved: Informe_CF_N_006-2016_page2_final.png
+
+  Page 2: separator_segment, Cyan: 80.7%-84.7%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 3
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3268-3295 (93.2%-94.0%)
+  [MARGIN] Y=3295-3507 (94.0%-100.0%), Height=212px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3268 (93.2%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3142-3268 (89.6%-93.2%), Height=126px, Distance=0px
+  [DEBUG]   2. Y=3090-3113 (88.1%-88.8%), Height=23px, Distance=155px
+  [DEBUG]   3. Y=2952-2972 (84.2%-84.7%), Height=20px, Distance=296px
+  [DEBUG]   4. Y=2907-2928 (82.9%-83.5%), Height=21px, Distance=340px
+  [DEBUG]   5. Y=2723-2745 (77.6%-78.3%), Height=22px, Distance=523px
+  [DEBUG] Closest large zone: Y=3142-3268 (89.6%-93.2%), Height=126px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3142-3268 (89.6%-93.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3142-3268 (89.6%-93.2%), Height=126px
+  [NO SEPARATOR] Using cyan zone base at Y=3268 (93.2%)
+[+] Saved: Informe_CF_N_006-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 89.6%-93.2%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 4
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3270-3298 (93.2%-94.0%)
+  [MARGIN] Y=3298-3507 (94.0%-100.0%), Height=209px
+  [ZONES] Found 22 whitespace zones
+  [DEBUG] Address starts at Y=3270 (93.2%)
+  [DEBUG] Found 21 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3138-3270 (89.5%-93.2%), Height=132px, Distance=0px
+  [DEBUG]   2. Y=3092-3113 (88.2%-88.8%), Height=21px, Distance=157px
+  [DEBUG]   3. Y=3047-3069 (86.9%-87.5%), Height=22px, Distance=201px
+  [DEBUG]   4. Y=3001-3021 (85.6%-86.1%), Height=20px, Distance=249px
+  [DEBUG]   5. Y=2863-2885 (81.6%-82.3%), Height=22px, Distance=385px
+  [DEBUG] Closest large zone: Y=2338-2482 (66.7%-70.8%), Height=144px
+  [DEBUG] Found 11 zones between closest large zone and address:
+  [DEBUG]   1. Y=3138-3270 (89.5%-93.2%), Height=132px
+  [DEBUG]   2. Y=2486-2517 (70.9%-71.8%), Height=31px
+  [DEBUG]   3. Y=2680-2707 (76.4%-77.2%), Height=27px
+  [DEBUG]   4. Y=2818-2845 (80.4%-81.1%), Height=27px
+  [DEBUG]   5. Y=2863-2885 (81.6%-82.3%), Height=22px
+  [DEBUG]   6. Y=3047-3069 (86.9%-87.5%), Height=22px
+  [DEBUG]   7. Y=3092-3113 (88.2%-88.8%), Height=21px
+  [DEBUG]   8. Y=2588-2608 (73.8%-74.4%), Height=20px
+  [DEBUG]   9. Y=2634-2654 (75.1%-75.7%), Height=20px
+  [DEBUG]   10. Y=2726-2746 (77.7%-78.3%), Height=20px
+  [DEBUG]   11. Y=3001-3021 (85.6%-86.1%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2338-2482 (66.7%-70.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2338-2482 (66.7%-70.8%), Height=144px
+  [NO SEPARATOR] Using cyan zone base at Y=2482 (70.8%)
+[+] Saved: Informe_CF_N_006-2016_page4_final.png
+
+  Page 4: cyan_zone_base, Cyan: 66.6%-70.8%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 5
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3268-3296 (93.2%-94.0%)
+  [MARGIN] Y=3296-3507 (94.0%-100.0%), Height=211px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3268 (93.2%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3142-3268 (89.6%-93.2%), Height=126px, Distance=0px
+  [DEBUG]   2. Y=3090-3113 (88.1%-88.8%), Height=23px, Distance=155px
+  [DEBUG]   3. Y=3044-3065 (86.8%-87.4%), Height=21px, Distance=203px
+  [DEBUG]   4. Y=2907-2927 (82.9%-83.5%), Height=20px, Distance=341px
+  [DEBUG]   5. Y=2862-2887 (81.6%-82.3%), Height=25px, Distance=381px
+  [DEBUG] Closest large zone: Y=3142-3268 (89.6%-93.2%), Height=126px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3142-3268 (89.6%-93.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3142-3268 (89.6%-93.2%), Height=126px
+  [NO SEPARATOR] Using cyan zone base at Y=3268 (93.2%)
+[+] Saved: Informe_CF_N_006-2016_page5_final.png
+
+  Page 5: cyan_zone_base, Cyan: 89.6%-93.2%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 6
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3270-3297 (93.2%-94.0%)
+  [MARGIN] Y=3297-3507 (94.0%-100.0%), Height=210px
+  [ZONES] Found 20 whitespace zones
+  [DEBUG] Address starts at Y=3270 (93.2%)
+  [DEBUG] Found 19 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3090-3270 (88.1%-93.2%), Height=180px, Distance=0px
+  [DEBUG]   2. Y=3046-3072 (86.9%-87.6%), Height=26px, Distance=198px
+  [DEBUG]   3. Y=3000-3025 (85.5%-86.3%), Height=25px, Distance=245px
+  [DEBUG]   4. Y=2954-2979 (84.2%-84.9%), Height=25px, Distance=291px
+  [DEBUG]   5. Y=2898-2928 (82.6%-83.5%), Height=30px, Distance=342px
+  [DEBUG] Closest large zone: Y=3090-3270 (88.1%-93.2%), Height=180px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3090-3270 (88.1%-93.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3090-3270 (88.1%-93.2%), Height=180px
+  [SEPARATOR] Found at Y=3090 (88.1%), Length=3.2%
+[+] Saved: Informe_CF_N_006-2016_page6_final.png
+
+  Page 6: separator_segment, Cyan: 88.1%-93.2%, Footnote: False
+
+Processing Informe_CF_N_006-2016.pdf - Page 7
+  [INFO] Page: 2480x3507
+  [ADDRESS] Y=3269-3297 (93.2%-94.0%)
+  [MARGIN] Y=3297-3507 (94.0%-100.0%), Height=210px
+  [ZONES] Found 2 whitespace zones
+  [DEBUG] Address starts at Y=3269 (93.2%)
+  [DEBUG] Found 1 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=1753-3269 (50.0%-93.2%), Height=1516px, Distance=0px
+  [DEBUG] Closest large zone: Y=1753-3269 (50.0%-93.2%), Height=1516px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=1753-3269 (50.0%-93.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=1753-3269 (50.0%-93.2%), Height=1516px
+  [SEPARATOR] Found at Y=3229 (92.1%), Length=2.3%
+[+] Saved: Informe_CF_N_006-2016_page7_final.png
+
+  Page 7: separator_segment, Cyan: 50.0%-93.2%, Footnote: False
+
+  Summary: 7 pages, 0 with footnotes, 4 separators found
+
+================================================================================
+Testing: Informe_CF_N_007-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_007-2016.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3271-3299 (93.2%-94.0%)
+  [MARGIN] Y=3299-3508 (94.0%-100.0%), Height=209px
+  [ZONES] Found 28 whitespace zones
+  [DEBUG] Address starts at Y=3271 (93.2%)
+  [DEBUG] Found 27 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3135-3271 (89.4%-93.2%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3090-3115 (88.1%-88.8%), Height=25px, Distance=156px
+  [DEBUG]   3. Y=3045-3066 (86.8%-87.4%), Height=21px, Distance=205px
+  [DEBUG]   4. Y=2999-3021 (85.5%-86.1%), Height=22px, Distance=250px
+  [DEBUG]   5. Y=2954-2975 (84.2%-84.8%), Height=21px, Distance=296px
+  [DEBUG] Closest large zone: Y=3135-3271 (89.4%-93.2%), Height=136px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3135-3271 (89.4%-93.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3135-3271 (89.4%-93.2%), Height=136px
+  [NO SEPARATOR] Using cyan zone base at Y=3271 (93.2%)
+[+] Saved: Informe_CF_N_007-2016_page1_final.png
+
+  Page 1: cyan_zone_base, Cyan: 89.4%-93.2%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3272-3300 (93.3%-94.1%)
+  [MARGIN] Y=3300-3508 (94.1%-100.0%), Height=208px
+  [ZONES] Found 24 whitespace zones
+  [DEBUG] Address starts at Y=3272 (93.3%)
+  [DEBUG] Found 23 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3136-3272 (89.4%-93.3%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3091-3111 (88.1%-88.7%), Height=20px, Distance=161px
+  [DEBUG]   3. Y=2999-3066 (85.5%-87.4%), Height=67px, Distance=206px
+  [DEBUG]   4. Y=2955-2980 (84.2%-84.9%), Height=25px, Distance=292px
+  [DEBUG]   5. Y=2909-2930 (82.9%-83.5%), Height=21px, Distance=342px
+  [DEBUG] Closest large zone: Y=3136-3272 (89.4%-93.3%), Height=136px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3136-3272 (89.4%-93.3%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3136-3272 (89.4%-93.3%), Height=136px
+  [NO SEPARATOR] Using cyan zone base at Y=3272 (93.3%)
+[+] Saved: Informe_CF_N_007-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 89.4%-93.3%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3273-3303 (93.3%-94.2%)
+  [MARGIN] Y=3303-3508 (94.2%-100.0%), Height=205px
+  [ZONES] Found 22 whitespace zones
+  [DEBUG] Address starts at Y=3273 (93.3%)
+  [DEBUG] Found 21 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3137-3273 (89.4%-93.3%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3081-3112 (87.8%-88.7%), Height=31px, Distance=161px
+  [DEBUG]   3. Y=2923-3076 (83.3%-87.7%), Height=153px, Distance=197px
+  [DEBUG]   4. Y=2864-2901 (81.6%-82.7%), Height=37px, Distance=372px
+  [DEBUG]   5. Y=2805-2835 (80.0%-80.8%), Height=30px, Distance=438px
+  [DEBUG] Closest large zone: Y=2923-3076 (83.3%-87.7%), Height=153px
+  [DEBUG] Found 2 zones between closest large zone and address:
+  [DEBUG]   1. Y=3137-3273 (89.4%-93.3%), Height=136px
+  [DEBUG]   2. Y=3081-3112 (87.8%-88.7%), Height=31px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2923-3076 (83.3%-87.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2923-3076 (83.3%-87.7%), Height=153px
+  [NO SEPARATOR] Using cyan zone base at Y=3076 (87.7%)
+[+] Saved: Informe_CF_N_007-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 83.3%-87.7%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3273-3301 (93.3%-94.1%)
+  [MARGIN] Y=3301-3508 (94.1%-100.0%), Height=207px
+  [ZONES] Found 22 whitespace zones
+  [DEBUG] Address starts at Y=3273 (93.3%)
+  [DEBUG] Found 21 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3137-3273 (89.4%-93.3%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3093-3117 (88.2%-88.9%), Height=24px, Distance=156px
+  [DEBUG]   3. Y=3001-3023 (85.5%-86.2%), Height=22px, Distance=250px
+  [DEBUG]   4. Y=2956-2982 (84.3%-85.0%), Height=26px, Distance=291px
+  [DEBUG]   5. Y=2911-2932 (83.0%-83.6%), Height=21px, Distance=341px
+  [DEBUG] Closest large zone: Y=2407-2666 (68.6%-76.0%), Height=259px
+  [DEBUG] Found 10 zones between closest large zone and address:
+  [DEBUG]   1. Y=3137-3273 (89.4%-93.3%), Height=136px
+  [DEBUG]   2. Y=2671-2707 (76.1%-77.2%), Height=36px
+  [DEBUG]   3. Y=2819-2845 (80.4%-81.1%), Height=26px
+  [DEBUG]   4. Y=2956-2982 (84.3%-85.0%), Height=26px
+  [DEBUG]   5. Y=3093-3117 (88.2%-88.9%), Height=24px
+  [DEBUG]   6. Y=2863-2885 (81.6%-82.2%), Height=22px
+  [DEBUG]   7. Y=3001-3023 (85.5%-86.2%), Height=22px
+  [DEBUG]   8. Y=2728-2749 (77.8%-78.4%), Height=21px
+  [DEBUG]   9. Y=2773-2794 (79.0%-79.6%), Height=21px
+  [DEBUG]   10. Y=2911-2932 (83.0%-83.6%), Height=21px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2407-2666 (68.6%-76.0%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2407-2666 (68.6%-76.0%), Height=259px
+  [SEPARATOR] Found at Y=2665 (76.0%), Length=3.8%
+[+] Saved: Informe_CF_N_007-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 68.6%-76.0%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 5
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3264-3292 (93.0%-93.8%)
+  [MARGIN] Y=3292-3508 (93.8%-100.0%), Height=216px
+  [ZONES] Found 24 whitespace zones
+  [DEBUG] Address starts at Y=3264 (93.0%)
+  [DEBUG] Found 23 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3129-3264 (89.2%-93.0%), Height=135px, Distance=0px
+  [DEBUG]   2. Y=3083-3104 (87.9%-88.5%), Height=21px, Distance=160px
+  [DEBUG]   3. Y=3039-3060 (86.6%-87.2%), Height=21px, Distance=204px
+  [DEBUG]   4. Y=2983-3015 (85.0%-85.9%), Height=32px, Distance=249px
+  [DEBUG]   5. Y=2926-2978 (83.4%-84.9%), Height=52px, Distance=286px
+  [DEBUG] Closest large zone: Y=3129-3264 (89.2%-93.0%), Height=135px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3129-3264 (89.2%-93.0%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3129-3264 (89.2%-93.0%), Height=135px
+  [NO SEPARATOR] Using cyan zone base at Y=3264 (93.0%)
+[+] Saved: Informe_CF_N_007-2016_page5_final.png
+
+  Page 5: cyan_zone_base, Cyan: 89.2%-93.0%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 6
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3272-3301 (93.3%-94.1%)
+  [MARGIN] Y=3301-3508 (94.1%-100.0%), Height=207px
+  [ZONES] Found 28 whitespace zones
+  [DEBUG] Address starts at Y=3272 (93.3%)
+  [DEBUG] Found 27 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3136-3272 (89.4%-93.3%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3092-3117 (88.1%-88.9%), Height=25px, Distance=155px
+  [DEBUG]   3. Y=3046-3066 (86.8%-87.4%), Height=20px, Distance=206px
+  [DEBUG]   4. Y=3001-3027 (85.5%-86.3%), Height=26px, Distance=245px
+  [DEBUG]   5. Y=2955-2977 (84.2%-84.9%), Height=22px, Distance=295px
+  [DEBUG] Closest large zone: Y=3136-3272 (89.4%-93.3%), Height=136px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3136-3272 (89.4%-93.3%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3136-3272 (89.4%-93.3%), Height=136px
+  [NO SEPARATOR] Using cyan zone base at Y=3272 (93.3%)
+[+] Saved: Informe_CF_N_007-2016_page6_final.png
+
+  Page 6: cyan_zone_base, Cyan: 89.4%-93.3%, Footnote: False
+
+Processing Informe_CF_N_007-2016.pdf - Page 7
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3271-3298 (93.2%-94.0%)
+  [MARGIN] Y=3298-3508 (94.0%-100.0%), Height=210px
+  [ZONES] Found 13 whitespace zones
+  [DEBUG] Address starts at Y=3271 (93.2%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3155-3271 (89.9%-93.2%), Height=116px, Distance=0px
+  [DEBUG]   2. Y=3064-3126 (87.3%-89.1%), Height=62px, Distance=145px
+  [DEBUG]   3. Y=2499-3033 (71.2%-86.5%), Height=534px, Distance=238px
+  [DEBUG]   4. Y=2287-2476 (65.2%-70.6%), Height=189px, Distance=795px
+  [DEBUG]   5. Y=2227-2257 (63.5%-64.3%), Height=30px, Distance=1014px
+  [DEBUG] Closest large zone: Y=2499-3033 (71.2%-86.5%), Height=534px
+  [DEBUG] Found 2 zones between closest large zone and address:
+  [DEBUG]   1. Y=3155-3271 (89.9%-93.2%), Height=116px
+  [DEBUG]   2. Y=3064-3126 (87.3%-89.1%), Height=62px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2499-3033 (71.2%-86.5%)
+  [DEBUG]   Footnote zone: Y=3155-3271 (89.9%-93.2%)
+  [FOOTNOTE] Detected at Y=3155-3271 (89.9%-93.2%)
+  [CYAN ZONE] Y=2499-3033 (71.2%-86.5%), Height=534px
+  [SEPARATOR] Found at Y=2979 (84.9%), Length=2.3%
+[+] Saved: Informe_CF_N_007-2016_page7_final.png
+
+  Page 7: separator_segment, Cyan: 71.2%-86.5%, Footnote: True
+
+  Summary: 7 pages, 1 with footnotes, 2 separators found
+
+================================================================================
+Testing: Informe_CF_N_008-2016.pdf
+================================================================================
+
+Processing Informe_CF_N_008-2016.pdf - Page 1
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3007-3032 (91.1%-91.9%)
+  [MARGIN] Y=3032-3300 (91.9%-100.0%), Height=268px
+  [ZONES] Found 11 whitespace zones
+  [DEBUG] Address starts at Y=3007 (91.1%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2987-3007 (90.5%-91.1%), Height=20px, Distance=0px
+  [DEBUG]   2. Y=2895-2960 (87.7%-89.7%), Height=65px, Distance=47px
+  [DEBUG]   3. Y=2855-2878 (86.5%-87.2%), Height=23px, Distance=129px
+  [DEBUG]   4. Y=2608-2628 (79.0%-79.6%), Height=20px, Distance=379px
+  [DEBUG]   5. Y=2477-2501 (75.1%-75.8%), Height=24px, Distance=506px
+  [DEBUG] Closest large zone: Y=1773-1918 (53.7%-58.1%), Height=145px
+  [DEBUG] Found 8 zones between closest large zone and address:
+  [DEBUG]   1. Y=2335-2471 (70.8%-74.9%), Height=136px
+  [DEBUG]   2. Y=2895-2960 (87.7%-89.7%), Height=65px
+  [DEBUG]   3. Y=1957-1995 (59.3%-60.5%), Height=38px
+  [DEBUG]   4. Y=2284-2311 (69.2%-70.0%), Height=27px
+  [DEBUG]   5. Y=2477-2501 (75.1%-75.8%), Height=24px
+  [DEBUG]   6. Y=2855-2878 (86.5%-87.2%), Height=23px
+  [DEBUG]   7. Y=2608-2628 (79.0%-79.6%), Height=20px
+  [DEBUG]   8. Y=2987-3007 (90.5%-91.1%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1773-1918 (53.7%-58.1%)
+  [DEBUG]   Footnote zone: Y=2895-2960 (87.7%-89.7%)
+  [FOOTNOTE] Detected at Y=2895-2960 (87.7%-89.7%)
+  [CYAN ZONE] Y=1773-1918 (53.7%-58.1%), Height=145px
+  [SEPARATOR] Found at Y=1774 (53.8%), Length=3.0%
+[+] Saved: Informe_CF_N_008-2016_page1_final.png
+
+  Page 1: separator_segment, Cyan: 50.5%-54.7%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 2
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3008-3032 (91.2%-91.9%)
+  [MARGIN] Y=3032-3300 (91.9%-100.0%), Height=268px
+  [ZONES] Found 17 whitespace zones
+  [DEBUG] Address starts at Y=3008 (91.2%)
+  [DEBUG] Found 16 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2987-3008 (90.5%-91.2%), Height=21px, Distance=0px
+  [DEBUG]   2. Y=2843-2962 (86.2%-89.8%), Height=119px, Distance=46px
+  [DEBUG]   3. Y=2799-2822 (84.8%-85.5%), Height=23px, Distance=186px
+  [DEBUG]   4. Y=2676-2699 (81.1%-81.8%), Height=23px, Distance=309px
+  [DEBUG]   5. Y=2552-2572 (77.3%-77.9%), Height=20px, Distance=436px
+  [DEBUG] Closest large zone: Y=2843-2962 (86.2%-89.8%), Height=119px
+  [DEBUG] Found 1 zones between closest large zone and address:
+  [DEBUG]   1. Y=2987-3008 (90.5%-91.2%), Height=21px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2843-2962 (86.2%-89.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2843-2962 (86.2%-89.8%), Height=119px
+  [NO SEPARATOR] Using cyan zone base at Y=2962 (89.8%)
+[+] Saved: Informe_CF_N_008-2016_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 81.0%-84.4%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 3
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3001-3026 (90.9%-91.7%)
+  [MARGIN] Y=3026-3300 (91.7%-100.0%), Height=274px
+  [ZONES] Found 13 whitespace zones
+  [DEBUG] Address starts at Y=3001 (90.9%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2980-3001 (90.3%-90.9%), Height=21px, Distance=0px
+  [DEBUG]   2. Y=2836-2955 (85.9%-89.5%), Height=119px, Distance=46px
+  [DEBUG]   3. Y=2631-2655 (79.7%-80.5%), Height=24px, Distance=346px
+  [DEBUG]   4. Y=2591-2613 (78.5%-79.2%), Height=22px, Distance=388px
+  [DEBUG]   5. Y=2386-2444 (72.3%-74.1%), Height=58px, Distance=557px
+  [DEBUG] Closest large zone: Y=2051-2206 (62.2%-66.8%), Height=155px
+  [DEBUG] Found 7 zones between closest large zone and address:
+  [DEBUG]   1. Y=2836-2955 (85.9%-89.5%), Height=119px
+  [DEBUG]   2. Y=2261-2321 (68.5%-70.3%), Height=60px
+  [DEBUG]   3. Y=2386-2444 (72.3%-74.1%), Height=58px
+  [DEBUG]   4. Y=2210-2238 (67.0%-67.8%), Height=28px
+  [DEBUG]   5. Y=2631-2655 (79.7%-80.5%), Height=24px
+  [DEBUG]   6. Y=2591-2613 (78.5%-79.2%), Height=22px
+  [DEBUG]   7. Y=2980-3001 (90.3%-90.9%), Height=21px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2051-2206 (62.2%-66.8%)
+  [DEBUG]   Footnote zone: Y=2836-2955 (85.9%-89.5%)
+  [FOOTNOTE] Detected at Y=2836-2955 (85.9%-89.5%)
+  [CYAN ZONE] Y=2051-2206 (62.2%-66.8%), Height=155px
+  [NO SEPARATOR] Using cyan zone base at Y=2206 (66.8%)
+[+] Saved: Informe_CF_N_008-2016_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 58.5%-62.9%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 4
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=2999-3024 (90.9%-91.6%)
+  [MARGIN] Y=3024-3300 (91.6%-100.0%), Height=276px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=2999 (90.9%)
+  [DEBUG] Found 11 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2978-2999 (90.2%-90.9%), Height=21px, Distance=0px
+  [DEBUG]   2. Y=2833-2951 (85.8%-89.4%), Height=118px, Distance=48px
+  [DEBUG]   3. Y=2793-2816 (84.6%-85.3%), Height=23px, Distance=183px
+  [DEBUG]   4. Y=2464-2488 (74.7%-75.4%), Height=24px, Distance=511px
+  [DEBUG]   5. Y=2423-2443 (73.4%-74.0%), Height=20px, Distance=556px
+  [DEBUG] Closest large zone: Y=1715-1875 (52.0%-56.8%), Height=160px
+  [DEBUG] Found 10 zones between closest large zone and address:
+  [DEBUG]   1. Y=2833-2951 (85.8%-89.4%), Height=118px
+  [DEBUG]   2. Y=1880-1908 (57.0%-57.8%), Height=28px
+  [DEBUG]   3. Y=2298-2322 (69.6%-70.4%), Height=24px
+  [DEBUG]   4. Y=2464-2488 (74.7%-75.4%), Height=24px
+  [DEBUG]   5. Y=2793-2816 (84.6%-85.3%), Height=23px
+  [DEBUG]   6. Y=2258-2279 (68.4%-69.1%), Height=21px
+  [DEBUG]   7. Y=2340-2361 (70.9%-71.5%), Height=21px
+  [DEBUG]   8. Y=2978-2999 (90.2%-90.9%), Height=21px
+  [DEBUG]   9. Y=2383-2403 (72.2%-72.8%), Height=20px
+  [DEBUG]   10. Y=2423-2443 (73.4%-74.0%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1715-1875 (52.0%-56.8%)
+  [DEBUG]   Footnote zone: Y=2833-2951 (85.8%-89.4%)
+  [FOOTNOTE] Detected at Y=2833-2951 (85.8%-89.4%)
+  [CYAN ZONE] Y=1715-1875 (52.0%-56.8%), Height=160px
+  [SEPARATOR] Found at Y=1874 (56.8%), Length=2.1%
+[+] Saved: Informe_CF_N_008-2016_page4_final.png
+
+  Page 4: separator_segment, Cyan: 48.9%-53.4%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 5
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3005-3030 (91.1%-91.8%)
+  [MARGIN] Y=3030-3300 (91.8%-100.0%), Height=270px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3005 (91.1%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2985-3005 (90.5%-91.1%), Height=20px, Distance=0px
+  [DEBUG]   2. Y=2892-2957 (87.6%-89.6%), Height=65px, Distance=48px
+  [DEBUG]   3. Y=2516-2537 (76.2%-76.9%), Height=21px, Distance=468px
+  [DEBUG]   4. Y=2439-2509 (73.9%-76.0%), Height=70px, Distance=496px
+  [DEBUG]   5. Y=2389-2409 (72.4%-73.0%), Height=20px, Distance=596px
+  [DEBUG] Closest large zone: Y=2002-2097 (60.7%-63.5%), Height=95px
+  [DEBUG] Found 5 zones between closest large zone and address:
+  [DEBUG]   1. Y=2439-2509 (73.9%-76.0%), Height=70px
+  [DEBUG]   2. Y=2892-2957 (87.6%-89.6%), Height=65px
+  [DEBUG]   3. Y=2516-2537 (76.2%-76.9%), Height=21px
+  [DEBUG]   4. Y=2389-2409 (72.4%-73.0%), Height=20px
+  [DEBUG]   5. Y=2985-3005 (90.5%-91.1%), Height=20px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2002-2097 (60.7%-63.5%)
+  [DEBUG]   Footnote zone: Y=2439-2509 (73.9%-76.0%)
+  [FOOTNOTE] Detected at Y=2439-2509 (73.9%-76.0%)
+  [CYAN ZONE] Y=2002-2097 (60.7%-63.5%), Height=95px
+  [SEPARATOR] Found at Y=2050 (62.1%), Length=3.4%
+[+] Saved: Informe_CF_N_008-2016_page5_final.png
+
+  Page 5: separator_segment, Cyan: 57.1%-59.8%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 6
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3007-3033 (91.1%-91.9%)
+  [MARGIN] Y=3033-3300 (91.9%-100.0%), Height=267px
+  [ZONES] Found 6 whitespace zones
+  [DEBUG] Address starts at Y=3007 (91.1%)
+  [DEBUG] Found 5 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2847-2960 (86.3%-89.7%), Height=113px, Distance=47px
+  [DEBUG]   2. Y=2646-2709 (80.2%-82.1%), Height=63px, Distance=298px
+  [DEBUG]   3. Y=2307-2351 (69.9%-71.2%), Height=44px, Distance=656px
+  [DEBUG]   4. Y=2257-2286 (68.4%-69.3%), Height=29px, Distance=721px
+  [DEBUG]   5. Y=1771-1861 (53.7%-56.4%), Height=90px, Distance=1146px
+  [DEBUG] Closest large zone: Y=2847-2960 (86.3%-89.7%), Height=113px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2847-2960 (86.3%-89.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2847-2960 (86.3%-89.7%), Height=113px
+  [NO SEPARATOR] Using cyan zone base at Y=2960 (89.7%)
+[+] Saved: Informe_CF_N_008-2016_page6_final.png
+
+  Page 6: cyan_zone_base, Cyan: 81.2%-84.4%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 7
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3003-3027 (91.0%-91.7%)
+  [MARGIN] Y=3027-3300 (91.7%-100.0%), Height=273px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3003 (91.0%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2983-3003 (90.4%-91.0%), Height=20px, Distance=0px
+  [DEBUG]   2. Y=2839-2955 (86.0%-89.5%), Height=116px, Distance=48px
+  [DEBUG]   3. Y=2633-2655 (79.8%-80.5%), Height=22px, Distance=348px
+  [DEBUG]   4. Y=2512-2534 (76.1%-76.8%), Height=22px, Distance=469px
+  [DEBUG]   5. Y=2347-2369 (71.1%-71.8%), Height=22px, Distance=634px
+  [DEBUG] Closest large zone: Y=2839-2955 (86.0%-89.5%), Height=116px
+  [DEBUG] Found 1 zones between closest large zone and address:
+  [DEBUG]   1. Y=2983-3003 (90.4%-91.0%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2839-2955 (86.0%-89.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2839-2955 (86.0%-89.5%), Height=116px
+  [NO SEPARATOR] Using cyan zone base at Y=2955 (89.5%)
+[+] Saved: Informe_CF_N_008-2016_page7_final.png
+
+  Page 7: cyan_zone_base, Cyan: 80.9%-84.2%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 8
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=2998-3023 (90.8%-91.6%)
+  [MARGIN] Y=3023-3300 (91.6%-100.0%), Height=277px
+  [ZONES] Found 5 whitespace zones
+  [DEBUG] Address starts at Y=2998 (90.8%)
+  [DEBUG] Found 4 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2838-2951 (86.0%-89.4%), Height=113px, Distance=47px
+  [DEBUG]   2. Y=2715-2741 (82.3%-83.1%), Height=26px, Distance=257px
+  [DEBUG]   3. Y=2634-2657 (79.8%-80.5%), Height=23px, Distance=341px
+  [DEBUG]   4. Y=2097-2288 (63.5%-69.3%), Height=191px, Distance=710px
+  [DEBUG] Closest large zone: Y=2097-2288 (63.5%-69.3%), Height=191px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=2838-2951 (86.0%-89.4%), Height=113px
+  [DEBUG]   2. Y=2715-2741 (82.3%-83.1%), Height=26px
+  [DEBUG]   3. Y=2634-2657 (79.8%-80.5%), Height=23px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2097-2288 (63.5%-69.3%)
+  [DEBUG]   Footnote zone: Y=2838-2951 (86.0%-89.4%)
+  [FOOTNOTE] Detected at Y=2838-2951 (86.0%-89.4%)
+  [CYAN ZONE] Y=2097-2288 (63.5%-69.3%), Height=191px
+  [SEPARATOR] Found at Y=2287 (69.3%), Length=2.7%
+[+] Saved: Informe_CF_N_008-2016_page8_final.png
+
+  Page 8: separator_segment, Cyan: 59.8%-65.2%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 9
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3004-3028 (91.0%-91.8%)
+  [MARGIN] Y=3028-3300 (91.8%-100.0%), Height=272px
+  [ZONES] Found 13 whitespace zones
+  [DEBUG] Address starts at Y=3004 (91.0%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2984-3004 (90.4%-91.0%), Height=20px, Distance=0px
+  [DEBUG]   2. Y=2840-2957 (86.1%-89.6%), Height=117px, Distance=47px
+  [DEBUG]   3. Y=2713-2733 (82.2%-82.8%), Height=20px, Distance=271px
+  [DEBUG]   4. Y=2628-2649 (79.6%-80.3%), Height=21px, Distance=355px
+  [DEBUG]   5. Y=2499-2519 (75.7%-76.3%), Height=20px, Distance=485px
+  [DEBUG] Closest large zone: Y=2840-2957 (86.1%-89.6%), Height=117px
+  [DEBUG] Found 1 zones between closest large zone and address:
+  [DEBUG]   1. Y=2984-3004 (90.4%-91.0%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2840-2957 (86.1%-89.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2840-2957 (86.1%-89.6%), Height=117px
+  [NO SEPARATOR] Using cyan zone base at Y=2957 (89.6%)
+[+] Saved: Informe_CF_N_008-2016_page9_final.png
+
+  Page 9: cyan_zone_base, Cyan: 81.0%-84.3%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 10
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3008-3034 (91.2%-91.9%)
+  [MARGIN] Y=3034-3300 (91.9%-100.0%), Height=266px
+  [ZONES] Found 7 whitespace zones
+  [DEBUG] Address starts at Y=3008 (91.2%)
+  [DEBUG] Found 6 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2848-2961 (86.3%-89.7%), Height=113px, Distance=47px
+  [DEBUG]   2. Y=2808-2833 (85.1%-85.8%), Height=25px, Distance=175px
+  [DEBUG]   3. Y=2034-2093 (61.6%-63.4%), Height=59px, Distance=915px
+  [DEBUG]   4. Y=1852-1892 (56.1%-57.3%), Height=40px, Distance=1116px
+  [DEBUG]   5. Y=1801-1824 (54.6%-55.3%), Height=23px, Distance=1184px
+  [DEBUG] Closest large zone: Y=2848-2961 (86.3%-89.7%), Height=113px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2848-2961 (86.3%-89.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2848-2961 (86.3%-89.7%), Height=113px
+  [NO SEPARATOR] Using cyan zone base at Y=2961 (89.7%)
+[+] Saved: Informe_CF_N_008-2016_page10_final.png
+
+  Page 10: cyan_zone_base, Cyan: 81.2%-84.4%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 11
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3001-3026 (90.9%-91.7%)
+  [MARGIN] Y=3026-3300 (91.7%-100.0%), Height=274px
+  [ZONES] Found 8 whitespace zones
+  [DEBUG] Address starts at Y=3001 (90.9%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2981-3001 (90.3%-90.9%), Height=20px, Distance=0px
+  [DEBUG]   2. Y=2838-2954 (86.0%-89.5%), Height=116px, Distance=47px
+  [DEBUG]   3. Y=2798-2823 (84.8%-85.5%), Height=25px, Distance=178px
+  [DEBUG]   4. Y=2348-2368 (71.2%-71.8%), Height=20px, Distance=633px
+  [DEBUG]   5. Y=2183-2204 (66.2%-66.8%), Height=21px, Distance=797px
+  [DEBUG] Closest large zone: Y=2838-2954 (86.0%-89.5%), Height=116px
+  [DEBUG] Found 1 zones between closest large zone and address:
+  [DEBUG]   1. Y=2981-3001 (90.3%-90.9%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2838-2954 (86.0%-89.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2838-2954 (86.0%-89.5%), Height=116px
+  [NO SEPARATOR] Using cyan zone base at Y=2954 (89.5%)
+[+] Saved: Informe_CF_N_008-2016_page11_final.png
+
+  Page 11: cyan_zone_base, Cyan: 80.9%-84.2%, Footnote: False
+
+Processing Informe_CF_N_008-2016.pdf - Page 12
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=2997-3022 (90.8%-91.6%)
+  [MARGIN] Y=3022-3300 (91.6%-100.0%), Height=278px
+  [ZONES] Found 10 whitespace zones
+  [DEBUG] Address starts at Y=2997 (90.8%)
+  [DEBUG] Found 9 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2976-2997 (90.2%-90.8%), Height=21px, Distance=0px
+  [DEBUG]   2. Y=2884-2949 (87.4%-89.4%), Height=65px, Distance=48px
+  [DEBUG]   3. Y=2843-2865 (86.2%-86.8%), Height=22px, Distance=132px
+  [DEBUG]   4. Y=2557-2614 (77.5%-79.2%), Height=57px, Distance=383px
+  [DEBUG]   5. Y=2095-2120 (63.5%-64.2%), Height=25px, Distance=877px
+  [DEBUG] Closest large zone: Y=1707-1859 (51.7%-56.3%), Height=152px
+  [DEBUG] Found 7 zones between closest large zone and address:
+  [DEBUG]   1. Y=2015-2089 (61.1%-63.3%), Height=74px
+  [DEBUG]   2. Y=2884-2949 (87.4%-89.4%), Height=65px
+  [DEBUG]   3. Y=2557-2614 (77.5%-79.2%), Height=57px
+  [DEBUG]   4. Y=1891-1930 (57.3%-58.5%), Height=39px
+  [DEBUG]   5. Y=2095-2120 (63.5%-64.2%), Height=25px
+  [DEBUG]   6. Y=2843-2865 (86.2%-86.8%), Height=22px
+  [DEBUG]   7. Y=2976-2997 (90.2%-90.8%), Height=21px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=1707-1859 (51.7%-56.3%)
+  [DEBUG]   Footnote zone: Y=2015-2089 (61.1%-63.3%)
+  [FOOTNOTE] Detected at Y=2015-2089 (61.1%-63.3%)
+  [CYAN ZONE] Y=1707-1859 (51.7%-56.3%), Height=152px
+  [NO SEPARATOR] Using cyan zone base at Y=1859 (56.3%)
+[+] Saved: Informe_CF_N_008-2016_page12_final.png
+
+  Page 12: cyan_zone_base, Cyan: 48.7%-53.0%, Footnote: True
+
+Processing Informe_CF_N_008-2016.pdf - Page 13
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3017-3041 (91.4%-92.2%)
+  [MARGIN] Y=3041-3300 (92.2%-100.0%), Height=259px
+  [ZONES] Found 20 whitespace zones
+  [DEBUG] Address starts at Y=3017 (91.4%)
+  [DEBUG] Found 19 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2996-3017 (90.8%-91.4%), Height=21px, Distance=0px
+  [DEBUG]   2. Y=2916-2971 (88.4%-90.0%), Height=55px, Distance=46px
+  [DEBUG]   3. Y=2840-2900 (86.1%-87.9%), Height=60px, Distance=117px
+  [DEBUG]   4. Y=2502-2783 (75.8%-84.3%), Height=281px, Distance=234px
+  [DEBUG]   5. Y=2422-2477 (73.4%-75.1%), Height=55px, Distance=540px
+  [DEBUG] Closest large zone: Y=2502-2783 (75.8%-84.3%), Height=281px
+  [DEBUG] Found 3 zones between closest large zone and address:
+  [DEBUG]   1. Y=2840-2900 (86.1%-87.9%), Height=60px
+  [DEBUG]   2. Y=2916-2971 (88.4%-90.0%), Height=55px
+  [DEBUG]   3. Y=2996-3017 (90.8%-91.4%), Height=21px
+  [DEBUG] FOOTNOTE DETECTED (Scenario A)! Zone between cyan and address:
+  [DEBUG]   Cyan zone: Y=2502-2783 (75.8%-84.3%)
+  [DEBUG]   Footnote zone: Y=2840-2900 (86.1%-87.9%)
+  [FOOTNOTE] Detected at Y=2840-2900 (86.1%-87.9%)
+  [CYAN ZONE] Y=2502-2783 (75.8%-84.3%), Height=281px
+  [SEPARATOR] Found at Y=2782 (84.3%), Length=5.8%
+[+] Saved: Informe_CF_N_008-2016_page13_final.png
+
+  Page 13: separator_segment, Cyan: 71.3%-79.3%, Footnote: True
+
+  Summary: 13 pages, 7 with footnotes, 5 separators found
+
+================================================================================
+Testing: INFORME_N_001-2017-CF.pdf
+================================================================================
+
+Processing INFORME_N_001-2017-CF.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3306-3338 (94.2%-95.2%)
+  [MARGIN] Y=3338-3508 (95.2%-100.0%), Height=170px
+  [ZONES] Found 14 whitespace zones
+  [DEBUG] Address starts at Y=3306 (94.2%)
+  [DEBUG] Found 13 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3169-3306 (90.3%-94.2%), Height=137px, Distance=0px
+  [DEBUG]   2. Y=2938-2965 (83.8%-84.5%), Height=27px, Distance=341px
+  [DEBUG]   3. Y=2886-2914 (82.3%-83.1%), Height=28px, Distance=392px
+  [DEBUG]   4. Y=2462-2496 (70.2%-71.2%), Height=34px, Distance=810px
+  [DEBUG]   5. Y=2316-2354 (66.0%-67.1%), Height=38px, Distance=952px
+  [DEBUG] Closest large zone: Y=3169-3306 (90.3%-94.2%), Height=137px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3169-3306 (90.3%-94.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3169-3306 (90.3%-94.2%), Height=137px
+  [NO SEPARATOR] Using cyan zone base at Y=3306 (94.2%)
+[+] Saved: INFORME_N_001-2017-CF_page1_final.png
+
+  Page 1: cyan_zone_base, Cyan: 90.3%-94.2%, Footnote: False
+
+Processing INFORME_N_001-2017-CF.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3308-3340 (94.3%-95.2%)
+  [MARGIN] Y=3340-3508 (95.2%-100.0%), Height=168px
+  [ZONES] Found 19 whitespace zones
+  [DEBUG] Address starts at Y=3308 (94.3%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3175-3308 (90.5%-94.3%), Height=133px, Distance=0px
+  [DEBUG]   2. Y=3077-3100 (87.7%-88.4%), Height=23px, Distance=208px
+  [DEBUG]   3. Y=3029-3050 (86.3%-86.9%), Height=21px, Distance=258px
+  [DEBUG]   4. Y=2962-3000 (84.4%-85.5%), Height=38px, Distance=308px
+  [DEBUG]   5. Y=2696-2954 (76.9%-84.2%), Height=258px, Distance=354px
+  [DEBUG] Closest large zone: Y=2696-2954 (76.9%-84.2%), Height=258px
+  [DEBUG] Found 4 zones between closest large zone and address:
+  [DEBUG]   1. Y=3175-3308 (90.5%-94.3%), Height=133px
+  [DEBUG]   2. Y=2962-3000 (84.4%-85.5%), Height=38px
+  [DEBUG]   3. Y=3077-3100 (87.7%-88.4%), Height=23px
+  [DEBUG]   4. Y=3029-3050 (86.3%-86.9%), Height=21px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2696-2954 (76.9%-84.2%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2696-2954 (76.9%-84.2%), Height=258px
+  [SEPARATOR] Found at Y=2953 (84.2%), Length=3.4%
+[+] Saved: INFORME_N_001-2017-CF_page2_final.png
+
+  Page 2: separator_segment, Cyan: 76.9%-84.2%, Footnote: False
+
+Processing INFORME_N_001-2017-CF.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3308-3338 (94.3%-95.2%)
+  [MARGIN] Y=3338-3508 (95.2%-100.0%), Height=170px
+  [ZONES] Found 13 whitespace zones
+  [DEBUG] Address starts at Y=3308 (94.3%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3172-3308 (90.4%-94.3%), Height=136px, Distance=0px
+  [DEBUG]   2. Y=3074-3102 (87.6%-88.4%), Height=28px, Distance=206px
+  [DEBUG]   3. Y=2886-2916 (82.3%-83.1%), Height=30px, Distance=392px
+  [DEBUG]   4. Y=2750-2770 (78.4%-79.0%), Height=20px, Distance=538px
+  [DEBUG]   5. Y=2416-2450 (68.9%-69.8%), Height=34px, Distance=858px
+  [DEBUG] Closest large zone: Y=3172-3308 (90.4%-94.3%), Height=136px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3172-3308 (90.4%-94.3%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3172-3308 (90.4%-94.3%), Height=136px
+  [NO SEPARATOR] Using cyan zone base at Y=3308 (94.3%)
+[+] Saved: INFORME_N_001-2017-CF_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 90.4%-94.3%, Footnote: False
+
+Processing INFORME_N_001-2017-CF.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3308-3339 (94.3%-95.2%)
+  [MARGIN] Y=3339-3508 (95.2%-100.0%), Height=169px
+  [ZONES] Found 14 whitespace zones
+  [DEBUG] Address starts at Y=3308 (94.3%)
+  [DEBUG] Found 13 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3179-3308 (90.6%-94.3%), Height=129px, Distance=0px
+  [DEBUG]   2. Y=2922-2960 (83.3%-84.4%), Height=38px, Distance=348px
+  [DEBUG]   3. Y=2472-2914 (70.5%-83.1%), Height=442px, Distance=394px
+  [DEBUG]   4. Y=2412-2438 (68.8%-69.5%), Height=26px, Distance=870px
+  [DEBUG]   5. Y=2318-2379 (66.1%-67.8%), Height=61px, Distance=929px
+  [DEBUG] Closest large zone: Y=2472-2914 (70.5%-83.1%), Height=442px
+  [DEBUG] Found 2 zones between closest large zone and address:
+  [DEBUG]   1. Y=3179-3308 (90.6%-94.3%), Height=129px
+  [DEBUG]   2. Y=2922-2960 (83.3%-84.4%), Height=38px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2472-2914 (70.5%-83.1%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2472-2914 (70.5%-83.1%), Height=442px
+  [SEPARATOR] Found at Y=2912 (83.0%), Length=3.0%
+[+] Saved: INFORME_N_001-2017-CF_page4_final.png
+
+  Page 4: separator_segment, Cyan: 70.5%-83.1%, Footnote: False
+
+Processing INFORME_N_001-2017-CF.pdf - Page 5
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3304-3334 (94.2%-95.0%)
+  [MARGIN] Y=3334-3508 (95.0%-100.0%), Height=174px
+  [ZONES] Found 5 whitespace zones
+  [DEBUG] Address starts at Y=3304 (94.2%)
+  [DEBUG] Found 4 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2498-3304 (71.2%-94.2%), Height=806px, Distance=0px
+  [DEBUG]   2. Y=2404-2466 (68.5%-70.3%), Height=62px, Distance=838px
+  [DEBUG]   3. Y=1934-2376 (55.1%-67.7%), Height=442px, Distance=928px
+  [DEBUG]   4. Y=1754-1910 (50.0%-54.4%), Height=156px, Distance=1394px
+  [DEBUG] Closest large zone: Y=2498-3304 (71.2%-94.2%), Height=806px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=1934-2376 (55.1%-67.7%)
+  [DEBUG]   Footnote zone: Y=2498-3304 (71.2%-94.2%)
+  [FOOTNOTE] Detected at Y=2498-3304 (71.2%-94.2%)
+  [CYAN ZONE] Y=1934-2376 (55.1%-67.7%), Height=442px
+  [SEPARATOR] Found at Y=2166 (61.7%), Length=3.8%
+[+] Saved: INFORME_N_001-2017-CF_page5_final.png
+
+  Page 5: separator_segment, Cyan: 55.1%-67.7%, Footnote: True
+
+  Summary: 5 pages, 1 with footnotes, 3 separators found
+
+================================================================================
+Testing: INFORME_N_002-2017-CF.pdf
+================================================================================
+
+Processing INFORME_N_002-2017-CF.pdf - Page 1
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3293-3293 (99.8%-99.8%)
+  [MARGIN] Y=3293-3300 (99.8%-100.0%), Height=7px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3293 (99.8%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3093-3287 (93.7%-99.6%), Height=194px, Distance=6px
+  [DEBUG]   2. Y=2937-3065 (89.0%-92.9%), Height=128px, Distance=228px
+  [DEBUG]   3. Y=2675-2700 (81.1%-81.8%), Height=25px, Distance=593px
+  [DEBUG]   4. Y=2502-2522 (75.8%-76.4%), Height=20px, Distance=771px
+  [DEBUG]   5. Y=2328-2351 (70.5%-71.2%), Height=23px, Distance=942px
+  [DEBUG] Closest large zone: Y=3093-3287 (93.7%-99.6%), Height=194px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3093-3287 (93.7%-99.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3093-3287 (93.7%-99.6%), Height=194px
+  [SEPARATOR] Found at Y=3286 (99.6%), Length=2.9%
+[+] Saved: INFORME_N_002-2017-CF_page1_final.png
+
+  Page 1: separator_segment, Cyan: 88.2%-93.7%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 2
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3287-3287 (99.6%-99.6%)
+  [MARGIN] Y=3287-3300 (99.6%-100.0%), Height=13px
+  [ZONES] Found 17 whitespace zones
+  [DEBUG] Address starts at Y=3287 (99.6%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3088-3287 (93.6%-99.6%), Height=199px, Distance=0px
+  [DEBUG]   2. Y=2936-3061 (89.0%-92.8%), Height=125px, Distance=226px
+  [DEBUG]   3. Y=2895-2915 (87.7%-88.3%), Height=20px, Distance=372px
+  [DEBUG]   4. Y=2788-2824 (84.5%-85.6%), Height=36px, Distance=463px
+  [DEBUG]   5. Y=2527-2783 (76.6%-84.3%), Height=256px, Distance=504px
+  [DEBUG] Closest large zone: Y=3088-3287 (93.6%-99.6%), Height=199px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3088-3287 (93.6%-99.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3088-3287 (93.6%-99.6%), Height=199px
+  [SEPARATOR] Found at Y=3286 (99.6%), Length=2.5%
+[+] Saved: INFORME_N_002-2017-CF_page2_final.png
+
+  Page 2: separator_segment, Cyan: 88.0%-93.7%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 3
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3062-3087 (92.8%-93.5%)
+  [MARGIN] Y=3087-3300 (93.5%-100.0%), Height=213px
+  [ZONES] Found 19 whitespace zones
+  [DEBUG] Address starts at Y=3062 (92.8%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2936-3062 (89.0%-92.8%), Height=126px, Distance=0px
+  [DEBUG]   2. Y=2893-2918 (87.7%-88.4%), Height=25px, Distance=144px
+  [DEBUG]   3. Y=2849-2874 (86.3%-87.1%), Height=25px, Distance=188px
+  [DEBUG]   4. Y=2806-2826 (85.0%-85.6%), Height=20px, Distance=236px
+  [DEBUG]   5. Y=2763-2788 (83.7%-84.5%), Height=25px, Distance=274px
+  [DEBUG] Closest large zone: Y=2271-2485 (68.8%-75.3%), Height=214px
+  [DEBUG] Found 8 zones between closest large zone and address:
+  [DEBUG]   1. Y=2936-3062 (89.0%-92.8%), Height=126px
+  [DEBUG]   2. Y=2490-2520 (75.5%-76.4%), Height=30px
+  [DEBUG]   3. Y=2763-2788 (83.7%-84.5%), Height=25px
+  [DEBUG]   4. Y=2849-2874 (86.3%-87.1%), Height=25px
+  [DEBUG]   5. Y=2893-2918 (87.7%-88.4%), Height=25px
+  [DEBUG]   6. Y=2719-2740 (82.4%-83.0%), Height=21px
+  [DEBUG]   7. Y=2630-2650 (79.7%-80.3%), Height=20px
+  [DEBUG]   8. Y=2806-2826 (85.0%-85.6%), Height=20px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2271-2485 (68.8%-75.3%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2271-2485 (68.8%-75.3%), Height=214px
+  [NO SEPARATOR] Using cyan zone base at Y=2485 (75.3%)
+[+] Saved: INFORME_N_002-2017-CF_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 64.7%-70.8%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 4
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3060-3085 (92.7%-93.5%)
+  [MARGIN] Y=3085-3300 (93.5%-100.0%), Height=215px
+  [ZONES] Found 23 whitespace zones
+  [DEBUG] Address starts at Y=3060 (92.7%)
+  [DEBUG] Found 22 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2935-3060 (88.9%-92.7%), Height=125px, Distance=0px
+  [DEBUG]   2. Y=2890-2916 (87.6%-88.4%), Height=26px, Distance=144px
+  [DEBUG]   3. Y=2842-2866 (86.1%-86.8%), Height=24px, Distance=194px
+  [DEBUG]   4. Y=2795-2818 (84.7%-85.4%), Height=23px, Distance=242px
+  [DEBUG]   5. Y=2752-2776 (83.4%-84.1%), Height=24px, Distance=284px
+  [DEBUG] Closest large zone: Y=2935-3060 (88.9%-92.7%), Height=125px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2935-3060 (88.9%-92.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2935-3060 (88.9%-92.7%), Height=125px
+  [NO SEPARATOR] Using cyan zone base at Y=3060 (92.7%)
+[+] Saved: INFORME_N_002-2017-CF_page4_final.png
+
+  Page 4: cyan_zone_base, Cyan: 83.7%-87.2%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 5
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3289-3289 (99.7%-99.7%)
+  [MARGIN] Y=3289-3300 (99.7%-100.0%), Height=11px
+  [ZONES] Found 25 whitespace zones
+  [DEBUG] Address starts at Y=3289 (99.7%)
+  [DEBUG] Found 25 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3084-3289 (93.5%-99.7%), Height=205px, Distance=0px
+  [DEBUG]   2. Y=2932-3058 (88.8%-92.7%), Height=126px, Distance=231px
+  [DEBUG]   3. Y=2889-2914 (87.5%-88.3%), Height=25px, Distance=375px
+  [DEBUG]   4. Y=2844-2870 (86.2%-87.0%), Height=26px, Distance=419px
+  [DEBUG]   5. Y=2797-2820 (84.8%-85.5%), Height=23px, Distance=469px
+  [DEBUG] Closest large zone: Y=3084-3289 (93.5%-99.7%), Height=205px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3084-3289 (93.5%-99.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3084-3289 (93.5%-99.7%), Height=205px
+  [NO SEPARATOR] Using cyan zone base at Y=3289 (99.7%)
+[+] Saved: INFORME_N_002-2017-CF_page5_final.png
+
+  Page 5: cyan_zone_base, Cyan: 87.9%-93.8%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 6
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3058-3084 (92.7%-93.5%)
+  [MARGIN] Y=3084-3300 (93.5%-100.0%), Height=216px
+  [ZONES] Found 21 whitespace zones
+  [DEBUG] Address starts at Y=3058 (92.7%)
+  [DEBUG] Found 20 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2934-3058 (88.9%-92.7%), Height=124px, Distance=0px
+  [DEBUG]   2. Y=2890-2912 (87.6%-88.2%), Height=22px, Distance=146px
+  [DEBUG]   3. Y=2804-2828 (85.0%-85.7%), Height=24px, Distance=230px
+  [DEBUG]   4. Y=2712-2735 (82.2%-82.9%), Height=23px, Distance=323px
+  [DEBUG]   5. Y=2670-2695 (80.9%-81.7%), Height=25px, Distance=363px
+  [DEBUG] Closest large zone: Y=2934-3058 (88.9%-92.7%), Height=124px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2934-3058 (88.9%-92.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2934-3058 (88.9%-92.7%), Height=124px
+  [NO SEPARATOR] Using cyan zone base at Y=3058 (92.7%)
+[+] Saved: INFORME_N_002-2017-CF_page6_final.png
+
+  Page 6: cyan_zone_base, Cyan: 83.6%-87.2%, Footnote: False
+
+Processing INFORME_N_002-2017-CF.pdf - Page 7
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3289-3289 (99.7%-99.7%)
+  [MARGIN] Y=3289-3300 (99.7%-100.0%), Height=11px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3289 (99.7%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3084-3289 (93.5%-99.7%), Height=205px, Distance=0px
+  [DEBUG]   2. Y=2653-3058 (80.4%-92.7%), Height=405px, Distance=231px
+  [DEBUG]   3. Y=2565-2624 (77.7%-79.5%), Height=59px, Distance=665px
+  [DEBUG]   4. Y=2434-2536 (73.8%-76.8%), Height=102px, Distance=753px
+  [DEBUG]   5. Y=2394-2432 (72.5%-73.7%), Height=38px, Distance=857px
+  [DEBUG] Closest large zone: Y=3084-3289 (93.5%-99.7%), Height=205px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3084-3289 (93.5%-99.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3084-3289 (93.5%-99.7%), Height=205px
+  [NO SEPARATOR] Using cyan zone base at Y=3289 (99.7%)
+[+] Saved: INFORME_N_002-2017-CF_page7_final.png
+
+  Page 7: cyan_zone_base, Cyan: 87.9%-93.8%, Footnote: False
+
+  Summary: 7 pages, 0 with footnotes, 2 separators found
+
+================================================================================
+Testing: INFORME_N_003-2017-CF.pdf
+================================================================================
+
+Processing INFORME_N_003-2017-CF.pdf - Page 1
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3297-3297 (99.9%-99.9%)
+  [MARGIN] Y=3297-3300 (99.9%-100.0%), Height=3px
+  [ZONES] Found 17 whitespace zones
+  [DEBUG] Address starts at Y=3297 (99.9%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2957-3297 (89.6%-99.9%), Height=340px, Distance=0px
+  [DEBUG]   2. Y=2808-2930 (85.1%-88.8%), Height=122px, Distance=367px
+  [DEBUG]   3. Y=2680-2700 (81.2%-81.8%), Height=20px, Distance=597px
+  [DEBUG]   4. Y=2641-2663 (80.0%-80.7%), Height=22px, Distance=634px
+  [DEBUG]   5. Y=2469-2489 (74.8%-75.4%), Height=20px, Distance=808px
+  [DEBUG] Closest large zone: Y=2957-3297 (89.6%-99.9%), Height=340px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2957-3297 (89.6%-99.9%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2957-3297 (89.6%-99.9%), Height=340px
+  [SEPARATOR] Found at Y=3296 (99.9%), Length=3.1%
+[+] Saved: INFORME_N_003-2017-CF_page1_final.png
+
+  Page 1: separator_segment, Cyan: 84.3%-94.0%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 2
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3287-3287 (99.6%-99.6%)
+  [MARGIN] Y=3287-3300 (99.6%-100.0%), Height=13px
+  [ZONES] Found 12 whitespace zones
+  [DEBUG] Address starts at Y=3287 (99.6%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2952-3287 (89.5%-99.6%), Height=335px, Distance=0px
+  [DEBUG]   2. Y=2805-2925 (85.0%-88.6%), Height=120px, Distance=362px
+  [DEBUG]   3. Y=2676-2696 (81.1%-81.7%), Height=20px, Distance=591px
+  [DEBUG]   4. Y=2637-2658 (79.9%-80.5%), Height=21px, Distance=629px
+  [DEBUG]   5. Y=2343-2403 (71.0%-72.8%), Height=60px, Distance=884px
+  [DEBUG] Closest large zone: Y=2952-3287 (89.5%-99.6%), Height=335px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2952-3287 (89.5%-99.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2952-3287 (89.5%-99.6%), Height=335px
+  [SEPARATOR] Found at Y=3286 (99.6%), Length=2.8%
+[+] Saved: INFORME_N_003-2017-CF_page2_final.png
+
+  Page 2: separator_segment, Cyan: 84.2%-93.7%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 3
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3285-3285 (99.5%-99.5%)
+  [MARGIN] Y=3285-3300 (99.5%-100.0%), Height=15px
+  [ZONES] Found 14 whitespace zones
+  [DEBUG] Address starts at Y=3285 (99.5%)
+  [DEBUG] Found 14 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2952-3285 (89.5%-99.5%), Height=333px, Distance=0px
+  [DEBUG]   2. Y=2802-2925 (84.9%-88.6%), Height=123px, Distance=360px
+  [DEBUG]   3. Y=2635-2658 (79.8%-80.5%), Height=23px, Distance=627px
+  [DEBUG]   4. Y=2592-2612 (78.5%-79.2%), Height=20px, Distance=673px
+  [DEBUG]   5. Y=2551-2574 (77.3%-78.0%), Height=23px, Distance=711px
+  [DEBUG] Closest large zone: Y=2952-3285 (89.5%-99.5%), Height=333px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2952-3285 (89.5%-99.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2952-3285 (89.5%-99.5%), Height=333px
+  [NO SEPARATOR] Using cyan zone base at Y=3285 (99.5%)
+[+] Saved: INFORME_N_003-2017-CF_page3_final.png
+
+  Page 3: cyan_zone_base, Cyan: 84.2%-93.6%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 4
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3293-3293 (99.8%-99.8%)
+  [MARGIN] Y=3293-3300 (99.8%-100.0%), Height=7px
+  [ZONES] Found 14 whitespace zones
+  [DEBUG] Address starts at Y=3293 (99.8%)
+  [DEBUG] Found 14 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2954-3293 (89.5%-99.8%), Height=339px, Distance=0px
+  [DEBUG]   2. Y=2762-2928 (83.7%-88.7%), Height=166px, Distance=365px
+  [DEBUG]   3. Y=2517-2613 (76.3%-79.2%), Height=96px, Distance=680px
+  [DEBUG]   4. Y=2472-2493 (74.9%-75.5%), Height=21px, Distance=800px
+  [DEBUG]   5. Y=2427-2451 (73.5%-74.3%), Height=24px, Distance=842px
+  [DEBUG] Closest large zone: Y=2954-3293 (89.5%-99.8%), Height=339px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2954-3293 (89.5%-99.8%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2954-3293 (89.5%-99.8%), Height=339px
+  [NO SEPARATOR] Using cyan zone base at Y=3293 (99.8%)
+[+] Saved: INFORME_N_003-2017-CF_page4_final.png
+
+  Page 4: cyan_zone_base, Cyan: 84.2%-93.9%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 5
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3291-3291 (99.7%-99.7%)
+  [MARGIN] Y=3291-3300 (99.7%-100.0%), Height=9px
+  [ZONES] Found 18 whitespace zones
+  [DEBUG] Address starts at Y=3291 (99.7%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2951-3291 (89.4%-99.7%), Height=340px, Distance=0px
+  [DEBUG]   2. Y=2802-2925 (84.9%-88.6%), Height=123px, Distance=366px
+  [DEBUG]   3. Y=2676-2696 (81.1%-81.7%), Height=20px, Distance=595px
+  [DEBUG]   4. Y=2635-2655 (79.8%-80.5%), Height=20px, Distance=636px
+  [DEBUG]   5. Y=2592-2612 (78.5%-79.2%), Height=20px, Distance=679px
+  [DEBUG] Closest large zone: Y=2951-3291 (89.4%-99.7%), Height=340px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2951-3291 (89.4%-99.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2951-3291 (89.4%-99.7%), Height=340px
+  [NO SEPARATOR] Using cyan zone base at Y=3291 (99.7%)
+[+] Saved: INFORME_N_003-2017-CF_page5_final.png
+
+  Page 5: cyan_zone_base, Cyan: 84.1%-93.8%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 6
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3291-3291 (99.7%-99.7%)
+  [MARGIN] Y=3291-3300 (99.7%-100.0%), Height=9px
+  [ZONES] Found 10 whitespace zones
+  [DEBUG] Address starts at Y=3291 (99.7%)
+  [DEBUG] Found 10 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2954-3291 (89.5%-99.7%), Height=337px, Distance=0px
+  [DEBUG]   2. Y=2805-2928 (85.0%-88.7%), Height=123px, Distance=363px
+  [DEBUG]   3. Y=2592-2615 (78.5%-79.2%), Height=23px, Distance=676px
+  [DEBUG]   4. Y=2548-2568 (77.2%-77.8%), Height=20px, Distance=723px
+  [DEBUG]   5. Y=2294-2314 (69.5%-70.1%), Height=20px, Distance=977px
+  [DEBUG] Closest large zone: Y=2954-3291 (89.5%-99.7%), Height=337px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=1730-2155 (52.4%-65.3%)
+  [DEBUG]   Footnote zone: Y=2954-3291 (89.5%-99.7%)
+  [FOOTNOTE] Detected at Y=2954-3291 (89.5%-99.7%)
+  [CYAN ZONE] Y=1730-2155 (52.4%-65.3%), Height=425px
+  [NO SEPARATOR] Using cyan zone base at Y=2155 (65.3%)
+[+] Saved: INFORME_N_003-2017-CF_page6_final.png
+
+  Page 6: cyan_zone_base, Cyan: 49.3%-61.4%, Footnote: True
+
+Processing INFORME_N_003-2017-CF.pdf - Page 7
+  [INFO] Page: 2550x3300
+  [ADDRESS] Y=3295-3295 (99.8%-99.8%)
+  [MARGIN] Y=3295-3300 (99.8%-100.0%), Height=5px
+  [ZONES] Found 7 whitespace zones
+  [DEBUG] Address starts at Y=3295 (99.8%)
+  [DEBUG] Found 7 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2955-3289 (89.5%-99.7%), Height=334px, Distance=6px
+  [DEBUG]   2. Y=2258-2928 (68.4%-88.7%), Height=670px, Distance=367px
+  [DEBUG]   3. Y=2172-2230 (65.8%-67.6%), Height=58px, Distance=1065px
+  [DEBUG]   4. Y=2058-2145 (62.4%-65.0%), Height=87px, Distance=1150px
+  [DEBUG]   5. Y=2002-2056 (60.7%-62.3%), Height=54px, Distance=1239px
+  [DEBUG] Closest large zone: Y=2955-3289 (89.5%-99.7%), Height=334px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2955-3289 (89.5%-99.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2955-3289 (89.5%-99.7%), Height=334px
+  [SEPARATOR] Found at Y=3288 (99.6%), Length=3.3%
+[+] Saved: INFORME_N_003-2017-CF_page7_final.png
+
+  Page 7: separator_segment, Cyan: 84.2%-93.8%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 8
+  [INFO] Page: 3300x2550
+  [ADDRESS] Y=2209-2234 (86.6%-87.6%)
+  [MARGIN] Y=2234-2550 (87.6%-100.0%), Height=316px
+  [ZONES] Found 3 whitespace zones
+  [DEBUG] Address starts at Y=2209 (86.6%)
+  [DEBUG] Found 2 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2094-2209 (82.1%-86.6%), Height=115px, Distance=0px
+  [DEBUG]   2. Y=1275-1301 (50.0%-51.0%), Height=26px, Distance=908px
+  [DEBUG] Closest large zone: Y=2094-2209 (82.1%-86.6%), Height=115px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2094-2209 (82.1%-86.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2094-2209 (82.1%-86.6%), Height=115px
+  [SEPARATOR] Found at Y=2094 (82.1%), Length=3.1%
+[+] Saved: INFORME_N_003-2017-CF_page8_final.png
+
+  Page 8: separator_segment, Cyan: 59.7%-63.0%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 9
+  [INFO] Page: 3300x2550
+  [ADDRESS] Y=2212-2237 (86.7%-87.7%)
+  [MARGIN] Y=2237-2550 (87.7%-100.0%), Height=313px
+  [ZONES] Found 22 whitespace zones
+  [DEBUG] Address starts at Y=2212 (86.7%)
+  [DEBUG] Found 21 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2082-2212 (81.6%-86.7%), Height=130px, Distance=0px
+  [DEBUG]   2. Y=2032-2064 (79.7%-80.9%), Height=32px, Distance=148px
+  [DEBUG]   3. Y=1991-2015 (78.1%-79.0%), Height=24px, Distance=197px
+  [DEBUG]   4. Y=1952-1974 (76.5%-77.4%), Height=22px, Distance=238px
+  [DEBUG]   5. Y=1912-1935 (75.0%-75.9%), Height=23px, Distance=277px
+  [DEBUG] Closest large zone: Y=2082-2212 (81.6%-86.7%), Height=130px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2082-2212 (81.6%-86.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2082-2212 (81.6%-86.7%), Height=130px
+  [NO SEPARATOR] Using cyan zone base at Y=2212 (86.7%)
+[+] Saved: INFORME_N_003-2017-CF_page9_final.png
+
+  Page 9: cyan_zone_base, Cyan: 59.4%-63.1%, Footnote: False
+
+Processing INFORME_N_003-2017-CF.pdf - Page 10
+  [INFO] Page: 3300x2550
+  [ADDRESS] Y=2210-2235 (86.7%-87.6%)
+  [MARGIN] Y=2235-2550 (87.6%-100.0%), Height=315px
+  [ZONES] Found 13 whitespace zones
+  [DEBUG] Address starts at Y=2210 (86.7%)
+  [DEBUG] Found 12 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=2065-2210 (81.0%-86.7%), Height=145px, Distance=0px
+  [DEBUG]   2. Y=2026-2051 (79.5%-80.4%), Height=25px, Distance=159px
+  [DEBUG]   3. Y=1985-2012 (77.8%-78.9%), Height=27px, Distance=198px
+  [DEBUG]   4. Y=1946-1971 (76.3%-77.3%), Height=25px, Distance=239px
+  [DEBUG]   5. Y=1906-1932 (74.7%-75.8%), Height=26px, Distance=278px
+  [DEBUG] Closest large zone: Y=2065-2210 (81.0%-86.7%), Height=145px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=2065-2210 (81.0%-86.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=2065-2210 (81.0%-86.7%), Height=145px
+  [SEPARATOR] Found at Y=2065 (81.0%), Length=4.8%
+[+] Saved: INFORME_N_003-2017-CF_page10_final.png
+
+  Page 10: separator_segment, Cyan: 58.9%-63.0%, Footnote: False
+
+  Summary: 10 pages, 1 with footnotes, 5 separators found
+
+================================================================================
+Testing: INFORME_N_004-2017-CF.pdf
+================================================================================
+
+Processing INFORME_N_004-2017-CF.pdf - Page 1
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3317-3346 (94.6%-95.4%)
+  [MARGIN] Y=3346-3508 (95.4%-100.0%), Height=162px
+  [ZONES] Found 19 whitespace zones
+  [DEBUG] Address starts at Y=3317 (94.6%)
+  [DEBUG] Found 18 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3124-3317 (89.1%-94.6%), Height=193px, Distance=0px
+  [DEBUG]   2. Y=3085-3105 (87.9%-88.5%), Height=20px, Distance=212px
+  [DEBUG]   3. Y=3031-3056 (86.4%-87.1%), Height=25px, Distance=261px
+  [DEBUG]   4. Y=2882-2918 (82.2%-83.2%), Height=36px, Distance=399px
+  [DEBUG]   5. Y=2599-2876 (74.1%-82.0%), Height=277px, Distance=441px
+  [DEBUG] Closest large zone: Y=3124-3317 (89.1%-94.6%), Height=193px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3124-3317 (89.1%-94.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3124-3317 (89.1%-94.6%), Height=193px
+  [SEPARATOR] Found at Y=3124 (89.1%), Length=4.9%
+[+] Saved: INFORME_N_004-2017-CF_page1_final.png
+
+  Page 1: separator_segment, Cyan: 89.1%-94.6%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 2
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3317-3343 (94.6%-95.3%)
+  [MARGIN] Y=3343-3508 (95.3%-100.0%), Height=165px
+  [ZONES] Found 25 whitespace zones
+  [DEBUG] Address starts at Y=3317 (94.6%)
+  [DEBUG] Found 24 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3127-3317 (89.1%-94.6%), Height=190px, Distance=0px
+  [DEBUG]   2. Y=3081-3102 (87.8%-88.4%), Height=21px, Distance=215px
+  [DEBUG]   3. Y=2990-3015 (85.2%-85.9%), Height=25px, Distance=302px
+  [DEBUG]   4. Y=2944-2965 (83.9%-84.5%), Height=21px, Distance=352px
+  [DEBUG]   5. Y=2896-2925 (82.6%-83.4%), Height=29px, Distance=392px
+  [DEBUG] Closest large zone: Y=3127-3317 (89.1%-94.6%), Height=190px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3127-3317 (89.1%-94.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3127-3317 (89.1%-94.6%), Height=190px
+  [NO SEPARATOR] Using cyan zone base at Y=3317 (94.6%)
+[+] Saved: INFORME_N_004-2017-CF_page2_final.png
+
+  Page 2: cyan_zone_base, Cyan: 89.1%-94.6%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 3
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3321-3348 (94.7%-95.4%)
+  [MARGIN] Y=3348-3508 (95.4%-100.0%), Height=160px
+  [ZONES] Found 23 whitespace zones
+  [DEBUG] Address starts at Y=3321 (94.7%)
+  [DEBUG] Found 22 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3145-3321 (89.7%-94.7%), Height=176px, Distance=0px
+  [DEBUG]   2. Y=3095-3120 (88.2%-88.9%), Height=25px, Distance=201px
+  [DEBUG]   3. Y=3038-3071 (86.6%-87.5%), Height=33px, Distance=250px
+  [DEBUG]   4. Y=2935-3033 (83.7%-86.5%), Height=98px, Distance=288px
+  [DEBUG]   5. Y=2875-2907 (82.0%-82.9%), Height=32px, Distance=414px
+  [DEBUG] Closest large zone: Y=3145-3321 (89.7%-94.7%), Height=176px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3145-3321 (89.7%-94.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3145-3321 (89.7%-94.7%), Height=176px
+  [SEPARATOR] Found at Y=3183 (90.7%), Length=2.7%
+[+] Saved: INFORME_N_004-2017-CF_page3_final.png
+
+  Page 3: separator_segment, Cyan: 89.7%-94.7%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 4
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3321-3351 (94.7%-95.5%)
+  [MARGIN] Y=3351-3508 (95.5%-100.0%), Height=157px
+  [ZONES] Found 15 whitespace zones
+  [DEBUG] Address starts at Y=3321 (94.7%)
+  [DEBUG] Found 14 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3135-3321 (89.4%-94.7%), Height=186px, Distance=0px
+  [DEBUG]   2. Y=3038-3060 (86.6%-87.2%), Height=22px, Distance=261px
+  [DEBUG]   3. Y=2531-2557 (72.1%-72.9%), Height=26px, Distance=764px
+  [DEBUG]   4. Y=2498-2529 (71.2%-72.1%), Height=31px, Distance=792px
+  [DEBUG]   5. Y=2433-2468 (69.4%-70.4%), Height=35px, Distance=853px
+  [DEBUG] Closest large zone: Y=3135-3321 (89.4%-94.7%), Height=186px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3135-3321 (89.4%-94.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3135-3321 (89.4%-94.7%), Height=186px
+  [SEPARATOR] Found at Y=3136 (89.4%), Length=2.2%
+[+] Saved: INFORME_N_004-2017-CF_page4_final.png
+
+  Page 4: separator_segment, Cyan: 89.4%-94.7%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 5
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3322-3354 (94.7%-95.6%)
+  [MARGIN] Y=3354-3508 (95.6%-100.0%), Height=154px
+  [ZONES] Found 15 whitespace zones
+  [DEBUG] Address starts at Y=3322 (94.7%)
+  [DEBUG] Found 14 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3135-3322 (89.4%-94.7%), Height=187px, Distance=0px
+  [DEBUG]   2. Y=3033-3062 (86.5%-87.3%), Height=29px, Distance=260px
+  [DEBUG]   3. Y=2898-2926 (82.6%-83.4%), Height=28px, Distance=396px
+  [DEBUG]   4. Y=2806-2832 (80.0%-80.7%), Height=26px, Distance=490px
+  [DEBUG]   5. Y=2671-2697 (76.1%-76.9%), Height=26px, Distance=625px
+  [DEBUG] Closest large zone: Y=3135-3322 (89.4%-94.7%), Height=187px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3135-3322 (89.4%-94.7%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3135-3322 (89.4%-94.7%), Height=187px
+  [SEPARATOR] Found at Y=3135 (89.4%), Length=3.0%
+[+] Saved: INFORME_N_004-2017-CF_page5_final.png
+
+  Page 5: separator_segment, Cyan: 89.4%-94.7%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 6
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3316-3347 (94.5%-95.4%)
+  [MARGIN] Y=3347-3508 (95.4%-100.0%), Height=161px
+  [ZONES] Found 17 whitespace zones
+  [DEBUG] Address starts at Y=3316 (94.5%)
+  [DEBUG] Found 16 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3131-3316 (89.3%-94.5%), Height=185px, Distance=0px
+  [DEBUG]   2. Y=2802-2831 (79.9%-80.7%), Height=29px, Distance=485px
+  [DEBUG]   3. Y=2669-2689 (76.1%-76.7%), Height=20px, Distance=627px
+  [DEBUG]   4. Y=2565-2601 (73.1%-74.1%), Height=36px, Distance=715px
+  [DEBUG]   5. Y=2485-2557 (70.8%-72.9%), Height=72px, Distance=759px
+  [DEBUG] Closest large zone: Y=3131-3316 (89.3%-94.5%), Height=185px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3131-3316 (89.3%-94.5%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3131-3316 (89.3%-94.5%), Height=185px
+  [SEPARATOR] Found at Y=3131 (89.3%), Length=2.7%
+[+] Saved: INFORME_N_004-2017-CF_page6_final.png
+
+  Page 6: separator_segment, Cyan: 89.3%-94.5%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 7
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3320-3351 (94.6%-95.5%)
+  [MARGIN] Y=3351-3508 (95.5%-100.0%), Height=157px
+  [ZONES] Found 18 whitespace zones
+  [DEBUG] Address starts at Y=3320 (94.6%)
+  [DEBUG] Found 17 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3186-3320 (90.8%-94.6%), Height=134px, Distance=0px
+  [DEBUG]   2. Y=3093-3116 (88.2%-88.8%), Height=23px, Distance=204px
+  [DEBUG]   3. Y=2913-2935 (83.0%-83.7%), Height=22px, Distance=385px
+  [DEBUG]   4. Y=2863-2888 (81.6%-82.3%), Height=25px, Distance=432px
+  [DEBUG]   5. Y=2729-2753 (77.8%-78.5%), Height=24px, Distance=567px
+  [DEBUG] Closest large zone: Y=3186-3320 (90.8%-94.6%), Height=134px
+  [DEBUG] No footnote detected
+  [DEBUG] Cyan zone: Y=3186-3320 (90.8%-94.6%)
+  [NO FOOTNOTE]
+  [CYAN ZONE] Y=3186-3320 (90.8%-94.6%), Height=134px
+  [NO SEPARATOR] Using cyan zone base at Y=3320 (94.6%)
+[+] Saved: INFORME_N_004-2017-CF_page7_final.png
+
+  Page 7: cyan_zone_base, Cyan: 90.8%-94.6%, Footnote: False
+
+Processing INFORME_N_004-2017-CF.pdf - Page 8
+  [INFO] Page: 2481x3508
+  [ADDRESS] Y=3321-3360 (94.7%-95.8%)
+  [MARGIN] Y=3360-3508 (95.8%-100.0%), Height=148px
+  [ZONES] Found 9 whitespace zones
+  [DEBUG] Address starts at Y=3321 (94.7%)
+  [DEBUG] Found 8 zones before address
+  [DEBUG] Zones sorted by proximity to address:
+  [DEBUG]   1. Y=3129-3321 (89.2%-94.7%), Height=192px, Distance=0px
+  [DEBUG]   2. Y=3073-3111 (87.6%-88.7%), Height=38px, Distance=210px
+  [DEBUG]   3. Y=3047-3069 (86.9%-87.5%), Height=22px, Distance=252px
+  [DEBUG]   4. Y=2462-2994 (70.2%-85.3%), Height=532px, Distance=327px
+  [DEBUG]   5. Y=2285-2436 (65.1%-69.4%), Height=151px, Distance=885px
+  [DEBUG] Closest large zone: Y=3129-3321 (89.2%-94.7%), Height=192px
+  [DEBUG] FOOTNOTE DETECTED (Scenario B)! Very large zone earlier:
+  [DEBUG]   Cyan zone: Y=2462-2994 (70.2%-85.3%)
+  [DEBUG]   Footnote zone: Y=3129-3321 (89.2%-94.7%)
+  [FOOTNOTE] Detected at Y=3129-3321 (89.2%-94.7%)
+  [CYAN ZONE] Y=2462-2994 (70.2%-85.3%), Height=532px
+  [SEPARATOR] Found at Y=2993 (85.3%), Length=9.6%
+[+] Saved: INFORME_N_004-2017-CF_page8_final.png
+
+  Page 8: separator_segment, Cyan: 70.2%-85.3%, Footnote: True
+
+  Summary: 8 pages, 1 with footnotes, 6 separators found
+
+================================================================================
+OVERALL SUMMARY
+================================================================================
+Total PDFs: 13
+Total pages: 93
+Pages with footnotes: 24
+Pages with separator found: 41
+Pages using cyan base: 52
+
+Results saved to: final_robust_test_all\test_results.json
+Visualizations saved to: final_robust_test_all/

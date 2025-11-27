@@ -1,0 +1,45 @@
+Con el MRTF, en episodios de incrementos en la recaudación, el límite al GG lo impone
+la regla de gasto, en cuyo caso la regla será acíclica, siempre que el tope al crecimiento
+del gasto este alineado con el comportamiento de largo plazo de los ingresos. En
+contraste, cuando la recaudación se desacelera, el límite lo impone la regla de resultado
+económico, generando un gasto procíclico: ante una contracción económica que reduce
+la recaudación el gasto debe disminuir para cumplir con dicho límite. Por otro lado, si el
+límite del gasto está dado por la regla de deuda, la regla es también procíclica pues si
+cae el PBI, aumenta el ratio de deuda pública respecto al PBI y el gasto público se debe
+contraer. En suma, la aplicación conjunta de las reglas macrofiscales resulta en un gasto
+público con topes al crecimiento durante los auges y procíctico durante las recesiones.
+Limitar la prociclidad de este conjunto de reglas, dependerá entonces del tope
+establecido por la regla de gasto.
+El CF considera que en vista del historia! de frecuentes modificaciones a las reglas
+macrofiscales, lo cual resta credibilidad al gobierno, cambios adicionales pueden
+debilitarlo aún más en su compromiso con la sostenibilidad de las finanzas públicas. En
+este sentido, el CF recomienda que el diseño de reglas macrofiscales debe contemplar 0 F)
+un horizonte de largo plazo y evitar sucesivos cambios en el futuro. Q$ &º,',
+1
+Por otro lado, el CF considera que el uso de variables observables monitoreables, como ©F
+es el caso del límite a la tasa de crecimiento del gasto público, basado en un promedio % Ae
+móvil de las tasas de crecimiento del PBI pasadas y proyectadas, o el déficit fiscal y la £SIDEN-
+deuda pública como porcentajes del PBI observado, contribuye a la transparencia en la
+rendición de cuentas de la política fiscal. Asimismo, el CF opina que la regla de déficit
+fiscal junto a su convergencia planteada a 1 por ciento del PBI en el 2021, así como la
+regla que limita el tamaño de la deuda pública, promueve la sostenibilidad de dicha
+deuda.
+Sin embargo, el CF advierte que, como contraparte, la aplicación de las reglas
+macrofiscales puede incrementar la prociclicidad del gasto público, tanto con referencia
+al nivel de actividad económica local como a los precios internacionales de nuestras
+exportaciones, en particular en periodos en que se registren caídas en los ingresos
+fiscales. Como señaló el CF en su informe N* 007-2016-CF', los ingresos fiscales de la
+economía peruana, al estar estrechamente vinculados a las exportaciones de materias
+primas, son altamente volátiles. Si el gasto público fluctúa con los ciclos de los ingresos
+fiscales, exacerba la volatilidad de la economía, aspecto que la política fiscal debe
+buscar limitar.
+En relación a la regla de deuda, el CF considera positivo la introducción de mayor
+flexibilidad a dicha regla a través de la incorporación de un margen de tolerancia para
+desvíos sobre esta regla. Sin embargo, el CF recomienda evaluar si el límite establecido
+en 30 por ciento del PBI sigue siendo el adecuado para la economía peruana,
+considerando los cambios que se han dado en el escenario macrofiscal desde que se
+estableció dicho límite?2. Así mismo, el CF considera necesario que se especifiquen las
+?1 Disponible en https://www.cf…gob.pehmages/00€UMENTOS/Informe_CF_N_007-2016.pdf
+22 El límite de deuda de 30 por ciento del PBI se estableció en el año 2013 como medida correctiva en la LFRTF. En ese
+año se preveía para el año 2016 un déficit fiscal de O por ciento del P6I y un nivel de deuda pública de 16,9 por ciento
+6/13

@@ -1,0 +1,40 @@
+Aspectos generales
+El Consejo Fiscal coincide con el MEF en que la metodología actual no logra reducir
+significativamente el carácter pro-cíclico del gasto público, lo cual es una característica deseable
+del accionar de la política fiscal.
+Asimismo, en cuanto al proceso de revisión y actualización de la metodología, el Consejo Fiscal
+sugiere una flexibilidad mayor a la establecida en el artículo 17 de la Ley de Fortalecimiento de
+la Responsabilidad y Transparencia Fiscal, pero acompañada de su opinión técnica. Esta
+propuesta implica derogar el artículo de dicha norma que establece que la metodología para el
+cálculo del resultado estructural del SPNF solo puede revisarse cada 3 años, y exigir en su lugar
+que cualquier modificación que se haga a la metodología en cuestión cuente con opinión técnica
+del Consejo Fiscal. La razón esencial es la persistente incertidumbre respecto a la dinámica de
+los precios de commodities que afectan directa y significativamente los ingresos fiscales, lo cual
+hace necesaria la introducción de cierta flexibilidad a fin de que la metodología refleje de forma
+correcta los hechos y mejore la calidad del proceso presupuestario anual.
+Respecto a la metodología de cálculo del resultado estructural del SPNF propuesta por el MEF,
+los principales supuestos han sido discutidos con el Consejo Fiscal, acordándose utilizar índices
+y filtros determinados. Estos son: (i) el uso de índices de precios de minerales y de hidrocarburos
+construidos mediante el método de Laspeyres encadenado, (ii) el cálculo del nivel potencial del
+PBI mediante el uso de una función de producción ajustada por el filtro estadístico de Baxter y
+King, (iii) la aplicación de un promedio móvil de 15 años con componentes histórico (11 años),
+JOF el año actual y proyectado (3 años) para el cálculo del precio tendencial de los índices de precios
+minero y de hidrocarburos, y (iv) las estimaciones de la elasticidad de la relación entre los
+ingresos corrientes del Gobierno General y el PBI, y de los ingresos por minería e hidrocarburos
+A'º£s¡oº& resp<_ecto .al cada uno de sus índices de precios. Cada uno de esos aspectos es descrito a
+continuación.
+Índices de precios de minerales y de hidrocarburos
+Respecto al uso de los índices de precios de Laspeyres encadenado para minerales e
+hidrocarburos, el Consejo Fiscal considera apropiada esta opción. No existen diferencias
+significativas en el resultado estructural del SPNF cuando se utilizan otros índices encadenados
+o flexibles existentes en la literatura. Además, su uso permite homogenizar los índices
+construidos por el MEF con el de otras instituciones, como el Banco Central de Reserva del Perú
+(BCRP).
+Sin embargo, el Consejo Fiscal considera necesario explorar a futuro la factibilidad de la
+desagregación de los ingresos por minería e hidrocarburos en cuentas más específicas por cada
+tipo de commodity (ingresos fiscales por cobre, oro, petróleo, etc.), de tal forma que se evite la
+dependencia de supuestos respecto a la idoneidad de los diferentes índices de precios en el
+cálculo estructural y se les reemplace por el precio del metal o hidrocarburo correspondiente.
+De esta forma se pueden reducir posibles errores de cálculo del índice agregado. El Consejo
+Fiscal ha recomendado al MEF trabajar con la SUNAT para explorar las posibilidades de contar
+con la información mencionada.
