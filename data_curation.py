@@ -1918,7 +1918,7 @@ def clean_editable_extracted_text(text: str, aggressive: bool = False) -> dict:
 
     Steps:
         1. Remove dotted signature lines
-        2. Remove date + signature blocks
+        2. Remove ALL Lima date patterns (improved)
         3. Remove standalone uppercase lines
         4. Remove standalone section headers
         5. Remove graph/table titles
@@ -1926,6 +1926,7 @@ def clean_editable_extracted_text(text: str, aggressive: bool = False) -> dict:
         7. Replace rare symbols
         8. Normalize whitespace
         9. Remove enumeration (optional, aggressive mode only)
+        10. Remove false paragraph breaks (NEW)
 
     Example:
         >>> result = clean_editable_extracted_text(raw_text)
@@ -1981,6 +1982,10 @@ def clean_editable_extracted_text(text: str, aggressive: bool = False) -> dict:
         text = _remove_enumeration(text)
         steps_applied.append("Remove enumeration (aggressive)")
 
+    # Step 10: Remove false paragraph breaks (NEW - added for final polish)
+    text = _remove_false_paragraph_breaks(text)
+    steps_applied.append("Remove false paragraph breaks")
+
     cleaned_length = len(text)
     reduction_pct = ((original_length - cleaned_length) / original_length * 100) if original_length > 0 else 0.0
 
@@ -2009,14 +2014,26 @@ def _remove_dotted_signatures(text: str) -> str:
 
 def _remove_date_signature_blocks(text: str) -> str:
     """
-    STEP 2: Remove Lima date followed by uppercase organization/name.
+    STEP 2: Remove ALL Lima date patterns (improved version).
+
+    Removes ANY occurrence of "Lima, DD de mes de YYYY" pattern, regardless of what follows.
+    This includes standalone dates and dates followed by signatures.
 
     Examples:
-        - "\\n\\nLima, 23 de mayo de 2022\\n\\nCONSEJO FISCAL DEL PERÚ"
+        - "\\n\\nLima, 23 de mayo de 2022\\n\\n"
         - "\\n\\nLima, 15 de agosto de 2019\\n\\nWALDO MENDOZA BELLIDO"
+        - "\\n\\nLima, 02 de marzo de 2023."
     """
-    pattern = r'\n*Lima,?\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}[\s\n]+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{10,})(?=\n|$)'
-    return re.sub(pattern, '', text)
+    # Pattern: Lima, DD de mes de YYYY followed by optional period and/or newlines
+    # Captures the entire date block including trailing whitespace
+    pattern = r'\n*Lima,?\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}\.?[\s\n]*'
+    text = re.sub(pattern, '\n\n', text)
+
+    # Also remove any uppercase names/organizations that may follow (legacy pattern)
+    pattern_legacy = r'\n\n([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{10,})\n\n'
+    text = re.sub(pattern_legacy, '\n\n', text)
+
+    return text
 
 
 def _remove_uppercase_lines(text: str) -> str:
@@ -2190,6 +2207,36 @@ def _remove_enumeration(text: str) -> str:
     """
     pattern = r'\n\n([a-z]|[ivxIVX]+|\d+)\)\s*\n\n'
     return re.sub(pattern, '\n\n', text)
+
+
+def _remove_false_paragraph_breaks(text: str) -> str:
+    """
+    STEP 10: Remove false paragraph breaks before lowercase letters.
+
+    A paragraph NEVER starts with a lowercase letter in proper Spanish text.
+    This removes OCR/extraction artifacts where mid-sentence line breaks were
+    incorrectly interpreted as paragraph breaks.
+
+    Examples:
+        - "con\\n\\nla reciente propuesta" -> "con la reciente propuesta"
+        - "asociado\\n\\na las APP" -> "asociado a las APP"
+
+    Also removes \\n\\n before:
+        - Years: "fiscal\\n\\n2020" -> "fiscal 2020"
+        - Common connectors: "con\\n\\nde" -> "con de"
+    """
+    # Remove ALL \n\n before lowercase letters
+    # This is the main rule - paragraphs NEVER start with lowercase
+    text = re.sub(r'\n\n([a-záéíóúñü])', r' \1', text)
+
+    # Remove \n\n before years
+    text = re.sub(r'\n\n([12]\d{3})', r' \1', text)
+
+    # Remove \n\n before common connectors (extra safety)
+    connectors = r'(?:de|del|la|el|los|las|un|una|en|con|por|para|que|se|y|o|su|sus|sobre|al|ha|han|lo|le)'
+    text = re.sub(r'\n\n(' + connectors + r'\s)', r' \1', text)
+
+    return text
 
 
 def clean_editable_extracted_text_batch(

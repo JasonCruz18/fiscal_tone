@@ -1,10 +1,10 @@
 """
 Clean Extracted Text from Scanned PDFs
 
-Enhanced 6-stage cleaning pipeline:
+7-stage cleaning pipeline optimized for CF opinion extraction:
 0. Preliminary text normalization (spaces, OCR artifacts)
-1. Filter by keywords (remove text before "Opinión del CF") - ROBUST implementation
-2. Remove false paragraph breaks (\n\n before lowercase, years, etc.)
+1. Filter by keywords ONLY FROM PAGE 2+ (remove text before "Opinión del CF")
+2. Remove ALL false paragraph breaks (\n\n before lowercase)
 3. Remove headers/titles (short text surrounded by \n\n)
 4. Remove annexes (truncate after "Anexo")
 5. Remove letter pages (delete pages with "Carta")
@@ -16,25 +16,16 @@ Output: scanned_pdfs_clean_extracted_text.json
 import json
 import re
 from pathlib import Path
-from tqdm import tqdm
 
 
 def stage0_preliminary_cleaning(data, enabled=True):
     """
     Stage 0: Preliminary text normalization
 
-    Cleans common OCR artifacts and spacing issues:
-    - Removes extra spaces before punctuation (" <", " ;", " :", " ?", " !", etc.)
-    - Normalizes multiple spaces to single space
-    - Removes spaces before/after newlines
-    - Removes trailing/leading whitespace per page
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-
-    Returns:
-        Cleaned data
+    Cleans common OCR artifacts:
+    - Removes extra spaces before punctuation (" <", " ;", etc.)
+    - Normalizes multiple spaces
+    - Removes spaces around newlines
     """
     if not enabled:
         return data
@@ -46,69 +37,55 @@ def stage0_preliminary_cleaning(data, enabled=True):
         text = entry['text']
         original_length = len(text)
 
-        # Remove spaces before punctuation and special characters
-        # Common OCR artifacts: " <", " >", " ;", " :", " ?", " !", " ,", " .", " )", " ]", " }"
+        # Remove spaces before punctuation
         text = re.sub(r' +([<>;:?!,.\)\]\}])', r'\1', text)
-
-        # Remove spaces after opening brackets/parentheses
+        # Remove spaces after opening brackets
         text = re.sub(r'([\(\[\{]) +', r'\1', text)
-
-        # Normalize multiple spaces to single space (except in \n\n)
+        # Normalize multiple spaces
         text = re.sub(r'(?<!\n) {2,}(?!\n)', ' ', text)
-
-        # Remove spaces before/after newlines (but preserve \n\n)
-        text = re.sub(r' +\n', '\n', text)  # Space before newline
-        text = re.sub(r'\n +', '\n', text)  # Space after newline (except for intentional indentation)
-
-        # Remove trailing/leading whitespace
+        # Remove spaces before/after newlines
+        text = re.sub(r' +\n', '\n', text)
+        text = re.sub(r'\n +', '\n', text)
+        # Trim
         text = text.strip()
 
         entry['text'] = text
         total_chars_removed += (original_length - len(text))
         cleaned_data.append(entry)
 
-    print(f"  Stage 0: Cleaned {total_chars_removed:,} chars (extra spaces, OCR artifacts)")
+    print(f"  Stage 0: Cleaned {total_chars_removed:,} chars (OCR artifacts)")
     return cleaned_data
 
 
 def stage1_filter_keywords(data, enabled=True):
     """
-    Stage 1: ROBUST keyword filtering - Remove all text before opinion keywords
+    Stage 1: CRITICAL keyword filtering
 
-    Uses regex patterns matching editable PDF strategy:
-    - Searches from page 1+ (not just 2+)
-    - Patterns: "Opinión del Consejo Fiscal", "Opinión del CF", "Opinión de CF"
-    - Supports optional numbering: "I. Opinión...", "1. Opinión...", etc.
-    - Searches both at page start AND with \n\n prefix
-    - Removes ALL text before FIRST valid occurrence (including previous pages)
+    RULES (as specified by user):
+    - Search ONLY from page 2+ (page 1 has document titles, not opinions)
+    - Look for "Opinión del CF" / "Opinión del Consejo Fiscal" / "Opinión de CF"
+    - With optional numbering: "I. Opinión...", "II. Opinión...", etc.
+    - Keyword must be a section header (at page start OR after \n\n)
+    - Remove ALL text before keyword (including previous pages)
+    - PRESERVE the keyword (it's the opinion section header)
 
-    Critical: This ensures ONLY Fiscal Council opinions remain, excluding
-    summaries, legal content, and other preliminary text.
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-
-    Returns:
-        Filtered data with text before opinion keywords removed
+    Examples:
+    - Page 4: "\n\nOpinión de CF sobre las proyecciones..." → start from page 4
+    - Page 3: "\n\nII. — Opinión de CF sobre el proyecto..." → start from page 3
     """
     if not enabled:
         return data
 
-    # Regex patterns matching editable PDF strategy (data_curation.py:1175-1178)
-    # Pattern explanation:
-    # - (?:(?:\d+|[IVX]+)\.?\s*)? : Optional number (Arabic/Roman) with optional dot and spaces
-    # - Opinión del? : "Opinión del" or "Opinión de"
-    # - Consejo Fiscal|CF : Either full name or abbreviation
-    # - \b : Word boundary (ensures "CF" doesn't match "CFO")
-    opinion_patterns = [
-        r'(?:(?:\d+|[IVX]+)\.?\s*[—\-]?\s*)?Opinión del? Consejo Fiscal\b',  # "Opinión del Consejo Fiscal", "I. Opinión...", etc.
-        r'(?:(?:\d+|[IVX]+)\.?\s*[—\-]?\s*)?Opinión del? CF\b',               # "Opinión del CF", "1. Opinión de CF", etc.
+    # Opinion keyword patterns
+    patterns = [
+        r'Opinión del Consejo Fiscal',
+        r'Opinión del CF',
+        r'Opinión de CF',
     ]
 
     cleaned_data = []
     removed_pages = 0
-    removed_text_count = 0
+    removed_chars = 0
 
     # Group by PDF
     pdf_groups = {}
@@ -120,247 +97,186 @@ def stage1_filter_keywords(data, enabled=True):
 
     # Process each PDF
     for pdf_name, pages in pdf_groups.items():
-        # Sort by page number
         pages = sorted(pages, key=lambda x: x['page'])
 
-        # Find FIRST valid opinion keyword across ALL pages
+        # Find keyword starting from PAGE 2+ (ignore page 1)
         found_page = None
         found_pos = None
-        found_pattern = None
 
-        for entry in pages:
-            text = entry['text']
+        for page in pages:
+            # CRITICAL: Skip page 1
+            if page['page'] < 2:
+                continue
 
-            # Search for keywords in two locations:
-            # 1. At page start (after optional whitespace)
-            # 2. After \n\n (new paragraph marker)
+            text = page['text']
 
-            for pattern in opinion_patterns:
-                # Check at page start
-                match_start = re.search(r'^\s*' + pattern, text)
-                if match_start:
-                    found_page = entry['page']
-                    found_pos = match_start.start()
-                    found_pattern = pattern
-                    break
+            # Check if any keyword appears as SECTION HEADER
+            # Must be: (1) after \n\n AND (2) after significant content (position > 200)
+            # This filters out document titles (early in page) and keeps section headers (middle of page)
+            for pattern in patterns:
+                # Allow optional section numbering: I., II., 1., 2., ll. (OCR errors), etc.
+                # OCR often confuses: II → ll, III → lll, IV → lV, etc.
+                # So allow any combination of letters/digits followed by optional dot/separator
+                # Allow optional punctuation before keyword: ', ", etc.
+                full_pattern = r'(?:(?:\d+|[a-zA-Z]+)\.?\s*[—\-]?\s*)?[\'"]?\s*' + pattern
 
-                # Check after \n\n (new paragraph)
-                match_paragraph = re.search(r'\n\n\s*' + pattern, text)
-                if match_paragraph:
-                    found_page = entry['page']
-                    found_pos = match_paragraph.start()
-                    found_pattern = pattern
+                # ONLY accept keywords AFTER \n\n (section headers)
+                match = re.search(r'\n\n\s*' + full_pattern, text)
+                if match and match.start() > 200:  # Must be after position 200 (section header, not title)
+                    found_page = page['page']
+                    found_pos = match.start()
                     break
 
             if found_page:
                 break
 
-        # Apply filtering based on found keyword
+        # Apply filtering
         if found_page:
-            for entry in pages:
-                if entry['page'] < found_page:
-                    # Remove entire page (before keyword page)
+            for page in pages:
+                if page['page'] < found_page:
+                    # Remove entire page before keyword
                     removed_pages += 1
-                    removed_text_count += len(entry['text'])
-                elif entry['page'] == found_page:
-                    # Keep text from keyword onwards (including the paragraph marker)
-                    original_text = entry['text']
+                    removed_chars += len(page['text'])
+                elif page['page'] == found_page:
+                    # Remove text before keyword, KEEP keyword
+                    text = page['text']
 
-                    # Re-search to find exact position
-                    match_start = re.search(r'^\s*' + found_pattern, original_text)
-                    match_para = re.search(r'\n\n\s*' + found_pattern, original_text)
+                    # Find keyword position again (ONLY after \n\n)
+                    keyword_pos = None
+                    for pattern in patterns:
+                        full_pattern = r'(?:(?:\d+|[a-zA-Z]+)\.?\s*[—\-]?\s*)?[\'"]?\s*' + pattern
 
-                    if match_start:
-                        # Found at start - keep from there
-                        entry['text'] = original_text[match_start.start():]
-                        removed_text_count += match_start.start()
-                    elif match_para:
-                        # Found after \n\n - keep from the \n\n onwards
-                        entry['text'] = original_text[match_para.start():]
-                        removed_text_count += match_para.start()
+                        # ONLY search after \n\n (section headers)
+                        match = re.search(r'\n\n\s*' + full_pattern, text)
+                        if match and match.start() > 200:
+                            keyword_pos = match.start()
+                            break
 
-                    cleaned_data.append(entry)
+                    if keyword_pos is not None:
+                        removed_chars += keyword_pos
+                        page['text'] = text[keyword_pos:]
+
+                    cleaned_data.append(page)
                 else:
-                    # Keep entire page (after keyword page)
-                    cleaned_data.append(entry)
+                    # Keep all pages after keyword page
+                    cleaned_data.append(page)
         else:
-            # No keyword found - keep all pages (might be special document format)
-            print(f"    ⚠️ WARNING: No opinion keyword found in {pdf_name} - keeping all pages")
+            # No keyword found - keep ALL pages from page 1
             cleaned_data.extend(pages)
 
-    print(f"  Stage 1: Removed {removed_pages} pages, {removed_text_count:,} chars before opinion keywords")
+    print(f"  Stage 1: Removed {removed_pages} pages, {removed_chars:,} chars before keywords")
     return cleaned_data
 
 
 def stage2_remove_false_paragraph_breaks(data, enabled=True):
     """
-    Stage 2: Remove false paragraph breaks (\n\n before lowercase/years)
+    Stage 2: Remove ALL false paragraph breaks
 
-    Identifies and removes erroneous \n\n markers from OCR that indicate
-    fake paragraph starts:
+    As per user requirement: "Un párrafo nunca inicia con minúsculas"
 
-    1. \n\n before lowercase letter (continuation of paragraph)
-       Example: "...del Consejo Fiscal \n\nque se enfoca en..." → remove \n\n
-
-    2. \n\n before 4-digit years
-       Example: "...durante el año \n\n2018" → remove \n\n
-
-    3. \n\n before short connecting words/prepositions
-       Example: "...finanzas públicas \n\nde las entidades" → remove \n\n
-
-    Strategy: Replace false \n\n with single space while preserving
-    true paragraph breaks (before uppercase letters).
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-
-    Returns:
-        Data with false paragraph breaks removed
+    Removes:
+    1. ALL \n\n before lowercase letters
+    2. \n\n before years (2018, etc.)
+    3. \n\n before connectors (de, del, en, etc.)
     """
     if not enabled:
         return data
 
     cleaned_data = []
-    total_breaks_removed = 0
+    total_removed = 0
 
     for entry in data:
         text = entry['text']
         original_count = text.count('\n\n')
 
-        # STEP 1: Remove \n\n in middle of split words (OCR artifact) - MOST SPECIFIC
-        # Pattern: word ending + \n\n + word starting with lowercase (likely continuation)
-        # Example: "respectiva\n\nprobabilidad" → "respectiva probabilidad"
-        # Example: "requerimiento\n\nfinanciero" → "requerimiento financiero"
-        # Apply if: previous char is letter AND next word is 3-30 lowercase letters
-        text = re.sub(r'([a-záéíóúñü])\n\n([a-záéíóúñü]{3,30})(?=[\s,.\)])', r'\1 \2', text)
+        # Remove ALL \n\n before lowercase letters
+        # This is the main rule - paragraphs NEVER start with lowercase
+        text = re.sub(r'\n\n([a-záéíóúñü])', r' \1', text)
 
-        # STEP 2: Remove \n\n before connecting words/articles (common in Spanish)
-        # These prepositions/articles/conjunctions never start paragraphs
+        # Remove \n\n before years
+        text = re.sub(r'\n\n([12]\d{3})', r' \1', text)
+
+        # Remove \n\n before common connectors (extra safety)
         connectors = r'(?:de|del|la|el|los|las|un|una|en|con|por|para|que|se|y|o|su|sus|sobre|al|ha|han)'
         text = re.sub(r'\n\n(' + connectors + r'\s)', r' \1', text)
 
-        # STEP 3: Remove \n\n before 4-digit years
-        # Pattern: \n\n followed by 4 digits (1900-2099)
-        text = re.sub(r'\n\n([12]\d{3})', r' \1', text)
-
-        # NOTE: We do NOT remove all \n\n before lowercase letters because that's too aggressive
-        # Some paragraphs legitimately start with lowercase (lists, continuations, etc.)
-
         new_count = text.count('\n\n')
-        breaks_removed = original_count - new_count
-        total_breaks_removed += breaks_removed
+        total_removed += (original_count - new_count)
 
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 2: Removed {total_breaks_removed} false paragraph breaks")
+    print(f"  Stage 2: Removed {total_removed} false paragraph breaks")
     return cleaned_data
 
 
 def stage3_remove_headers_and_titles(data, enabled=True):
     """
-    Stage 3: Remove headers, titles, and subtitles
+    Stage 3: Remove headers, titles, subtitles
 
-    Detects and removes short text blocks that are section headers/titles,
-    identified by being surrounded by \n\n markers within a short distance:
+    Executed AFTER keyword filtering, so it removes:
+    - Page 1 titles (for PDFs without keywords)
+    - Section headers/subtitles throughout document
 
-    Pattern: \n\n[SHORT TEXT]\n\n
+    Pattern: Short text (<120 chars) surrounded by \n\n
 
-    Examples to remove:
-    - "\n\nLos riesgos para la consolidación fiscal\n\n"
-    - "Opinión del CF sobre el cumplimiento de las reglas fiscales\n\n"
-    - "\n\nÍndices de precios de minerales\n\n"
-
-    Strategy:
-    1. Find text between \n\n...\n\n
-    2. If length < threshold (default 120 chars ~2-3 lines)
-    3. Remove the header but keep ONE \n\n for the following paragraph
-
-    Special case: Headers at page start (no leading \n\n)
-    - Pattern: ^[SHORT TEXT]\n\n at beginning of page
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-        max_header_length: Maximum character count for text to be considered header
-
-    Returns:
-        Data with headers/titles removed
+    EXCEPTION: Preserve headers containing "Opinión del CF" keywords
     """
     if not enabled:
         return data
 
     cleaned_data = []
-    total_headers_removed = 0
-    max_header_length = 120  # ~2-3 lines of text
+    total_removed = 0
+    max_length = 120
 
     for entry in data:
         text = entry['text']
 
-        # Pattern 1: \n\n[short text]\n\n (headers in middle of text)
-        # Use regex to find and remove short blocks between double newlines
+        # Pattern 1: \n\n[short text]\n\n
         def replace_header(match):
-            nonlocal total_headers_removed
-            header_text = match.group(1)
+            nonlocal total_removed
+            header = match.group(1)
 
-            # CRITICAL: DO NOT remove headers containing opinion keywords
-            # These mark the start of CF opinions and must be preserved
-            if 'Opinión del CF' in header_text or 'Opinión del Consejo Fiscal' in header_text or 'Opinión de CF' in header_text:
-                return match.group(0)  # Keep as-is
+            # DO NOT remove if contains opinion keywords
+            if 'Opinión del CF' in header or 'Opinión del Consejo Fiscal' in header or 'Opinión de CF' in header:
+                return match.group(0)
 
-            # Only remove if short enough to be header
-            if len(header_text) <= max_header_length:
-                total_headers_removed += 1
-                return '\n\n'  # Keep one \n\n for following paragraph
+            # Remove if short
+            if len(header) <= max_length:
+                total_removed += 1
+                return '\n\n'
             else:
-                return match.group(0)  # Keep as-is if too long
+                return match.group(0)
 
         text = re.sub(r'\n\n(.+?)\n\n', replace_header, text, flags=re.DOTALL)
 
-        # Pattern 2: ^[short text]\n\n (headers at page start)
-        # Match from start of string to first \n\n
-        match_start_header = re.match(r'^(.+?)\n\n', text, flags=re.DOTALL)
-        if match_start_header:
-            header_text = match_start_header.group(1)
+        # Pattern 2: ^[short text]\n\n (at page start)
+        match = re.match(r'^(.+?)\n\n', text, flags=re.DOTALL)
+        if match:
+            header = match.group(1)
 
             # DO NOT remove if contains opinion keywords
-            if 'Opinión del CF' in header_text or 'Opinión del Consejo Fiscal' in header_text or 'Opinión de CF' in header_text:
-                pass  # Keep as-is
-            elif len(header_text) <= max_header_length:
-                # Remove header, keep \n\n for following paragraph
-                text = text[match_start_header.end(1):]  # Keep the \n\n
-                total_headers_removed += 1
+            if 'Opinión del CF' not in header and 'Opinión del Consejo Fiscal' not in header and 'Opinión de CF' not in header:
+                if len(header) <= max_length:
+                    text = text[match.end(1):]
+                    total_removed += 1
 
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 3: Removed {total_headers_removed} headers/titles")
+    print(f"  Stage 3: Removed {total_removed} headers/titles")
     return cleaned_data
 
 
 def stage4_remove_annexes(data, enabled=True):
-    """
-    Stage 4: Truncate text after "Anexo" or "ANEXO"
-
-    Searches for variations: Anexo, ANEXO, ANEXO:, Anexo:, ANEXOS
-    Removes all text after first occurrence within each PDF.
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-
-    Returns:
-        Filtered data
-    """
+    """Stage 4: Remove annexes"""
     if not enabled:
         return data
 
     cleaned_data = []
     removed_pages = 0
-    removed_text_count = 0
+    removed_chars = 0
 
-    # Group by PDF
     pdf_groups = {}
     for entry in data:
         pdf = entry['pdf_filename']
@@ -368,147 +284,116 @@ def stage4_remove_annexes(data, enabled=True):
             pdf_groups[pdf] = []
         pdf_groups[pdf].append(entry)
 
-    # Process each PDF
     for pdf_name, pages in pdf_groups.items():
-        # Sort by page number
         pages = sorted(pages, key=lambda x: x['page'])
 
-        # Find first annexe occurrence
-        anexo_patterns = ['ANEXO:', 'ANEXOS', 'ANEXO', 'Anexo:', 'Anexos', 'Anexo']
+        # Find first anexo with robust OCR-tolerant patterns
+        # OCR errors: ANEXO → ANEX0 (zero), AN EXO (space), ANExo (mixed case), etc.
+        # Use regex for flexibility
+        anexo_patterns = [
+            r'ANEX[O0O]S?\s*:?',  # ANEXO, ANEXOS, ANEX0, ANEX0S with optional colon
+            r'Anex[o0]\s*:?',     # Anexo, Anex0 with optional colon
+            r'AN\s*EX[O0]S?\s*:?', # AN EXO, AN EX0 (with space)
+        ]
+
         found_page = None
         found_at_start = False
+        found_pattern = None
 
-        for entry in pages:
-            text = entry['text']
+        for page in pages:
+            text = page['text']
 
-            # Check if page STARTS with anexo pattern (after optional whitespace/newlines)
             for pattern in anexo_patterns:
-                if re.match(r'^[\s\n]*' + re.escape(pattern), text):
-                    found_page = entry['page']
+                # Check at page start (case insensitive for robustness)
+                if re.match(r'^[\s\n]*' + pattern, text, re.IGNORECASE):
+                    found_page = page['page']
                     found_at_start = True
+                    found_pattern = pattern
                     break
 
-                # Check for \n\n + pattern (anexo as new section)
-                if f'\n\n{pattern}' in text:
-                    found_page = entry['page']
+                # Check after \n\n (section header)
+                if re.search(r'\n\n\s*' + pattern, text, re.IGNORECASE):
+                    found_page = page['page']
                     found_at_start = False
+                    found_pattern = pattern
                     break
 
             if found_page:
                 break
 
-        # Filter based on anexo occurrence
+        # Remove from anexo onwards
         if found_page:
-            for entry in pages:
-                if entry['page'] < found_page:
-                    cleaned_data.append(entry)
-                elif entry['page'] == found_page:
+            for page in pages:
+                if page['page'] < found_page:
+                    cleaned_data.append(page)
+                elif page['page'] == found_page:
                     if found_at_start:
-                        # Entire page is anexo - remove it
+                        # Entire page starts with anexo - remove it
                         removed_pages += 1
-                        removed_text_count += len(entry['text'])
+                        removed_chars += len(page['text'])
                     else:
                         # Truncate at anexo position
-                        text = entry['text']
+                        text = page['text']
                         truncate_pos = None
-                        for pattern in anexo_patterns:
-                            pos = text.find(f'\n\n{pattern}')
-                            if pos != -1:
-                                truncate_pos = pos
-                                break
 
-                        if truncate_pos:
-                            removed_text_count += len(text) - truncate_pos
-                            entry['text'] = text[:truncate_pos]
-                            if entry['text'].strip():  # Only keep if not empty
-                                cleaned_data.append(entry)
+                        # Find the anexo position using found_pattern
+                        if found_pattern:
+                            match = re.search(r'\n\n\s*' + found_pattern, text, re.IGNORECASE)
+                            if match:
+                                truncate_pos = match.start()
+
+                        if truncate_pos is not None:
+                            removed_chars += len(text) - truncate_pos
+                            page['text'] = text[:truncate_pos]
+                            if page['text'].strip():
+                                cleaned_data.append(page)
                             else:
                                 removed_pages += 1
                 else:
-                    # Remove all pages after anexo
                     removed_pages += 1
-                    removed_text_count += len(entry['text'])
+                    removed_chars += len(page['text'])
         else:
-            # No anexo found - keep all
             cleaned_data.extend(pages)
 
-    print(f"  Stage 4: Removed {removed_pages} pages, {removed_text_count:,} chars (annexes)")
+    print(f"  Stage 4: Removed {removed_pages} pages, {removed_chars:,} chars (annexes)")
     return cleaned_data
 
 
 def stage5_remove_letter_pages(data, enabled=True):
-    """
-    Stage 5: Remove pages containing "Carta N*" pattern
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-
-    Returns:
-        Filtered data
-    """
+    """Stage 5: Remove pages with 'Carta N*' pattern"""
     if not enabled:
         return data
 
     cleaned_data = []
-    removed_pages = 0
-    removed_text_count = 0
+    removed = 0
 
     for entry in data:
-        text = entry['text']
-
-        # Check for "Carta" pattern (case insensitive)
-        if re.search(r'Carta\s+N[*°º]?\s*\d', text, re.IGNORECASE):
-            removed_pages += 1
-            removed_text_count += len(text)
+        if re.search(r'Carta\s+N[*°º]?\s*\d', entry['text'], re.IGNORECASE):
+            removed += 1
         else:
             cleaned_data.append(entry)
 
-    print(f"  Stage 5: Removed {removed_pages} letter pages ({removed_text_count:,} chars)")
+    print(f"  Stage 5: Removed {removed} letter pages")
     return cleaned_data
 
 
-def stage6_aggressive_cleaning(data, enabled=True, min_paragraph_length=50):
-    """
-    Stage 6: Aggressive paragraph-level noise reduction
-
-    Processes each paragraph (split by \n\n) and removes:
-    1. Titles/headers containing document names (Informe N*, CF-, etc.)
-    2. Dates (Lima, dd de mes de año)
-    3. All-caps names (>50% uppercase - likely names like WALDO MENDOZA)
-    4. Page numbers (X/Y format)
-    5. Very short paragraphs (<min_paragraph_length chars)
-    6. Section headers (Conclusiones, Esquema fiscal, etc.)
-    7. Signatures (Presidente Consejo Fiscal, etc.)
-
-    Character-level cleaning:
-    - Remove solitary parentheses/brackets
-    - Clean excessive special characters (*, ?, !, etc.)
-    - Remove underscores and pipes
-
-    Args:
-        data: List of dicts with pdf_filename, page, text
-        enabled: Enable this stage
-        min_paragraph_length: Minimum characters for valid paragraph
-
-    Returns:
-        Cleaned data
-    """
+def stage6_aggressive_cleaning(data, enabled=True):
+    """Stage 6: Aggressive paragraph-level cleaning"""
     if not enabled:
         return data
 
     cleaned_data = []
-    paragraphs_removed = 0
+    paras_removed = 0
     chars_removed = 0
 
-    # Removal patterns (case-insensitive)
+    # Patterns to remove
     removal_patterns = [
-        r'Informe\s+N[*°º]?\s*\d',  # Informe N* 001-2018
-        r'CF[-\s]*\d',               # CF-2018, CF 001
-        r'Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}',  # Lima, 24 de enero de 2018
-        r'\d+\s*/\s*\d+',            # Page numbers: 5/10
-        r'Presidente.*Consejo Fiscal',  # Signatures
-        r'Conclusiones?\s*:?$',      # Section headers
+        r'Informe\s+N[*°º]?\s*\d',
+        r'CF[-\s]*\d',
+        r'Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}',
+        r'\d+\s*/\s*\d+',
+        r'Presidente.*Consejo Fiscal',
+        r'Conclusiones?\s*:?$',
         r'Esquema\s+[Ff]iscal',
         r'Consejo\s+Fiscal\s*:?$',
     ]
@@ -517,91 +402,160 @@ def stage6_aggressive_cleaning(data, enabled=True, min_paragraph_length=50):
         text = entry['text']
         original_len = len(text)
 
-        # Split into paragraphs
         paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+        kept = []
 
-        kept_paragraphs = []
         for para in paragraphs:
-            # Check removal conditions
             should_remove = False
 
-            # 1. Check against removal patterns
+            # Check patterns
             for pattern in removal_patterns:
                 if re.search(pattern, para, re.IGNORECASE):
                     should_remove = True
                     break
 
-            # 2. Too short
-            if len(para) < min_paragraph_length:
+            # Too short
+            if len(para) < 50:
                 should_remove = True
 
-            # 3. All-caps names (>50% uppercase letters)
-            alpha_chars = [c for c in para if c.isalpha()]
-            if alpha_chars:
-                uppercase_ratio = sum(1 for c in alpha_chars if c.isupper()) / len(alpha_chars)
-                if uppercase_ratio > 0.5 and len(para) < 100:  # Short all-caps text
+            # All-caps names
+            alpha = [c for c in para if c.isalpha()]
+            if alpha:
+                if sum(1 for c in alpha if c.isupper()) / len(alpha) > 0.5 and len(para) < 100:
                     should_remove = True
 
             if should_remove:
-                paragraphs_removed += 1
+                paras_removed += 1
                 chars_removed += len(para)
             else:
-                # Character-level cleaning
-                para_clean = para
+                # Character cleaning
+                para = re.sub(r'\s*\(\s*\)', '', para)
+                para = re.sub(r'\s*\[\s*\]', '', para)
+                para = re.sub(r'[*]{2,}', '', para)
+                para = re.sub(r'[?]{2,}', '?', para)
+                para = re.sub(r'[!]{2,}', '!', para)
+                para = re.sub(r'[_|]+', '', para)
+                para = re.sub(r' {2,}', ' ', para).strip()
 
-                # Remove solitary parentheses/brackets
-                para_clean = re.sub(r'\s*\(\s*\)', '', para_clean)
-                para_clean = re.sub(r'\s*\[\s*\]', '', para_clean)
+                if para:
+                    kept.append(para)
 
-                # Clean excessive special characters
-                para_clean = re.sub(r'[*]{2,}', '', para_clean)
-                para_clean = re.sub(r'[?]{2,}', '?', para_clean)
-                para_clean = re.sub(r'[!]{2,}', '!', para_clean)
+        entry['text'] = '\n\n'.join(kept)
 
-                # Remove underscores and pipes
-                para_clean = re.sub(r'[_|]+', '', para_clean)
-
-                # Normalize spaces after cleaning
-                para_clean = re.sub(r' {2,}', ' ', para_clean).strip()
-
-                if para_clean:  # Only keep non-empty
-                    kept_paragraphs.append(para_clean)
-
-        # Rejoin paragraphs
-        entry['text'] = '\n\n'.join(kept_paragraphs)
-
-        # Only keep entry if text remains
         if entry['text'].strip():
             cleaned_data.append(entry)
         else:
-            # Entire page was noise
             chars_removed += original_len
 
-    print(f"  Stage 6: Removed {paragraphs_removed} noisy paragraphs, {chars_removed:,} chars")
+    print(f"  Stage 6: Removed {paras_removed} noisy paragraphs, {chars_removed:,} chars")
+    return cleaned_data
+
+
+def stage7_final_ocr_cleanup(data, enabled=True):
+    """
+    Stage 7: FINAL OCR CLEANUP - "La cereza del pastel"
+
+    Removes final OCR artifacts and noise:
+    1. Isolated uppercase letters with tildes (Á, É, Í, Ó, Ú alone)
+    2. Isolated single uppercase letters before words (L El, N sobre)
+    3. Random symbols: >, <, |, combined like >'f-
+    4. Symbols stuck to words: palabra>, texto<
+    5. Extra spaces around dashes: 2009- 2012 → 2009-2012
+    6. Extra spaces in middle of words (OCR artifacts)
+
+    This is the final polish to remove all remaining OCR noise.
+    """
+    if not enabled:
+        return data
+
+    cleaned_data = []
+    total_fixes = 0
+
+    for entry in data:
+        text = entry['text']
+        original_text = text
+
+        # Fix 1: Remove isolated uppercase letters with tildes (Ó alone, Ú alone)
+        # Pattern: space + [ÁÉÍÓÚ] + space → just space
+        text = re.sub(r'\s+[ÁÉÍÓÚ]\s+', ' ', text)
+
+        # Fix 2: Remove isolated single uppercase letters before words
+        # Pattern: \n\n[A-Z] word → \n\nword (except valid Roman numerals I, V, X)
+        # Preserve: I, II, III, IV, V, VI, VII, VIII, IX, X
+        def remove_isolated_letter(match):
+            letter = match.group(1)
+            word = match.group(2)
+            # Keep Roman numerals
+            if letter in ['I', 'V', 'X']:
+                return match.group(0)
+            # Remove other isolated letters
+            return f'\n\n{word}'
+
+        text = re.sub(r'\n\n([A-ZÁÉÍÓÚÑ])\s+([a-záéíóúñ]\w+)', remove_isolated_letter, text)
+
+        # Fix 3: Remove random symbols: >, <, |, ^, ~
+        # These are OCR artifacts that don't belong in Spanish text
+        text = re.sub(r'[><\|^~]+', '', text)
+
+        # Fix 4: Remove weird sequences like >'f-
+        # Pattern: >', <', etc. followed by weird chars
+        text = re.sub(r'[><][\'"][\w\-]*', '', text)
+
+        # Fix 5: Fix extra spaces around dashes in year ranges
+        # 2009- 2012 → 2009-2012
+        text = re.sub(r'(\d{4})\s*-\s+(\d{4})', r'\1-\2', text)
+        # Also fix: 8- 2016 → 8-2016
+        text = re.sub(r'(\d+)\s*-\s+(\d{4})', r'\1-\2', text)
+
+        # Fix 6: Normalize multiple spaces (should already be done, but just in case)
+        text = re.sub(r' {2,}', ' ', text)
+
+        # Fix 7: Clean up any remaining punctuation artifacts
+        # Remove isolated dots, commas, etc. surrounded by spaces
+        text = re.sub(r'\s+[.,;:]\s+', ' ', text)
+
+        # Fix 8: Remove weird character sequences at word boundaries
+        # Like: "texto�algo" → "textoalgo"
+        text = re.sub(r'[�]+', '', text)
+
+        # Fix 9: Clean up spacing around parentheses and brackets (if any remain)
+        text = re.sub(r'\s+\)', ')', text)
+        text = re.sub(r'\(\s+', '(', text)
+
+        # Count fixes
+        if text != original_text:
+            total_fixes += 1
+
+        entry['text'] = text
+        cleaned_data.append(entry)
+
+    print(f"  Stage 7: Applied final OCR cleanup to {total_fixes} pages")
     return cleaned_data
 
 
 def main():
     """Run complete cleaning pipeline"""
 
-    # Paths
     input_file = Path("data/raw/scanned_pdfs_extracted_text.json")
     output_file = Path("data/raw/scanned_pdfs_clean_extracted_text.json")
 
-    # Load data
     print("\n" + "="*80)
     print("CLEANING SCANNED PDF EXTRACTED TEXT")
     print("="*80)
     print(f"Input:  {input_file}")
     print(f"Output: {output_file}")
-    print(f"\nStages:")
+    print(f"\nStages (in execution order):")
     print(f"  0. Preliminary cleaning: True")
-    print(f"  1. Keyword filtering: True")
-    print(f"  2. False paragraph breaks: True")
-    print(f"  3. Headers/titles: True")
-    print(f"  4. Annexes: True")
+    print(f"  1. Keyword filtering (FROM PAGE 2+, keep all if no keyword): True")
+    print(f"  4. Annexes (BEFORE false breaks): True")
     print(f"  5. Letter pages: True")
+    print(f"  2. False paragraph breaks (ALL before lowercase): True")
+    print(f"  3. Headers/titles: True")
+    print(f"  2. False paragraph breaks (SECOND PASS - cleanup after headers): True")
     print(f"  6. Aggressive cleaning: True")
+    print(f"  2. False paragraph breaks (THIRD PASS - cleanup after aggressive): True")
+    print(f"  7. FINAL OCR CLEANUP - La cereza del pastel: True")
+    print(f"  2. False paragraph breaks (FINAL PASS - cleanup after Stage 7): True")
     print("="*80)
 
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -609,21 +563,33 @@ def main():
 
     print(f"\nOriginal: {len(data)} pages")
 
-    # Run stages
+    # Run stages in correct order
+    # CRITICAL: Annexes MUST be removed BEFORE false paragraph breaks
+    # Otherwise Stage 2 might remove \n\n before "anexo" and Stage 4 won't find it
+    # CRITICAL: Stage 2 runs FOUR times:
+    #   1. After initial stages (removes OCR false breaks)
+    #   2. After Stage 3 (headers create false breaks when removed)
+    #   3. After Stage 6 (aggressive cleaning joins paragraphs, may create false breaks)
+    #   4. After Stage 7 (OCR cleanup removes isolated letters, may create false breaks)
+    # FINAL: Stage 7 polishes all remaining OCR artifacts, then Stage 2 final cleanup
     print("\nApplying cleaning stages...")
     data = stage0_preliminary_cleaning(data, enabled=True)
     data = stage1_filter_keywords(data, enabled=True)
-    data = stage2_remove_false_paragraph_breaks(data, enabled=True)
-    data = stage3_remove_headers_and_titles(data, enabled=True)
-    data = stage4_remove_annexes(data, enabled=True)
+    data = stage4_remove_annexes(data, enabled=True)  # BEFORE false breaks!
     data = stage5_remove_letter_pages(data, enabled=True)
-    data = stage6_aggressive_cleaning(data, enabled=True)
+    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # First pass
+    data = stage3_remove_headers_and_titles(data, enabled=True)  # Creates false breaks!
+    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # Second pass
+    data = stage6_aggressive_cleaning(data, enabled=True)  # Creates false breaks!
+    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # Third pass
+    data = stage7_final_ocr_cleanup(data, enabled=True)  # The cherry on top! (creates false breaks)
+    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # FINAL pass - absolute cleanup!
 
-    # Save results
+    # Save
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # Final stats
+    # Stats
     total_chars = sum(len(entry['text']) for entry in data)
     print("\n" + "="*80)
     print("CLEANING COMPLETE")
