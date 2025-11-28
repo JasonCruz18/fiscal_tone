@@ -1,143 +1,146 @@
+#%%
 import os
-import re
-import pandas as pd
-import numpy as np
 import cv2
+import numpy as np
 from pdf2image import convert_from_path
 from PIL import Image
 
-# === OCR Utilities (Keep this helper) ===
+# =========================================================
+# 1. THE DETECTION LOGIC (No changes needed here)
+# =========================================================
+def detect_cut_line_y(image, min_length_ratio=0.16, y_range=(0.40, 0.95), debug_path=None):
+    img_np = np.array(image) 
+    gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+    _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
 
-def detect_cut_line_y(image, min_length_ratio=0.17, y_range=(0.55, 0.90), debug_path=None):
-    """
-    Detects a horizontal line likely indicating the beginning of the footer in scanned PDFs.
+    height, width = image.height, image.width
+    half_width = int(width * 0.5)
+    min_y, max_y = int(height * y_range[0]), int(height * y_range[1])
 
-    Args:
-        image (PIL.Image): Page image.
-        min_length_ratio (float): Minimum length of line relative to image width.
-        y_range (tuple): Vertical range to search (proportional to height).
-        debug_path (str): Optional file path to save a debug image with detected line.
+    thresh[:, half_width:] = 0 
 
-    Returns:
-        int: Y-coordinate of the detected line, or image height if none found.
-    """
-    # Convert PIL Image to OpenCV format (numpy array)
-    # PIL image is RGB, but np.array() of a PIL image might be (W, H, 3)
-    gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
-    _, thresh = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY_INV)
-
-    # HoughLinesP to detect line segments
     lines = cv2.HoughLinesP(
-        thresh, 1, np.pi / 180, threshold=80,
-        minLineLength=int(image.width * min_length_ratio), maxLineGap=5
+        thresh, 1, np.pi / 180, threshold=50,
+        minLineLength=int(width * min_length_ratio), maxLineGap=9
     )
+    
+    best_y = height 
+    best_line_coords = None
+    candidate_lines = []
 
     if lines is not None:
-        height = image.height
-        min_y, max_y = int(height * y_range[0]), int(height * y_range[1])
+        for line in lines[:, 0]:
+            x1, y1, x2, y2 = line
+            if abs(y1 - y2) <= 9 and min_y <= y1 <= max_y:
+                candidate_lines.append((x1, y1, x2, y2))
 
-        # Filter for horizontal lines within the target vertical range
-        horizontal_lines = [
-            (x1, y1, x2, y2) for x1, y1, x2, y2 in lines[:, 0]
-            if abs(y1 - y2) <= 5 and min_y <= y1 <= max_y
-        ]
+        if candidate_lines:
+            best_line = min(candidate_lines, key=lambda l: l[1])
+            best_y = best_line[1]
+            best_line_coords = best_line
 
-        if horizontal_lines:
-            # Find the line with the smallest (highest) Y-coordinate
-            best_line = min(horizontal_lines, key=lambda l: l[1])
-            
-            if debug_path:
-                # Save debug image with the detected line drawn
-                img_dbg = image.copy()
-                dbg_np = np.array(img_dbg)
-                # Convert back to BGR for cv2.imwrite
-                cv2.line(dbg_np, (best_line[0], best_line[1]), (best_line[2], best_line[3]), (0, 0, 255), 2)
-                cv2.imwrite(debug_path, cv2.cvtColor(dbg_np, cv2.COLOR_RGB2BGR))
-            
-            return best_line[1]
+    if debug_path:
+        roi_color_bgr = (255, 102, 51)
+        debug_img = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+        overlay = debug_img.copy()
 
-    return image.height  # No line detected → return full height
+        cv2.rectangle(overlay, (0, min_y), (half_width, max_y), roi_color_bgr, -1)
+        cv2.addWeighted(overlay, 0.25, debug_img, 0.75, 0, debug_img)
+        cv2.rectangle(debug_img, (0, min_y), (half_width, max_y), roi_color_bgr, 2)
+        
+        if candidate_lines:
+            for line in candidate_lines:
+                if line != best_line_coords: 
+                    cv2.line(debug_img, (line[0], line[1]), (line[2], line[3]), (150, 150, 150), 1)
 
-# ---
+        if best_line_coords is not None:
+            bx1, by1, bx2, by2 = best_line_coords
+            cv2.line(debug_img, (bx1, by1), (bx2, by2), (76, 0, 230), 8)
+            label = f"CUT Y: {best_y}"
+            cv2.putText(debug_img, label, (bx1, by1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (76, 0, 230), 2)
+        else:
+            cv2.putText(debug_img, "NO CUT LINE FOUND", (50, int(height/2)), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
-# === OCR Processing for Scanned PDFs (Revised) ===
+        cv2.imwrite(debug_path, debug_img)
 
+    return best_y
+
+# =========================================================
+# 2. THE DIAGNOSTIC RUNNER
+# =========================================================
 def process_scanned_pdfs(folder_path, dpi=300, lang='spa', debug=True):
-    """
-    Converts scanned PDFs to images, detects the footer cut line, 
-    and saves the cropped main content images.
-
-    Args:
-        folder_path (str): Folder with scanned PDFs.
-        dpi (int): Resolution used to convert PDFs to images.
-        lang (str): OCR language code (retained for function signature completeness, 
-                    but not used in the current scope).
-        debug (bool): Whether to save debug images with detected lines and cropped images.
-
-    Returns:
-        None: The function now focuses on file operations (saving cropped images).
-    """
+    print(f"📁 Scanning Folder: {folder_path}")
     
-    # NOTE: The metadata loading and processing parts have been removed.
-    print("📁 Starting PDF to Image Conversion and Cropping...")
-
-    filenames = [f for f in os.listdir(folder_path) if f.lower().endswith(".pdf")]
-    total_files = len(filenames)
-
-    # Prepare debug directories
     if debug:
         os.makedirs("debug_lines", exist_ok=True)
         os.makedirs("debug_lines/cropped", exist_ok=True)
-        
+
+    filenames = [f for f in os.listdir(folder_path) if f.lower().endswith(".pdf")]
+    total_files = len(filenames)
+    
+    successful_files = []
+    failed_files = []
+
+    print(f"📄 Found {total_files} PDF files.")
+
     for idx, filename in enumerate(sorted(filenames), start=1):
         file_path = os.path.join(folder_path, filename)
-        print(f"🖼️ Processing ({idx}/{total_files}): {filename}")
+        # print(f"Processing ({idx}/{total_files}): {filename}") # Commented out to reduce noise
         
         try:
-            # Step 1: Convert PDF to images
+            # 1. Attempt to convert PDF
             images = convert_from_path(file_path, dpi=dpi)
             
+            # 2. If successful, process pages
             for page_num, image in enumerate(images, start=1):
-                
-                debug_line_path = None
-                cropped_img_path = None
-                
-                # Setup debug paths
-                if debug:
-                    base_name = os.path.splitext(filename)[0]
-                    debug_line_path = f"debug_lines/{base_name}_page_{page_num}_lines.png"
-                    cropped_img_path = f"debug_lines/cropped/{base_name}_page_{page_num}_cropped.png"
+                base_name = os.path.splitext(filename)[0]
+                debug_line_path = f"debug_lines/{base_name}_p{page_num}_debug.png"
+                cropped_img_path = f"debug_lines/cropped/{base_name}_p{page_num}_cropped.png"
 
-                # Step 2: Execute detect_cut_line_y() helper
-                # This returns the Y-coordinate for cropping (or image height if no line is found)
                 cut_y = detect_cut_line_y(image, debug_path=debug_line_path)
-
-                # Step 3: Crop the image for each pdf
-                # The cropped image includes everything from the top (0) down to cut_y
                 cropped_img = image.crop((0, 0, image.width, cut_y))
-                
-                if debug:
-                    cropped_img.save(cropped_img_path)
-                    print(f"   -> Saved cropped image for page {page_num} to: {cropped_img_path}")
-                
-                # NOTE: The subsequent text extraction and paragraph segmentation logic is removed.
+                cropped_img.save(cropped_img_path)
+            
+            successful_files.append(filename)
+            print(f"   ✅ Success: {filename}")
 
         except Exception as e:
-            print(f"❌ Error processing {filename}: {e}")
+            # 3. Catch errors and Log them
+            error_msg = str(e)
+            failed_files.append((filename, error_msg))
+            print(f"   ❌ FAILED: {filename} | Error: {error_msg}")
 
-    print(f"\n✅ Image processing complete. Cropped images saved in 'debug_lines/cropped'.")
-    # Return nothing, as the goal is file operations.
-    return None
+    # =========================================================
+    # 3. FINAL REPORT
+    # =========================================================
+    print(f"\n{'='*40}")
+    print(f"PROCESSING COMPLETE")
+    print(f"{'='*40}")
+    print(f"Total PDFs found: {total_files}")
+    print(f"Successful:       {len(successful_files)}")
+    print(f"Failed:           {len(failed_files)}")
+    
+    if failed_files:
+        print(f"\n⚠️ LIST OF FAILED FILES:")
+        with open("processing_errors.txt", "w", encoding="utf-8") as f:
+            f.write(f"Failed Files Report ({len(failed_files)} files)\n")
+            f.write("="*50 + "\n")
+            for fname, err in failed_files:
+                line = f"• {fname} \n  -> Reason: {err}\n"
+                print(line)
+                f.write(line + "\n")
+        print(f"\n📄 A full error report has been saved to 'processing_errors.txt'")
+    else:
+        print("\n🎉 All files processed successfully!")
 
-# ---
+# =========================================================
+# 4. EXECUTION
+# =========================================================
+if __name__ == "__main__":
+    process_scanned_pdfs(
+        folder_path = f"data/raw/_scanned_aux",
+        dpi = 300,
+        lang = 'spa',
+        debug = True
+    )
 
-# === Run and Save ===
-# Example Usage:
-# NOTE: Ensure the necessary dependencies (pdf2image, opencv-python, pandas, numpy, PIL) 
-# and the required 'detect_cut_line_y' helper function are available in the execution environment.
-process_scanned_pdfs(
-    folder_path = f"data/raw/scanned",
-    dpi = 400,
-    lang = 'spa',
-    debug = True
-)
