@@ -363,16 +363,16 @@ def process_all_pdfs_unified(input_folder="data/raw/scanned",
     Process all PDFs with unified cropping strategy
 
     Generates:
-        - debug_lines/*.png: Debug visualizations with ROIs and cut lines
-        - debug_lines/cropped/*.png: Final cropped pages
-        - cropped_scanned_pdfs.json: Processing results
+        - scanned/debug_lines/*.png: Debug visualizations with ROIs and cut lines
+        - scanned/cropped/*.png: Final cropped pages (sibling folder)
+        - scanned/cropped_scanned_pdfs.json: Processing results
     """
     input_folder = Path(input_folder)
     output_base = Path(output_base)
 
-    # Create output directories
+    # Create output directories (debug_lines and cropped as siblings)
     debug_dir = output_base / "debug_lines"
-    cropped_dir = debug_dir / "cropped"
+    cropped_dir = output_base / "cropped"
     debug_dir.mkdir(parents=True, exist_ok=True)
     cropped_dir.mkdir(parents=True, exist_ok=True)
 
@@ -467,9 +467,9 @@ def process_all_pdfs_unified(input_folder="data/raw/scanned",
     print(f"Total pages: {total_pages}")
     print(f"Successful: {sum(r['cropped'] for r in results)}/{len(results)}")
     print(f"\nOutputs:")
-    print(f"  Debug visualizations: {debug_dir}/ ({total_pages} files)")
-    print(f"  Cropped pages: {cropped_dir}/ ({total_pages} files)")
-    print(f"  Results JSON: {json_path}")
+    print(f"  Debug visualizations: {debug_dir.relative_to(Path.cwd())}/ ({total_pages} files)")
+    print(f"  Cropped pages: {cropped_dir.relative_to(Path.cwd())}/ ({total_pages} files)")
+    print(f"  Results JSON: {json_path.relative_to(Path.cwd())}")
     print('='*80)
 
 
