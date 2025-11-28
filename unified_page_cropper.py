@@ -484,6 +484,6 @@ if __name__ == "__main__":
         crop_bottom=True,        # Footer line + conservative fallback
         crop_lateral=True,       # Fixed lateral margins
         dpi=300,
-        left_cm=2.75,
-        right_cm=2.75
+        left_cm=2.5,
+        right_cm=2.5
     )
