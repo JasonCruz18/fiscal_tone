@@ -165,4 +165,165 @@ df_score_dist = (
 
 # Save aggregated scores
 
-# End
+# Visualize
+
+df_doc_summary = pd.merge(df_doc_avg, df_score_dist, on=['title', 'date'])
+
+df_doc_summary = df_doc_summary.sort_values("date")
+
+# Calcula la media móvil centrada con ventana de 3 documentos
+df_doc_summary["cma_risk_index"] = df_doc_summary["avg_risk_score"].rolling(window=3, center=True).mean()
+
+## stacked areas
+
+print(df_doc_summary['date'].dtype)
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+# Asegurar que la columna 'date' sea datetime
+df_doc_summary['date'] = pd.to_datetime(df_doc_summary['date'], errors='coerce')
+
+# Asegurar orden por fecha
+df_doc_summary = df_doc_summary.sort_values("date").reset_index(drop=True)
+
+# Crear columna string para eje X
+df_doc_summary['date_str'] = df_doc_summary['date'].dt.strftime('%Y-%m-%d')
+
+# Pesos del suavizamiento
+weights = np.array([1, 2, 1])
+
+# Aplicar CMA con bordes extendidos
+for col in ['score_1', 'score_2', 'score_3', 'score_4', 'score_5']:
+    series = df_doc_summary[col].copy()
+
+    middle_cma = (
+        series.rolling(window=3, center=True)
+        .apply(lambda x: np.dot(x, weights) / 4, raw=True)
+    )
+
+    # Bordes
+    first = series.iloc[0]
+    second = series.iloc[1]
+    first_smoothed = (3 * first + second) / 4
+
+    last = series.iloc[-1]
+    penultimate = series.iloc[-2]
+    last_smoothed = (3 * last + penultimate) / 4
+
+    # Insertar bordes
+    middle_cma.iloc[0] = first_smoothed
+    middle_cma.iloc[-1] = last_smoothed
+
+    df_doc_summary[f'{col}_cma'] = middle_cma
+
+# Configuración para el gráfico
+cols_cma = ['score_1_cma', 'score_2_cma', 'score_3_cma', 'score_4_cma', 'score_5_cma']
+labels = ['1 (bajo)', '2', '3', '4', '5 (alto)']
+colors = ['#40312C', '#634C44', '#ff8575', '#ED2939', '#1F305E']
+
+# Crear figura
+fig, ax = plt.subplots(figsize=(14, 6))
+
+# Áreas apiladas suavizadas
+ax.stackplot(df_doc_summary['date_str'], 
+             *[df_doc_summary[col] for col in cols_cma],
+             labels=labels,
+             colors=colors)
+
+# Etiquetas
+ax.set_ylabel("Proporción de Párrafos", fontsize=16)
+
+# Eje X
+ax.tick_params(axis='x', labelrotation=90, labelsize=12)
+
+# Eje Y con 2 decimales
+ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+ax.tick_params(axis='y', labelsize=12)
+
+# Rejilla estética
+ax.grid(True, color='#f5f5f5', alpha=0.3, linewidth=1)
+
+# Leyenda personalizada
+legend = ax.legend(loc='upper left', frameon=True)
+legend.get_frame().set_facecolor('#f5f5f5')
+legend.get_frame().set_alpha(0.5)
+legend.get_frame().set_edgecolor('#f5f5f5')  # contorno sin transparencia
+legend.get_frame().set_linewidth(2)  # grosor del contorno
+
+# Margen automático
+plt.tight_layout()
+
+# Guardar gráfico
+plt.savefig("Fig_Distribucion.png", dpi=300)
+plt.show()
+
+## Fiscal Tone Index
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
+
+# Calcular índice de tono fiscal
+df_doc_summary["fiscal_tone_index"] = (3 - df_doc_summary["avg_risk_score"]) / 2
+
+# Suavizamiento CMA (1-2-1)
+weights = np.array([1, 2, 1])
+series = df_doc_summary["fiscal_tone_index"].copy()
+
+cma = series.rolling(window=3, center=True).apply(lambda x: np.dot(x, weights) / 4, raw=True)
+cma.iloc[0] = (3 * series.iloc[0] + series.iloc[1]) / 4
+cma.iloc[-1] = (3 * series.iloc[-1] + series.iloc[-2]) / 4
+
+df_doc_summary["fiscal_tone_index_cma"] = cma
+
+# Graficar
+fig, ax = plt.subplots(figsize=(14, 6))
+
+# Serie original (transparente)
+ax.plot(df_doc_summary["date_str"], df_doc_summary["fiscal_tone_index"],
+        label="Tono Fiscal", linestyle='--',
+        marker='o', alpha=0.25, color="#634C44")
+
+# Serie suavizada (principal)
+ax.plot(df_doc_summary["date_str"], df_doc_summary["fiscal_tone_index_cma"],
+        label="Tono Fiscal (Promedio Móvil)", linewidth=2, color="#40312C")
+
+# Línea horizontal en 0 (tono neutral)
+ax.axhline(0, color='#292929', linestyle='-', linewidth=1)
+
+# Eje Y
+ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+ax.tick_params(axis='y', labelsize=12)
+
+# Eje X
+ax.tick_params(axis='x', labelrotation=90, labelsize=12)
+
+# Rejilla solo cada 2 fechas
+x_ticks = np.arange(len(df_doc_summary["date_str"]))
+ax.set_xticks(x_ticks)  # etiquetas en todas las fechas
+ax.grid(False)  # desactivar rejilla por defecto
+
+# Dibujar palos verticales cada 2 ticks
+for i in range(0, len(x_ticks), 2):
+    ax.axvline(x=i, color='#f5f5f5', linewidth=1, zorder=0)
+
+# Etiqueta eje Y
+ax.set_ylabel("Índice de Tono Fiscal", fontsize=16)
+
+# Leyenda personalizada
+legend = ax.legend(loc='upper right', frameon=True)
+legend.get_frame().set_facecolor('white')
+legend.get_frame().set_alpha(0.5)
+legend.get_frame().set_edgecolor('#f5f5f5')
+legend.get_frame().set_linewidth(2.5)
+
+# Ajuste final
+plt.tight_layout()
+
+# Guardar y mostrar
+plt.savefig("Fig_Tono.png", dpi=300)
+plt.show()
+
+
