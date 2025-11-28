@@ -1896,7 +1896,7 @@ def extract_text_from_editable_pdfs_incremental(
 # 8. TEXT CLEANING PIPELINE
 # ═══════════════════════════════════════════════════════════════════════════════════════════
 
-def clean_extracted_text(text: str, aggressive: bool = False) -> dict:
+def clean_editable_extracted_text(text: str, aggressive: bool = False) -> dict:
     """
     Execute an 8-step ordered text cleaning pipeline on extracted PDF text.
 
@@ -1928,7 +1928,7 @@ def clean_extracted_text(text: str, aggressive: bool = False) -> dict:
         9. Remove enumeration (optional, aggressive mode only)
 
     Example:
-        >>> result = clean_extracted_text(raw_text)
+        >>> result = clean_editable_extracted_text(raw_text)
         >>> print(result['cleaned_text'])
         >>> print(f"Reduced by {result['reduction_pct']:.1f}%")
     """
@@ -2192,7 +2192,7 @@ def _remove_enumeration(text: str) -> str:
     return re.sub(pattern, '\n\n', text)
 
 
-def clean_extracted_text_batch(
+def clean_editable_extracted_text_batch(
     input_json_path: str,
     output_json_path: str,
     aggressive: bool = False,
@@ -2206,7 +2206,7 @@ def clean_extracted_text_batch(
 
     Args:
         input_json_path: Path to input JSON file (e.g., 'data/raw/editable_pdfs_extracted_text.json')
-        output_json_path: Path to output JSON file (e.g., 'data/raw/editable_pdfs_clean_extracted_text.json')
+        output_json_path: Path to output JSON file (e.g., 'data/raw/editable_pdfs_clean_editable_extracted_text.json')
         aggressive: If True, includes enumeration removal (not recommended)
         verbose: If True, prints detailed statistics
 
@@ -2220,9 +2220,9 @@ def clean_extracted_text_batch(
             - reduction_pct: Percentage reduction
 
     Example:
-        >>> clean_extracted_text_batch(
+        >>> clean_editable_extracted_text_batch(
         ...     input_json_path='data/raw/editable_pdfs_extracted_text.json',
-        ...     output_json_path='data/raw/editable_pdfs_clean_extracted_text.json'
+        ...     output_json_path='data/raw/editable_pdfs_clean_editable_extracted_text.json'
         ... )
     """
     import time
@@ -2259,7 +2259,7 @@ def clean_extracted_text_batch(
 
         # Clean the text
         original_text = record['text']
-        result = clean_extracted_text(original_text, aggressive=aggressive)
+        result = clean_editable_extracted_text(original_text, aggressive=aggressive)
 
         # Track statistics per step
         if result['reduction_pct'] > 0:
@@ -2321,7 +2321,7 @@ def clean_extracted_text_batch(
     print("=" * 80)
 
 
-def clean_extracted_text_batch_incremental(
+def clean_editable_extracted_text_batch_incremental(
     input_json_path: str,
     output_json_path: str,
     aggressive: bool = False,
@@ -2341,8 +2341,8 @@ def clean_extracted_text_batch_incremental(
         - 🛡️ Safe: Preserves existing cleaned data
 
     Args:
-        input_json_path: Path to input JSON file (e.g., 'data/raw/all_extracted_text.json')
-        output_json_path: Path to output JSON file (e.g., 'data/raw/all_extracted_text_clean.json')
+        input_json_path: Path to input JSON file (e.g., 'data/raw/editable_pdfs_extracted_text.json')
+        output_json_path: Path to output JSON file (e.g., 'data/raw/editable_pdfs_clean_editable_extracted_text.json')
         aggressive: If True, includes enumeration removal (not recommended)
         verbose: If True, prints detailed statistics
         force_reclean: If True, re-process ALL records (ignores existing output)
@@ -2357,23 +2357,23 @@ def clean_extracted_text_batch_incremental(
 
     Example:
         >>> # First run: cleans all records
-        >>> clean_extracted_text_batch_incremental(
-        ...     input_json_path='data/raw/all_extracted_text.json',
-        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        >>> clean_editable_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/editable_pdfs_extracted_text.json',
+        ...     output_json_path='data/raw/editable_pdfs_clean_editable_extracted_text.json'
         ... )
         # Output: Cleaned 336 records
 
         >>> # Second run: skips all (nothing new)
-        >>> clean_extracted_text_batch_incremental(
-        ...     input_json_path='data/raw/all_extracted_text.json',
-        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        >>> clean_editable_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/editable_pdfs_extracted_text.json',
+        ...     output_json_path='data/raw/editable_pdfs_clean_editable_extracted_text.json'
         ... )
         # Output: All records already cleaned. Nothing to do!
 
         >>> # After adding 5 new PDFs and extracting them:
-        >>> clean_extracted_text_batch_incremental(
-        ...     input_json_path='data/raw/all_extracted_text.json',
-        ...     output_json_path='data/raw/all_extracted_text_clean.json'
+        >>> clean_editable_extracted_text_batch_incremental(
+        ...     input_json_path='data/raw/editable_pdfs_extracted_text.json',
+        ...     output_json_path='data/raw/editable_pdfs_clean_editable_extracted_text.json'
         ... )
         # Output: Cleaned 5 new records (336 existing + 5 new = 341 total)
     """
@@ -2462,7 +2462,7 @@ def clean_extracted_text_batch_incremental(
 
         # Clean the text
         original_text = record['text']
-        result = clean_extracted_text(original_text, aggressive=aggressive)
+        result = clean_editable_extracted_text(original_text, aggressive=aggressive)
 
         # Create cleaned record
         cleaned_record = {
