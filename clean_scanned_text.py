@@ -18,6 +18,89 @@ import re
 from pathlib import Path
 
 
+# ────────────────────────────────────────────────────────────────────────────
+# Helper Functions for Header/Title Detection
+# ────────────────────────────────────────────────────────────────────────────
+
+def is_section_header(line: str, max_chars: int = 150, max_words: int = 20) -> bool:
+    """
+    Determine if a line is a section header (should be removed).
+
+    IMPROVED: Increased thresholds to catch longer headers like
+    "Opinión del CF sobre las proyecciones contempladas en el IAPM"
+
+    Conditions:
+        - Length < 150 characters
+        - Word count < 20 words (was 15, increased to catch longer headers)
+        - Starts with uppercase letter or number
+        - Does NOT end with period, exclamation mark, or question mark
+        - Is NOT a date
+
+    Examples:
+        - "Opinión del CF sobre las proyecciones..." → True (header)
+        - "El CF considera que esta norma..." → False (sentence ending with period)
+    """
+    if not line:
+        return False
+
+    words = line.split()
+
+    return (
+        len(line) > 0 and
+        len(line) < max_chars and
+        len(words) > 0 and len(words) < max_words and
+        line[0].isupper() and
+        not line[-1] in '.!?' and
+        not re.match(r'Lima,?\s+\d{1,2}\s+de', line)
+    )
+
+
+def is_chart_or_table_label(line: str) -> bool:
+    """
+    Detect chart/table labels with numbered/lettered patterns.
+
+    Patterns detected:
+        - "1: Leyes con impacto fiscal adverso" (number + colon)
+        - "I. Opinión del CF sobre..." (Roman numeral + period)
+        - "A) Leyes con impacto" (letter + parenthesis)
+        - "Gráfico 1:", "Tabla N° 2:" (explicit chart/table references)
+
+    Examples:
+        >>> is_chart_or_table_label("1: Leyes con impacto fiscal adverso")
+        True
+        >>> is_chart_or_table_label("I. Opinión del CF sobre el proyecto")
+        True
+        >>> is_chart_or_table_label("El CF considera que...")
+        False
+    """
+    if not line or not line.strip():
+        return False
+
+    line = line.strip()
+
+    # Pattern 1: Gráfico/Tabla/Cuadro/Figura + number
+    if re.match(r'^(Gráfico|Tabla|Cuadro|Figura|Gráf|Tab)\s+N?°?\s*\d+', line, re.IGNORECASE):
+        return True
+
+    # Pattern 2: Number + colon (e.g., "1: Title", "2: Subtitle")
+    if re.match(r'^\d+\s*:\s*.+', line):
+        return True
+
+    # Pattern 3: Roman numeral + period or colon (e.g., "I. Title", "II: Subtitle")
+    if re.match(r'^[IVXLCDM]+\s*[.:]', line):
+        return True
+
+    # Pattern 4: Letter + parenthesis (e.g., "A) Item", "B) Item")
+    if re.match(r'^[A-Z]\s*\)\s*.+', line):
+        return True
+
+    # Pattern 5: Letter + period at start of short text (e.g., "A. Item")
+    if re.match(r'^[A-Z]\s*\.\s*.+', line) and len(line) < 100:
+        return True
+
+    return False
+
+
 def stage0_preliminary_cleaning(data, enabled=True):
     """
     Stage 0: Preliminary text normalization
@@ -168,9 +251,12 @@ def stage1_filter_keywords(data, enabled=True):
     return cleaned_data
 
 
-def stage2_remove_false_paragraph_breaks(data, enabled=True):
+def stage4_remove_false_paragraph_breaks(data, enabled=True):
     """
-    Stage 2: Remove ALL false paragraph breaks
+    Stage 4: Remove ALL false paragraph breaks
+
+    NOTE: This stage is executed MULTIPLE times throughout the pipeline
+    to clean up false breaks created by other stages.
 
     As per user requirement: "Un párrafo nunca inicia con minúsculas"
 
@@ -206,43 +292,45 @@ def stage2_remove_false_paragraph_breaks(data, enabled=True):
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 2: Removed {total_removed} false paragraph breaks")
+    print(f"  Stage 4: Removed {total_removed} false paragraph breaks")
     return cleaned_data
 
 
-def stage3_remove_headers_and_titles(data, enabled=True):
+def stage5_remove_headers_and_titles(data, enabled=True):
     """
-    Stage 3: Remove headers, titles, subtitles
+    Stage 5: Remove headers, titles, subtitles
 
-    Executed AFTER keyword filtering, so it removes:
+    IMPROVED: Enhanced header detection using smart helper functions
+    - is_section_header() detects headers (< 150 chars, < 20 words, no ending period)
+    - is_chart_or_table_label() detects numbered patterns (1:, I., A), etc.)
+
+    Executed AFTER keyword filtering and annex truncation, so NOW we can remove ALL headers including:
+    - "Opinión del CF sobre las proyecciones contempladas en el IAPM"
+    - "1: Leyes con impacto fiscal adverso"
+    - "I. Opinión del CF sobre el cumplimiento..."
+    - "ANEXO:" (standalone annex headers that didn't cause truncation)
     - Page 1 titles (for PDFs without keywords)
     - Section headers/subtitles throughout document
 
-    Pattern: Short text (<120 chars) surrounded by \n\n
-
-    EXCEPTION: Preserve headers containing "Opinión del CF" keywords
+    IMPORTANT: No exceptions for "Opinión del CF" keywords anymore!
+    (They were already used for filtering in stage 1, now they should be removed)
     """
     if not enabled:
         return data
 
     cleaned_data = []
     total_removed = 0
-    max_length = 120
 
     for entry in data:
         text = entry['text']
 
-        # Pattern 1: \n\n[short text]\n\n
+        # Pattern 1: \n\n[text]\n\n (paragraphs surrounded by double newlines)
         def replace_header(match):
             nonlocal total_removed
-            header = match.group(1)
+            header = match.group(1).strip()
 
-            # DO NOT remove if contains opinion keywords
-            if 'Opinión del CF' in header or 'Opinión del Consejo Fiscal' in header or 'Opinión de CF' in header:
-                return match.group(0)
-
-            # Remove if short
-            if len(header) <= max_length:
+            # Remove if it's a header OR chart/table label
+            if is_section_header(header) or is_chart_or_table_label(header):
                 total_removed += 1
                 return '\n\n'
             else:
@@ -250,26 +338,30 @@ def stage3_remove_headers_and_titles(data, enabled=True):
 
         text = re.sub(r'\n\n(.+?)\n\n', replace_header, text, flags=re.DOTALL)
 
-        # Pattern 2: ^[short text]\n\n (at page start)
+        # Pattern 2: ^[text]\n\n (at page start, no \n\n before it)
         match = re.match(r'^(.+?)\n\n', text, flags=re.DOTALL)
         if match:
-            header = match.group(1)
+            header = match.group(1).strip()
 
-            # DO NOT remove if contains opinion keywords
-            if 'Opinión del CF' not in header and 'Opinión del Consejo Fiscal' not in header and 'Opinión de CF' not in header:
-                if len(header) <= max_length:
-                    text = text[match.end(1):]
-                    total_removed += 1
+            # Remove if it's a header OR chart/table label
+            if is_section_header(header) or is_chart_or_table_label(header):
+                text = text[match.end():]
+                total_removed += 1
 
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 3: Removed {total_removed} headers/titles")
+    print(f"  Stage 5: Removed {total_removed} headers/titles (improved detection)")
     return cleaned_data
 
 
-def stage4_remove_annexes(data, enabled=True):
-    """Stage 4: Remove annexes"""
+def stage2_remove_annexes(data, enabled=True):
+    """
+    Stage 2: Remove annexes
+
+    Truncates text at "ANEXO" pattern to remove appendix sections.
+    Must run BEFORE stage5 (remove_headers) so that "ANEXO" is found for truncation.
+    """
     if not enabled:
         return data
 
@@ -355,12 +447,16 @@ def stage4_remove_annexes(data, enabled=True):
         else:
             cleaned_data.extend(pages)
 
-    print(f"  Stage 4: Removed {removed_pages} pages, {removed_chars:,} chars (annexes)")
+    print(f"  Stage 2: Removed {removed_pages} pages, {removed_chars:,} chars (annexes)")
     return cleaned_data
 
 
-def stage5_remove_letter_pages(data, enabled=True):
-    """Stage 5: Remove pages with 'Carta N*' pattern"""
+def stage3_remove_letter_pages(data, enabled=True):
+    """
+    Stage 3: Remove letter pages
+
+    Removes entire pages containing 'Carta N*' pattern (official letters).
+    """
     if not enabled:
         return data
 
@@ -373,30 +469,28 @@ def stage5_remove_letter_pages(data, enabled=True):
         else:
             cleaned_data.append(entry)
 
-    print(f"  Stage 5: Removed {removed} letter pages")
+    print(f"  Stage 3: Removed {removed} letter pages")
     return cleaned_data
 
 
 def stage6_aggressive_cleaning(data, enabled=True):
-    """Stage 6: Aggressive paragraph-level cleaning"""
+    """
+    Stage 6: ULTRA CONSERVATIVE paragraph-level cleaning
+
+    CRITICAL CHANGES for maximum safety:
+    - NO "too short" threshold - we only remove VERY specific patterns
+    - Only removes: page numbers, standalone dates, standalone signatures
+    - Character threshold reduced from 50 to 30 (only extremely short noise)
+    - All patterns MUST match at START (^) and be standalone (no other text)
+
+    This ensures we NEVER remove valid paragraph content.
+    """
     if not enabled:
         return data
 
     cleaned_data = []
     paras_removed = 0
     chars_removed = 0
-
-    # Patterns to remove
-    removal_patterns = [
-        r'Informe\s+N[*°º]?\s*\d',
-        r'CF[-\s]*\d',
-        r'Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}',
-        r'\d+\s*/\s*\d+',
-        r'Presidente.*Consejo Fiscal',
-        r'Conclusiones?\s*:?$',
-        r'Esquema\s+[Ff]iscal',
-        r'Consejo\s+Fiscal\s*:?$',
-    ]
 
     for entry in data:
         text = entry['text']
@@ -408,21 +502,36 @@ def stage6_aggressive_cleaning(data, enabled=True):
         for para in paragraphs:
             should_remove = False
 
-            # Check patterns
-            for pattern in removal_patterns:
-                if re.search(pattern, para, re.IGNORECASE):
-                    should_remove = True
-                    break
+            # ULTRA CONSERVATIVE: Only remove VERY specific standalone patterns
+            # All patterns require EXACT match (no other text before/after)
+            if len(para) < 80:  # Only check short text
+                removal_patterns_ultra_conservative = [
+                    r'^\d+\s*/\s*\d+$',                        # Page numbers ONLY: "7/10"
+                    r'^Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}[\s.]*$',  # Date ONLY
+                    r'^Informe\s+N[*°º]?\s*\d{3,4}[-\s]*CF[\s.]*$',  # Doc ID ONLY: "Informe N* 001-2016-CF"
+                    r'^PRESIDENTE\s+DEL\s+CONSEJO\s+FISCAL[\s.]*$',  # Signature ONLY
+                    r'^Conclusiones?\s*:?[\s.]*$',             # Section header ONLY
+                    r'^ANEXO\s*:?[\s.]*$',                     # Annex header ONLY
+                ]
 
-            # Too short
-            if len(para) < 50:
+                for pattern in removal_patterns_ultra_conservative:
+                    if re.search(pattern, para, re.IGNORECASE):
+                        should_remove = True
+                        break
+
+            # ONLY extremely short (< 30 chars) - things like "!", "�", "10/18"
+            # This is much more conservative than the previous < 50 threshold
+            if len(para) < 30:
                 should_remove = True
 
-            # All-caps names
-            alpha = [c for c in para if c.isalpha()]
-            if alpha:
-                if sum(1 for c in alpha if c.isupper()) / len(alpha) > 0.5 and len(para) < 100:
-                    should_remove = True
+            # All-caps signatures (ONLY if < 70 chars and > 60% caps)
+            # Example: "WALDO EPIFANIO MENDOZA BELLIDO Presidente Consejo Fiscal"
+            if len(para) < 70:
+                alpha = [c for c in para if c.isalpha()]
+                if alpha and len(alpha) > 10:  # Must have at least 10 letters
+                    caps_ratio = sum(1 for c in alpha if c.isupper()) / len(alpha)
+                    if caps_ratio > 0.6 and 'presidente' in para.lower():
+                        should_remove = True
 
             if should_remove:
                 paras_removed += 1
@@ -544,18 +653,18 @@ def main():
     print("="*80)
     print(f"Input:  {input_file}")
     print(f"Output: {output_file}")
-    print(f"\nStages (in execution order):")
-    print(f"  0. Preliminary cleaning: True")
-    print(f"  1. Keyword filtering (FROM PAGE 2+, keep all if no keyword): True")
-    print(f"  4. Annexes (BEFORE false breaks): True")
-    print(f"  5. Letter pages: True")
-    print(f"  2. False paragraph breaks (ALL before lowercase): True")
-    print(f"  3. Headers/titles: True")
-    print(f"  2. False paragraph breaks (SECOND PASS - cleanup after headers): True")
-    print(f"  6. Aggressive cleaning: True")
-    print(f"  2. False paragraph breaks (THIRD PASS - cleanup after aggressive): True")
-    print(f"  7. FINAL OCR CLEANUP - La cereza del pastel: True")
-    print(f"  2. False paragraph breaks (FINAL PASS - cleanup after Stage 7): True")
+    print(f"\nStages (in execution order - now matching function names!):")
+    print(f"  0. Preliminary cleaning")
+    print(f"  1. Keyword filtering (FROM PAGE 2+, keep all if no keyword)")
+    print(f"  2. Remove annexes (truncate at ANEXO pattern)")
+    print(f"  3. Remove letter pages (Carta N* pattern)")
+    print(f"  4. Remove false paragraph breaks (1st pass - ALL before lowercase)")
+    print(f"  5. Remove headers/titles (improved detection)")
+    print(f"  4. Remove false paragraph breaks (2nd pass - cleanup after headers)")
+    print(f"  6. Aggressive cleaning (ultra conservative)")
+    print(f"  4. Remove false paragraph breaks (3rd pass - cleanup after aggressive)")
+    print(f"  7. Final OCR cleanup (la cereza del pastel)")
+    print(f"  4. Remove false paragraph breaks (FINAL pass - absolute cleanup)")
     print("="*80)
 
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -563,27 +672,27 @@ def main():
 
     print(f"\nOriginal: {len(data)} pages")
 
-    # Run stages in correct order
-    # CRITICAL: Annexes MUST be removed BEFORE false paragraph breaks
-    # Otherwise Stage 2 might remove \n\n before "anexo" and Stage 4 won't find it
-    # CRITICAL: Stage 2 runs FOUR times:
-    #   1. After initial stages (removes OCR false breaks)
-    #   2. After Stage 3 (headers create false breaks when removed)
-    #   3. After Stage 6 (aggressive cleaning joins paragraphs, may create false breaks)
-    #   4. After Stage 7 (OCR cleanup removes isolated letters, may create false breaks)
-    # FINAL: Stage 7 polishes all remaining OCR artifacts, then Stage 2 final cleanup
+    # Run stages in correct order (now function names match execution order!)
+    # CRITICAL: Annexes (Stage 2) MUST run BEFORE headers (Stage 5)
+    # Otherwise headers would remove "ANEXO:" before annexes can be truncated
+    # CRITICAL: Stage 4 (false breaks) runs FOUR times:
+    #   1. After Stage 3 (removes OCR false breaks)
+    #   2. After Stage 5 (headers create false breaks when removed)
+    #   3. After Stage 6 (aggressive cleaning may create false breaks)
+    #   4. After Stage 7 (final OCR cleanup may create false breaks)
     print("\nApplying cleaning stages...")
+    # Execute stages in correct order
     data = stage0_preliminary_cleaning(data, enabled=True)
     data = stage1_filter_keywords(data, enabled=True)
-    data = stage4_remove_annexes(data, enabled=True)  # BEFORE false breaks!
-    data = stage5_remove_letter_pages(data, enabled=True)
-    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # First pass
-    data = stage3_remove_headers_and_titles(data, enabled=True)  # Creates false breaks!
-    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # Second pass
+    data = stage2_remove_annexes(data, enabled=True)
+    data = stage3_remove_letter_pages(data, enabled=True)
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # First pass
+    data = stage5_remove_headers_and_titles(data, enabled=True)  # Creates false breaks!
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Second pass
     data = stage6_aggressive_cleaning(data, enabled=True)  # Creates false breaks!
-    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # Third pass
-    data = stage7_final_ocr_cleanup(data, enabled=True)  # The cherry on top! (creates false breaks)
-    data = stage2_remove_false_paragraph_breaks(data, enabled=True)  # FINAL pass - absolute cleanup!
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Third pass
+    data = stage7_final_ocr_cleanup(data, enabled=True)  # Creates false breaks
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # FINAL pass - absolute cleanup!
 
     # Save
     with open(output_file, 'w', encoding='utf-8') as f:

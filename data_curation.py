@@ -2053,11 +2053,19 @@ def _remove_uppercase_lines(text: str) -> str:
 
 def _remove_section_headers(text: str) -> str:
     """
-    STEP 4: Remove short lines (< 50 chars, < 8 words) without ending period/colon.
+    STEP 4: Remove section headers, titles, and chart/table labels.
 
-    Examples:
-        - "\\n\\nAnálisis de riesgos fiscales\\n\\n"
-        - "\\n\\nConclusiones\\n\\n"
+    IMPROVED: Now detects both regular headers AND numbered/lettered labels
+    using two helper functions:
+    - _is_section_header() for text headers (< 150 chars, < 15 words, no ending period)
+    - _is_chart_or_table_label() for numbered patterns (1:, I., A), etc.)
+
+    Examples removed:
+        - "Opinión del CF sobre las proyecciones contempladas en el IAPM"
+        - "1: Leyes con impacto fiscal adverso"
+        - "I. Opinión del CF sobre el cumplimiento de la regla macrofiscal"
+        - "Análisis de riesgos fiscales"
+        - "Conclusiones"
     """
     paragraphs = text.split('\n\n')
     cleaned_paragraphs = []
@@ -2065,8 +2073,8 @@ def _remove_section_headers(text: str) -> str:
     for para in paragraphs:
         para_stripped = para.strip()
 
-        # Check if it's a section header
-        if _is_section_header(para_stripped):
+        # Skip if it's a section header OR chart/table label
+        if _is_section_header(para_stripped) or _is_chart_or_table_label(para_stripped):
             continue  # Skip this paragraph
         else:
             cleaned_paragraphs.append(para)
@@ -2078,12 +2086,19 @@ def _is_section_header(line: str) -> bool:
     """
     Determine if a line is a section header (should be removed).
 
+    IMPROVED: Increased thresholds to catch longer headers like
+    "Opinión del CF sobre las proyecciones contempladas en el IAPM"
+
     Conditions:
-        - Length < 50 characters
-        - Word count < 8 words
-        - Starts with uppercase letter
-        - Does NOT end with period, colon, or semicolon
+        - Length < 150 characters (was 50)
+        - Word count < 20 words (was 8, then 15)
+        - Starts with uppercase letter or number
+        - Does NOT end with period, exclamation mark, or question mark
         - Is NOT a date
+
+    Examples:
+        - "Opinión del CF sobre las proyecciones..." → True (header)
+        - "El CF considera que esta norma..." → False (sentence ending with period)
     """
     if not line:
         return False
@@ -2092,12 +2107,61 @@ def _is_section_header(line: str) -> bool:
 
     return (
         len(line) > 0 and
-        len(line) < 50 and
-        len(words) > 0 and len(words) < 8 and
+        len(line) < 150 and  # CHANGED: was 50
+        len(words) > 0 and len(words) < 20 and  # CHANGED: was 8, then 15, now 20
         line[0].isupper() and
-        not line[-1] in '.;:' and
+        not line[-1] in '.!?' and  # CHANGED: removed colon/semicolon, they can appear in headers
         not re.match(r'Lima,?\s+\d{1,2}\s+de', line)
     )
+
+
+def _is_chart_or_table_label(line: str) -> bool:
+    """
+    Detect chart/table labels with numbered/lettered patterns.
+
+    NEW FUNCTION: Detects patterns like "1: Title", "I. Section", "A) Item"
+    that are commonly used as chart labels or table headers.
+
+    Patterns detected:
+        - "1: Leyes con impacto fiscal adverso" (number + colon)
+        - "I. Opinión del CF sobre..." (Roman numeral + period)
+        - "A) Leyes con impacto" (letter + parenthesis)
+        - "Gráfico 1:", "Tabla N° 2:" (explicit chart/table references)
+
+    Examples:
+        >>> _is_chart_or_table_label("1: Leyes con impacto fiscal adverso")
+        True
+        >>> _is_chart_or_table_label("I. Opinión del CF sobre el proyecto")
+        True
+        >>> _is_chart_or_table_label("El CF considera que...")
+        False
+    """
+    if not line or not line.strip():
+        return False
+
+    line = line.strip()
+
+    # Pattern 1: Gráfico/Tabla/Cuadro/Figura + number
+    if re.match(r'^(Gráfico|Tabla|Cuadro|Figura|Gráf|Tab)\s+N?°?\s*\d+', line, re.IGNORECASE):
+        return True
+
+    # Pattern 2: Number + colon (e.g., "1: Title", "2: Subtitle")
+    if re.match(r'^\d+\s*:\s*.+', line):
+        return True
+
+    # Pattern 3: Roman numeral + period or colon (e.g., "I. Title", "II: Subtitle")
+    if re.match(r'^[IVXLCDM]+\s*[.:]', line):
+        return True
+
+    # Pattern 4: Letter + parenthesis (e.g., "A) Item", "B) Item")
+    if re.match(r'^[A-Z]\s*\)\s*.+', line):
+        return True
+
+    # Pattern 5: Letter + period at start of short text (e.g., "A. Item")
+    if re.match(r'^[A-Z]\s*\.\s*.+', line) and len(line) < 100:
+        return True
+
+    return False
 
 
 def _remove_graph_table_titles(text: str) -> str:
