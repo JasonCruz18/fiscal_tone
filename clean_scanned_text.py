@@ -22,37 +22,80 @@ from pathlib import Path
 # Helper Functions for Header/Title Detection
 # ────────────────────────────────────────────────────────────────────────────
 
-def is_section_header(line: str, max_chars: int = 150, max_words: int = 20) -> bool:
+def is_section_header(line: str, max_chars: int = 200, max_words: int = 25) -> bool:
     """
     Determine if a line is a section header (should be removed).
 
-    IMPROVED: Increased thresholds to catch longer headers like
-    "Opinión del CF sobre las proyecciones contempladas en el IAPM"
+    IMPROVED (based on user feedback):
+    - Increased thresholds: 200 chars (was 150), 25 words (was 20)
+    - More aggressive detection: assumes text without ending period is a header
+    - Special patterns for numbered sections: "ll. — Opinión...", "I. Opinión...", etc.
+    - Detects headers even when very short (2-3 words)
 
     Conditions:
-        - Length < 150 characters
-        - Word count < 20 words (was 15, increased to catch longer headers)
-        - Starts with uppercase letter or number
-        - Does NOT end with period, exclamation mark, or question mark
+        - Length < 200 characters
+        - Word count < 25 words
+        - Starts with uppercase letter, number, or special section marker
         - Is NOT a date
+        - Does NOT end with period (strong indicator of header)
 
     Examples:
+        - "Índices de precios de minerales y de hidrocarburos" → True (no period)
         - "Opinión del CF sobre las proyecciones..." → True (header)
-        - "El CF considera que esta norma..." → False (sentence ending with period)
+        - "Transparencia fiscal" → True (header)
+        - "ll. — Opinión de CF sobre el proyecto de DPME" → True (header)
+        - "Aspectos generales" → True (2 words, no period)
+        - "El CF considera que esta norma es adecuada." → False (ends with period, long)
     """
     if not line:
         return False
 
     words = line.split()
 
-    return (
-        len(line) > 0 and
-        len(line) < max_chars and
-        len(words) > 0 and len(words) < max_words and
-        line[0].isupper() and
-        not line[-1] in '.!?' and
-        not re.match(r'Lima,?\s+\d{1,2}\s+de', line)
+    # Basic length and word count checks
+    if len(line) >= max_chars or len(words) >= max_words:
+        return False
+
+    # Must have some content
+    if len(words) == 0:
+        return False
+
+    # Exclude dates
+    if re.match(r'Lima,?\s+\d{1,2}\s+de', line):
+        return False
+
+    # Must start with uppercase, number, or special section marker
+    # Allow patterns like "ll. —", "I.", "II.", "lll." (OCR corruption), etc.
+    first_char_ok = (
+        line[0].isupper() or
+        line[0].isdigit() or
+        re.match(r'^[ivxlcdmh]+\s*[.—\-:]', line, re.IGNORECASE)  # Added 'h' for OCR corruption
     )
+
+    if not first_char_ok:
+        return False
+
+    # Get last meaningful character (ignore trailing whitespace)
+    last_char = line.rstrip()[-1] if line.rstrip() else ''
+
+    # AGGRESSIVE RULE: If doesn't end with period, it's likely a header
+    # This catches: "Índices de precios de minerales y de hidrocarburos"
+    # Also: "Transparencia fiscal", "Aspectos generales", etc.
+    if last_char != '.':
+        return True
+
+    # If ends with period, only consider it a header if:
+    # 1. Very short (< 8 words) - likely a short section header
+    # 2. Preceded by weird OCR characters like ".!" or ".?"
+    if len(words) < 8:
+        return True
+
+    # Check for OCR artifacts before period
+    if len(line) > 1 and line[-2] in '!?':
+        return True
+
+    # Otherwise, it's likely a sentence (longer text ending with period)
+    return False
 
 
 def is_chart_or_table_label(line: str) -> bool:
@@ -106,6 +149,7 @@ def stage0_preliminary_cleaning(data, enabled=True):
     Stage 0: Preliminary text normalization
 
     Cleans common OCR artifacts:
+    - Removes document IDs at the beginning (e.g., "informe N 001-2018-CF")
     - Removes extra spaces before punctuation (" <", " ;", etc.)
     - Normalizes multiple spaces
     - Removes spaces around newlines
@@ -119,6 +163,11 @@ def stage0_preliminary_cleaning(data, enabled=True):
     for entry in data:
         text = entry['text']
         original_length = len(text)
+
+        # FIRST: Remove document ID at the very beginning
+        # Patterns: "informe N 001-2018-CF", "Informe N* 003-2017-CF", etc.
+        # These are always at the start, followed by the real content
+        text = re.sub(r'^[Ii]nforme\s+N[*°º]?\s*\d{3,4}[-\s]*\d{4}[-\s]*CF\s+', '', text, flags=re.IGNORECASE)
 
         # Remove spaces before punctuation
         text = re.sub(r' +([<>;:?!,.\)\]\}])', r'\1', text)
@@ -136,7 +185,7 @@ def stage0_preliminary_cleaning(data, enabled=True):
         total_chars_removed += (original_length - len(text))
         cleaned_data.append(entry)
 
-    print(f"  Stage 0: Cleaned {total_chars_removed:,} chars (OCR artifacts)")
+    print(f"  Stage 0: Cleaned {total_chars_removed:,} chars (OCR artifacts + document IDs)")
     return cleaned_data
 
 
@@ -253,17 +302,20 @@ def stage1_filter_keywords(data, enabled=True):
 
 def stage4_remove_false_paragraph_breaks(data, enabled=True):
     """
-    Stage 4: Remove ALL false paragraph breaks
+    Stage 4: Remove ALL false paragraph breaks (IMPROVED & ROBUST)
 
     NOTE: This stage is executed MULTIPLE times throughout the pipeline
     to clean up false breaks created by other stages.
 
-    As per user requirement: "Un párrafo nunca inicia con minúsculas"
+    IMPROVEMENTS based on user feedback:
+    1. Context-aware detection: checks if previous text ends with sentence punctuation
+    2. Removes \n\n before capitalized words mid-sentence (e.g., "de\n\nEconomía")
+    3. Removes \n\n before numbers/decimals (e.g., "de\n\n2,0 por ciento")
+    4. ALL \n\n before lowercase letters (existing rule)
+    5. \n\n before years (existing rule)
+    6. \n\n before common connectors (existing rule)
 
-    Removes:
-    1. ALL \n\n before lowercase letters
-    2. \n\n before years (2018, etc.)
-    3. \n\n before connectors (de, del, en, etc.)
+    The key insight: if previous text doesn't end with .!?:, then \n\n is likely a false break
     """
     if not enabled:
         return data
@@ -275,24 +327,90 @@ def stage4_remove_false_paragraph_breaks(data, enabled=True):
         text = entry['text']
         original_count = text.count('\n\n')
 
-        # Remove ALL \n\n before lowercase letters
+        # RULE 1: Remove ALL \n\n before lowercase letters
         # This is the main rule - paragraphs NEVER start with lowercase
         text = re.sub(r'\n\n([a-záéíóúñü])', r' \1', text)
 
-        # Remove \n\n before years
+        # RULE 2: Remove \n\n before years
         text = re.sub(r'\n\n([12]\d{3})', r' \1', text)
 
-        # Remove \n\n before common connectors (extra safety)
-        connectors = r'(?:de|del|la|el|los|las|un|una|en|con|por|para|que|se|y|o|su|sus|sobre|al|ha|han)'
+        # RULE 3: Remove \n\n before common connectors
+        connectors = r'(?:de|del|la|el|los|las|un|una|en|con|por|para|que|se|y|o|su|sus|sobre|al|ha|han|desde|hasta|entre|sin|tras|ante|bajo|hacia|mediante|según|versus|vía|…|\.\.\.|a)'
         text = re.sub(r'\n\n(' + connectors + r'\s)', r' \1', text)
 
-        new_count = text.count('\n\n')
-        total_removed += (original_count - new_count)
+        # RULE 3b (NEW): Remove \n\n before ellipsis (… or ...) specifically
+        # Example: "productividad\n\n… y" → "productividad … y"
+        text = re.sub(r'\n\n(…|\.\.\.)', r' \1', text)
+
+        # RULE 4 (NEW): Remove \n\n before numbers (decimals, percentages, etc.)
+        # Examples: "de\n\n2,0 por ciento", "superávit de\n\n0,5 por ciento"
+        text = re.sub(r'\n\n(\d+[,.]?\d*\s*(?:por\s+ciento|%)?)', r' \1', text)
+
+        # RULE 5 (NEW): Context-aware removal - check if previous text ends properly
+        # If previous segment doesn't end with .!?:, then \n\n before capitalized word is likely false
+        segments = text.split('\n\n')
+        cleaned_segments = []
+
+        for i, segment in enumerate(segments):
+            segment = segment.strip()
+            if not segment:
+                continue
+
+            # First segment is always kept
+            if i == 0:
+                cleaned_segments.append(segment)
+                continue
+
+            # Get previous segment
+            prev_segment = cleaned_segments[-1] if cleaned_segments else ""
+
+            # Check if we should join with previous (false break) or keep separate (real paragraph)
+            should_join = False
+
+            # If previous segment exists and doesn't end with sentence-ending punctuation
+            if prev_segment and prev_segment[-1] not in '.!?:;':
+                # Current segment starts with capital letter
+                if segment[0].isupper():
+                    # Check if current segment looks like a continuation, not a header
+                    # Headers are usually short (< 150 chars), few words (< 20)
+                    # If longer than 150 chars OR more than 20 words, it's likely a continuation
+                    words = segment.split()
+                    is_long_text = len(segment) > 150 or len(words) > 20
+
+                    # Also check if it starts with common continuation patterns
+                    continuation_starters = [
+                        'Economía', 'Finanzas', 'Ministerio', 'Gobierno', 'Consejo',
+                        'Fiscal', 'Presupuesto', 'Política', 'Administración',
+                        'Tributaria', 'Pública', 'Nacional', 'General', 'Central'
+                    ]
+                    starts_with_continuation = any(segment.startswith(word) for word in continuation_starters)
+
+                    # If it's long text OR starts with continuation word, join it
+                    if is_long_text or starts_with_continuation:
+                        should_join = True
+                    # Even if short, check if previous text looks incomplete
+                    # (ends with preposition, article, etc.)
+                    elif prev_segment.split()[-1].lower() in [
+                        'de', 'del', 'la', 'el', 'los', 'las', 'un', 'una',
+                        'en', 'con', 'por', 'para', 'que', 'se', 'y', 'o',
+                        'su', 'sus', 'sobre', 'al', 'a', 'ante', 'bajo'
+                    ]:
+                        should_join = True
+
+            if should_join:
+                # Join with previous segment
+                cleaned_segments[-1] = cleaned_segments[-1] + ' ' + segment
+                total_removed += 1
+            else:
+                # Keep as separate paragraph
+                cleaned_segments.append(segment)
+
+        text = '\n\n'.join(cleaned_segments)
 
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 4: Removed {total_removed} false paragraph breaks")
+    print(f"  Stage 4: Removed {total_removed} false paragraph breaks (improved robust detection)")
     return cleaned_data
 
 
@@ -301,16 +419,18 @@ def stage5_remove_headers_and_titles(data, enabled=True):
     Stage 5: Remove headers, titles, subtitles
 
     IMPROVED: Enhanced header detection using smart helper functions
-    - is_section_header() detects headers (< 150 chars, < 20 words, no ending period)
+    - is_section_header() detects headers (< 200 chars, < 25 words)
     - is_chart_or_table_label() detects numbered patterns (1:, I., A), etc.)
+    - Specific patterns: "Conclusiones", "Riesgos", etc.
 
     Executed AFTER keyword filtering and annex truncation, so NOW we can remove ALL headers including:
     - "Opinión del CF sobre las proyecciones contempladas en el IAPM"
     - "1: Leyes con impacto fiscal adverso"
     - "I. Opinión del CF sobre el cumplimiento..."
+    - "Conclusiones", "Conclusiones y recomendaciones", "III. Conclusiones"
+    - "Riesgos", "Antecedentes", etc.
     - "ANEXO:" (standalone annex headers that didn't cause truncation)
     - Page 1 titles (for PDFs without keywords)
-    - Section headers/subtitles throughout document
 
     IMPORTANT: No exceptions for "Opinión del CF" keywords anymore!
     (They were already used for filtering in stage 1, now they should be removed)
@@ -321,15 +441,44 @@ def stage5_remove_headers_and_titles(data, enabled=True):
     cleaned_data = []
     total_removed = 0
 
+    # Specific section header patterns to remove (case-insensitive)
+    section_headers = [
+        r'^[IVXLH]{1,4}\.?\s*[-—]?\s*Conclusiones?(?:\s+y\s+recomendaciones)?$',
+        r'^Conclusiones?(?:\s+y\s+recomendaciones)?$',
+        r'^[IVXLH]{1,4}\.?\s*[-—]?\s*Riesgos?$',
+        r'^Riesgos?$',
+        r'^[IVXLH]{1,4}\.?\s*[-—]?\s*Antecedentes?$',
+        r'^Antecedentes?$',
+        r'^[IVXLH]{1,4}\.?\s*[-—]?\s*Introducción$',
+        r'^Introducción$',
+    ]
+
     for entry in data:
         text = entry['text']
+
+        # FIRST: Remove section headers that are stuck to following text (no \n\n after)
+        # Pattern: \n\nConclusiones El texto... → \n\nEl texto...
+        for pattern in section_headers:
+            # Remove pattern when followed immediately by capital letter (next paragraph)
+            text = re.sub(r'\n\n' + pattern + r'(?=\s+[A-ZÁÉÍÓÚÑ])', '\n\n', text, flags=re.IGNORECASE)
+
+        # NOTE: We do NOT try to detect "headers stuck to text" because it's too risky
+        # It often mistakes the beginning of valid paragraphs as headers
+        # Example: "El Consejo Fiscal coincide con el MEF..." gets mistaken as header
+        # Better to leave a few headers than to destroy valid paragraph text!
 
         # Pattern 1: \n\n[text]\n\n (paragraphs surrounded by double newlines)
         def replace_header(match):
             nonlocal total_removed
             header = match.group(1).strip()
 
-            # Remove if it's a header OR chart/table label
+            # Check specific section headers first
+            for pattern in section_headers:
+                if re.match(pattern, header, re.IGNORECASE):
+                    total_removed += 1
+                    return '\n\n'
+
+            # Then check general header patterns
             if is_section_header(header) or is_chart_or_table_label(header):
                 total_removed += 1
                 return '\n\n'
@@ -343,15 +492,25 @@ def stage5_remove_headers_and_titles(data, enabled=True):
         if match:
             header = match.group(1).strip()
 
-            # Remove if it's a header OR chart/table label
-            if is_section_header(header) or is_chart_or_table_label(header):
+            # Check specific section headers first
+            should_remove = False
+            for pattern in section_headers:
+                if re.match(pattern, header, re.IGNORECASE):
+                    should_remove = True
+                    break
+
+            # Then check general header patterns
+            if not should_remove:
+                should_remove = is_section_header(header) or is_chart_or_table_label(header)
+
+            if should_remove:
                 text = text[match.end():]
                 total_removed += 1
 
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 5: Removed {total_removed} headers/titles (improved detection)")
+    print(f"  Stage 5: Removed {total_removed} headers/titles (improved detection + specific patterns)")
     return cleaned_data
 
 
@@ -477,11 +636,12 @@ def stage6_aggressive_cleaning(data, enabled=True):
     """
     Stage 6: ULTRA CONSERVATIVE paragraph-level cleaning
 
-    CRITICAL CHANGES for maximum safety:
-    - NO "too short" threshold - we only remove VERY specific patterns
-    - Only removes: page numbers, standalone dates, standalone signatures
-    - Character threshold reduced from 50 to 30 (only extremely short noise)
-    - All patterns MUST match at START (^) and be standalone (no other text)
+    IMPROVED (based on user feedback):
+    - Multi-line date+signature detection: "Lima, DD de mes de YYYY\n\nNOMBRE Presidente..."
+    - Better patterns for dates with OCR artifacts: "Lima, 18...?% á? WALDO..."
+    - Removes standalone dates, signatures, page numbers
+    - Character threshold: < 30 chars (only extremely short noise)
+    - All patterns checked carefully to avoid removing valid content
 
     This ensures we NEVER remove valid paragraph content.
     """
@@ -496,20 +656,53 @@ def stage6_aggressive_cleaning(data, enabled=True):
         text = entry['text']
         original_len = len(text)
 
+        # FIRST: Remove multi-line date+signature patterns
+        # Pattern: "Lima, DD de month de YYYY [OCR garbage] NAME Presidente..."
+        # This needs to be done on the full text before splitting into paragraphs
+
+        # Multi-line date followed by name and "Presidente"
+        # Example: "Lima, 22 de agosto de 2017 de +\n\nWALDO EPIFANIO MENDOZA BELLIDO Presidente Consejo Fiscal"
+        text = re.sub(
+            r'Lima,\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}[^A-Z]*\n\n[A-ZÁÉÍÓÚÑ\s]+(?:Presidente|PRESIDENTE)[^\n]*',
+            '',
+            text,
+            flags=re.IGNORECASE
+        )
+
+        # Single-line date with name and OCR garbage
+        # Example: "Lima, 18 de agosto de 2016?% á? WALDO ZA BELLIDO"
+        text = re.sub(
+            r'Lima,\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}[^.]*?[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{10,}$',
+            '',
+            text,
+            flags=re.MULTILINE | re.IGNORECASE
+        )
+
         paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
         kept = []
 
         for para in paragraphs:
             should_remove = False
 
+            # CRITICAL: Remove signature blocks with addresses (FATAL if not removed!)
+            # Pattern: "PRESIDENTE DEL CONSEJO FISCAL 7/10 Av. República de Panamá..."
+            if re.search(r'PRESIDENTE\s+DEL\s+CONSEJO\s+FISCAL.*?\d+/\d+.*?Av\.', para, re.IGNORECASE):
+                should_remove = True
+
+            # Remove signature blocks with page numbers and addresses
+            # Pattern: Any text with "7/10" or page numbers followed by "Av." or addresses
+            if re.search(r'\d+/\d+\s+Av\.\s+', para):
+                should_remove = True
+
             # ULTRA CONSERVATIVE: Only remove VERY specific standalone patterns
             # All patterns require EXACT match (no other text before/after)
-            if len(para) < 80:  # Only check short text
+            if len(para) < 100:  # Only check short text (increased from 80 to catch longer dates)
                 removal_patterns_ultra_conservative = [
                     r'^\d+\s*/\s*\d+$',                        # Page numbers ONLY: "7/10"
-                    r'^Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}[\s.]*$',  # Date ONLY
-                    r'^Informe\s+N[*°º]?\s*\d{3,4}[-\s]*CF[\s.]*$',  # Doc ID ONLY: "Informe N* 001-2016-CF"
-                    r'^PRESIDENTE\s+DEL\s+CONSEJO\s+FISCAL[\s.]*$',  # Signature ONLY
+                    r'^Lima,\s+\d+\s+de\s+\w+\s+de\s+\d{4}.*$',  # Date with any trailing chars
+                    r'^Informe\s+N[*°º]?\s*\d{3,4}[-\s]*CF[\s.]*$',  # Doc ID ONLY
+                    r'^PRESIDENTE\s+DEL\s+CONSEJO\s+FISCAL[\s.]*$',  # Signature title ONLY
+                    r'^Presidente\s+(?:del\s+)?Consejo\s+Fiscal[\s.]*$',  # Signature title (mixed case)
                     r'^Conclusiones?\s*:?[\s.]*$',             # Section header ONLY
                     r'^ANEXO\s*:?[\s.]*$',                     # Annex header ONLY
                 ]
@@ -520,31 +713,45 @@ def stage6_aggressive_cleaning(data, enabled=True):
                         break
 
             # ONLY extremely short (< 30 chars) - things like "!", "�", "10/18"
-            # This is much more conservative than the previous < 50 threshold
             if len(para) < 30:
                 should_remove = True
 
-            # All-caps signatures (ONLY if < 70 chars and > 60% caps)
-            # Example: "WALDO EPIFANIO MENDOZA BELLIDO Presidente Consejo Fiscal"
-            if len(para) < 70:
+            # All-caps names (signatures)
+            # Example: "WALDO EPIFANIO MENDOZA BELLIDO", "WALDO ZA BELLIDO"
+            if len(para) < 100:
+                # Check if it's mostly uppercase letters (name pattern)
                 alpha = [c for c in para if c.isalpha()]
-                if alpha and len(alpha) > 10:  # Must have at least 10 letters
+                if alpha and len(alpha) > 10:
                     caps_ratio = sum(1 for c in alpha if c.isupper()) / len(alpha)
-                    if caps_ratio > 0.6 and 'presidente' in para.lower():
-                        should_remove = True
+                    # High caps ratio (> 60%) indicates a name/signature
+                    if caps_ratio > 0.6:
+                        # Contains signature keywords OR is just a name
+                        has_signature_keyword = any(kw in para.lower() for kw in ['presidente', 'consejo', 'fiscal'])
+                        # OR looks like a name (mostly caps, few words, no verbs)
+                        words = para.split()
+                        looks_like_name = len(words) >= 2 and len(words) <= 6 and all(w[0].isupper() or not w[0].isalpha() for w in words if w)
+
+                        if has_signature_keyword or looks_like_name:
+                            should_remove = True
+
+            # Remove isolated names with OCR garbage
+            # Pattern: NAME followed by weird OCR chars like "?%", "á?", etc.
+            if len(para) < 100:
+                if re.search(r'^[A-ZÁÉÍÓÚÑ\s]{15,}[\?%<>°º\*\s]*$', para):
+                    should_remove = True
 
             if should_remove:
                 paras_removed += 1
                 chars_removed += len(para)
             else:
-                # Character cleaning
-                para = re.sub(r'\s*\(\s*\)', '', para)
-                para = re.sub(r'\s*\[\s*\]', '', para)
-                para = re.sub(r'[*]{2,}', '', para)
-                para = re.sub(r'[?]{2,}', '?', para)
-                para = re.sub(r'[!]{2,}', '!', para)
-                para = re.sub(r'[_|]+', '', para)
-                para = re.sub(r' {2,}', ' ', para).strip()
+                # Character cleaning - more aggressive on OCR artifacts
+                para = re.sub(r'\s*\(\s*\)', '', para)  # Empty parens
+                para = re.sub(r'\s*\[\s*\]', '', para)  # Empty brackets
+                para = re.sub(r'[*]{2,}', '', para)     # Multiple asterisks
+                para = re.sub(r'[?]{2,}', '?', para)    # Multiple question marks → single
+                para = re.sub(r'[!]{2,}', '!', para)    # Multiple exclamation → single
+                para = re.sub(r'[_|]+', '', para)       # Underscores and pipes
+                para = re.sub(r' {2,}', ' ', para).strip()  # Multiple spaces
 
                 if para:
                     kept.append(para)
@@ -556,7 +763,7 @@ def stage6_aggressive_cleaning(data, enabled=True):
         else:
             chars_removed += original_len
 
-    print(f"  Stage 6: Removed {paras_removed} noisy paragraphs, {chars_removed:,} chars")
+    print(f"  Stage 6: Removed {paras_removed} noisy paragraphs, {chars_removed:,} chars (improved multi-line detection)")
     return cleaned_data
 
 
@@ -564,13 +771,17 @@ def stage7_final_ocr_cleanup(data, enabled=True):
     """
     Stage 7: FINAL OCR CLEANUP - "La cereza del pastel"
 
+    IMPROVED (based on user feedback):
     Removes final OCR artifacts and noise:
-    1. Isolated uppercase letters with tildes (Á, É, Í, Ó, Ú alone)
-    2. Isolated single uppercase letters before words (L El, N sobre)
-    3. Random symbols: >, <, |, combined like >'f-
-    4. Symbols stuck to words: palabra>, texto<
-    5. Extra spaces around dashes: 2009- 2012 → 2009-2012
-    6. Extra spaces in middle of words (OCR artifacts)
+    1. Footnote numbers attached to words: "claves?78" → "claves"
+    2. Multiple question marks: "fiscal??" → "fiscal"
+    3. OCR garbage symbols: "g<º£", "hi", ""º0¿—s"
+    4. Isolated uppercase letters with tildes (Á, É, Í, Ó, Ú alone)
+    5. Isolated single uppercase letters before words (L El, N sobre)
+    6. Random symbols: >, <, |, combined like >'f-
+    7. Symbols stuck to words: palabra>, texto<
+    8. Extra spaces around dashes: 2009- 2012 → 2009-2012
+    9. Extra spaces in middle of words (OCR artifacts)
 
     This is the final polish to remove all remaining OCR noise.
     """
@@ -584,11 +795,57 @@ def stage7_final_ocr_cleanup(data, enabled=True):
         text = entry['text']
         original_text = text
 
-        # Fix 1: Remove isolated uppercase letters with tildes (Ó alone, Ú alone)
+        # Fix 1 (NEW): Remove footnote numbers attached to words
+        # Pattern: word followed by ?XX (like ?78, ?27, etc.)
+        # Example: "claves?78" → "claves"
+        text = re.sub(r'([a-záéíóúñ]+)\?\d+', r'\1', text, flags=re.IGNORECASE)
+
+        # Fix 2 (NEW): Remove multiple question marks attached to words
+        # Pattern: word followed by ?? or ???
+        # Example: "fiscal??" → "fiscal"
+        text = re.sub(r'([a-záéíóúñ]+)\?{2,}', r'\1', text, flags=re.IGNORECASE)
+
+        # Fix 2b (NEW): Remove single question mark attached to words (OCR artifacts)
+        # This is aggressive but safe - Spanish questions use ¿?, so lone ? is always OCR noise
+        # Pattern: word? followed by non-letter (space, punctuation, etc.) - but NOT at sentence end
+        # Examples: "financiero? de" → "financiero de", "público?\"" → "público\"", "economía?-" → "economía-"
+        # BUT preserve legitimate questions that end sentences (though rare in this corpus)
+
+        # Remove ? when followed by lowercase letter (mid-sentence)
+        text = re.sub(r'([a-záéíóúñ]+)\?(?=\s+[a-záéíóúñ])', r'\1', text, flags=re.IGNORECASE)
+        # Remove ? when followed by common OCR punctuation artifacts (", -, *, etc.)
+        text = re.sub(r'([a-záéíóúñ]+)\?(?=["\'\-\*,.:;])', r'\1', text, flags=re.IGNORECASE)
+        # Remove ? when followed by newline or end of text (but not if preceded by ¿)
+        text = re.sub(r'(?<!¿)([a-záéíóúñ]+)\?(?=\s*[\n])', r'\1', text, flags=re.IGNORECASE)
+        # Remove ? followed by superscript numbers or other weird chars
+        text = re.sub(r'([a-záéíóúñ]+)\?(?=[°º\*"\'\-\s]+[a-záéíóúñA-ZÁÉÍÓÚÑ])', r'\1', text, flags=re.IGNORECASE)
+        # Remove ? followed by single letters (like "?s", "?n") - these are always OCR errors
+        text = re.sub(r'([a-záéíóúñ]+)\?([a-záéíóúñ])\b', r'\1\2', text, flags=re.IGNORECASE)
+        # Remove ? in footnote-like patterns: word?"., word?", word?" (common OCR footnote artifacts)
+        # Handle both straight quotes (") and curly quotes (" " ' ')
+        text = re.sub(r'([a-záéíóúñ]+)\?(?=[""\'\'\"])', r'\1', text, flags=re.IGNORECASE)
+        # Remove ? before dash-number patterns: word?-16
+        text = re.sub(r'([a-záéíóúñ]+)\?(?=-)', r'\1', text, flags=re.IGNORECASE)
+
+        # Fix 3 (NEW): Remove OCR garbage symbols attached to words
+        # Pattern: word followed by weird character combos: <º, °£, ¿—, etc.
+        # Example: "texto<º£" → "texto", "palabra"º0¿—s" → "palabra"
+        text = re.sub(r'([a-záéíóúñ]+)[<>°º£¿\-—\s]*[<>°º£¿\-—]+', r'\1', text, flags=re.IGNORECASE)
+
+        # Fix 4 (NEW): Remove isolated weird character sequences
+        # Pattern: standalone symbols like "g<º£", "hi" (single letters), ""º0¿—s"
+        # These appear as OCR artifacts between words
+        text = re.sub(r'\s+[<>°º£¿\-—]{2,}\s+', ' ', text)
+
+        # Fix 5 (NEW): Remove single weird characters stuck to words
+        # Example: "palabra%" → "palabra", "texto?" → "texto" (but preserve valid punctuation)
+        text = re.sub(r'([a-záéíóúñ]+)[%<>°º£¿*]+(?=\s|$)', r'\1', text, flags=re.IGNORECASE)
+
+        # Fix 6: Remove isolated uppercase letters with tildes (Ó alone, Ú alone)
         # Pattern: space + [ÁÉÍÓÚ] + space → just space
         text = re.sub(r'\s+[ÁÉÍÓÚ]\s+', ' ', text)
 
-        # Fix 2: Remove isolated single uppercase letters before words
+        # Fix 7: Remove isolated single uppercase letters before words
         # Pattern: \n\n[A-Z] word → \n\nword (except valid Roman numerals I, V, X)
         # Preserve: I, II, III, IV, V, VI, VII, VIII, IX, X
         def remove_isolated_letter(match):
@@ -602,34 +859,38 @@ def stage7_final_ocr_cleanup(data, enabled=True):
 
         text = re.sub(r'\n\n([A-ZÁÉÍÓÚÑ])\s+([a-záéíóúñ]\w+)', remove_isolated_letter, text)
 
-        # Fix 3: Remove random symbols: >, <, |, ^, ~
+        # Fix 8: Remove random symbols: >, <, |, ^, ~
         # These are OCR artifacts that don't belong in Spanish text
         text = re.sub(r'[><\|^~]+', '', text)
 
-        # Fix 4: Remove weird sequences like >'f-
+        # Fix 9: Remove weird sequences like >'f-
         # Pattern: >', <', etc. followed by weird chars
         text = re.sub(r'[><][\'"][\w\-]*', '', text)
 
-        # Fix 5: Fix extra spaces around dashes in year ranges
+        # Fix 10: Fix extra spaces around dashes in year ranges
         # 2009- 2012 → 2009-2012
         text = re.sub(r'(\d{4})\s*-\s+(\d{4})', r'\1-\2', text)
         # Also fix: 8- 2016 → 8-2016
         text = re.sub(r'(\d+)\s*-\s+(\d{4})', r'\1-\2', text)
 
-        # Fix 6: Normalize multiple spaces (should already be done, but just in case)
+        # Fix 11: Normalize multiple spaces (should already be done, but just in case)
         text = re.sub(r' {2,}', ' ', text)
 
-        # Fix 7: Clean up any remaining punctuation artifacts
+        # Fix 12: Clean up any remaining punctuation artifacts
         # Remove isolated dots, commas, etc. surrounded by spaces
         text = re.sub(r'\s+[.,;:]\s+', ' ', text)
 
-        # Fix 8: Remove weird character sequences at word boundaries
+        # Fix 13: Remove weird character sequences at word boundaries
         # Like: "texto�algo" → "textoalgo"
         text = re.sub(r'[�]+', '', text)
 
-        # Fix 9: Clean up spacing around parentheses and brackets (if any remain)
+        # Fix 14: Clean up spacing around parentheses and brackets (if any remain)
         text = re.sub(r'\s+\)', ')', text)
         text = re.sub(r'\(\s+', '(', text)
+
+        # Fix 15 (NEW): Remove trailing weird punctuation at end of paragraphs
+        # Like "texto.!" → "texto."
+        text = re.sub(r'\.([!?]+)(?=\n\n|$)', '.', text)
 
         # Count fixes
         if text != original_text:
@@ -638,7 +899,7 @@ def stage7_final_ocr_cleanup(data, enabled=True):
         entry['text'] = text
         cleaned_data.append(entry)
 
-    print(f"  Stage 7: Applied final OCR cleanup to {total_fixes} pages")
+    print(f"  Stage 7: Applied final OCR cleanup to {total_fixes} pages (enhanced footnote removal)")
     return cleaned_data
 
 
@@ -653,14 +914,14 @@ def main():
     print("="*80)
     print(f"Input:  {input_file}")
     print(f"Output: {output_file}")
-    print(f"\nStages (in execution order - now matching function names!):")
-    print(f"  0. Preliminary cleaning")
+    print(f"\nStages (in execution order - HEADERS BEFORE FALSE BREAKS!):")
+    print(f"  0. Preliminary cleaning (document IDs, OCR artifacts)")
     print(f"  1. Keyword filtering (FROM PAGE 2+, keep all if no keyword)")
     print(f"  2. Remove annexes (truncate at ANEXO pattern)")
     print(f"  3. Remove letter pages (Carta N* pattern)")
-    print(f"  4. Remove false paragraph breaks (1st pass - ALL before lowercase)")
-    print(f"  5. Remove headers/titles (improved detection)")
-    print(f"  4. Remove false paragraph breaks (2nd pass - cleanup after headers)")
+    print(f"  5. Remove headers/titles (FIRST - improved detection)")
+    print(f"  4. Remove false paragraph breaks (1st pass - headers already removed)")
+    print(f"  4. Remove false paragraph breaks (2nd pass - cleanup)")
     print(f"  6. Aggressive cleaning (ultra conservative)")
     print(f"  4. Remove false paragraph breaks (3rd pass - cleanup after aggressive)")
     print(f"  7. Final OCR cleanup (la cereza del pastel)")
@@ -675,9 +936,11 @@ def main():
     # Run stages in correct order (now function names match execution order!)
     # CRITICAL: Annexes (Stage 2) MUST run BEFORE headers (Stage 5)
     # Otherwise headers would remove "ANEXO:" before annexes can be truncated
+    # CRITICAL: Stage 5 (headers) MUST run BEFORE Stage 4 (false breaks)
+    # Otherwise false breaks will join headers to following text, making them undetectable
     # CRITICAL: Stage 4 (false breaks) runs FOUR times:
-    #   1. After Stage 3 (removes OCR false breaks)
-    #   2. After Stage 5 (headers create false breaks when removed)
+    #   1. After Stage 5 (removes OCR false breaks, headers already removed)
+    #   2. After Stage 5 again (headers create false breaks when removed)
     #   3. After Stage 6 (aggressive cleaning may create false breaks)
     #   4. After Stage 7 (final OCR cleanup may create false breaks)
     print("\nApplying cleaning stages...")
@@ -686,9 +949,9 @@ def main():
     data = stage1_filter_keywords(data, enabled=True)
     data = stage2_remove_annexes(data, enabled=True)
     data = stage3_remove_letter_pages(data, enabled=True)
+    data = stage5_remove_headers_and_titles(data, enabled=True)  # FIRST - before false breaks!
     data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # First pass
-    data = stage5_remove_headers_and_titles(data, enabled=True)  # Creates false breaks!
-    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Second pass
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Second pass (cleanup)
     data = stage6_aggressive_cleaning(data, enabled=True)  # Creates false breaks!
     data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Third pass
     data = stage7_final_ocr_cleanup(data, enabled=True)  # Creates false breaks
