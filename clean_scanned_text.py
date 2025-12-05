@@ -65,6 +65,11 @@ def is_section_header(line: str, max_chars: int = 200, max_words: int = 35) -> b
     if re.match(r'Lima,?\s+\d{1,2}\s+de', line):
         return False
 
+    # CRITICAL: Never consider "El presente informe..." as a header
+    # This is the standard opening phrase in CF documents
+    if line.startswith('El presente informe'):
+        return False
+
     # Must start with uppercase, number, or special section marker
     # Allow patterns like "ll. —", "I.", "II.", "lll." (OCR corruption), etc.
     first_char_ok = (
@@ -78,6 +83,16 @@ def is_section_header(line: str, max_chars: int = 200, max_words: int = 35) -> b
 
     # Get last meaningful character (ignore trailing whitespace)
     last_char = line.rstrip()[-1] if line.rstrip() else ''
+
+    # CRITICAL: If ends with preposition/article/continuation word, it's NOT a complete header
+    # (it's likely a partial sentence due to false break)
+    # Examples:
+    #   - "...responde a la solicitud enviada por el Ministerio de" <- NOT a header!
+    #   - "...resultado fiscal del Sector Público No" <- NOT a header!
+    last_word = words[-1].lower().rstrip('.,;:!?') if words else ''
+    continuation_words = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'en', 'con', 'por', 'para', 'sobre', 'al', 'a', 'ante', 'bajo', 'hacia', 'mediante', 'según', 'tras', 'entre', 'sin', 'desde', 'hasta', 'y', 'e', 'o', 'u', 'no']
+    if last_word in continuation_words:
+        return False
 
     # AGGRESSIVE RULE: If doesn't end with period, it's likely a header
     # This catches: "Índices de precios de minerales y de hidrocarburos"
@@ -339,6 +354,10 @@ def stage4_remove_false_paragraph_breaks(data, enabled=True):
         connectors = r'(?:de|del|la|el|los|las|un|una|en|con|por|para|que|se|y|o|su|sus|sobre|al|ha|han|desde|hasta|entre|sin|tras|ante|bajo|hacia|mediante|según|versus|vía|…|\.\.\.|a)'
         text = re.sub(r'\n\n(' + connectors + r'\s)', r' \1', text)
 
+        # RULE 3.5: Remove \n\n before document references (N*, N°, etc.)
+        # Example: "...Proyecto de Ley\n\nN* 08-2016-PE"
+        text = re.sub(r'\n\n(N[*°\s]?\d)', r' \1', text)
+
         # RULE 3b (NEW): Remove \n\n before ellipsis (… or ...) specifically
         # Example: "productividad\n\n… y" → "productividad … y"
         text = re.sub(r'\n\n(…|\.\.\.)', r' \1', text)
@@ -359,7 +378,8 @@ def stage4_remove_false_paragraph_breaks(data, enabled=True):
         # Split by \n\n and process with skip index for consumed segments
         segments = text.split('\n\n')
         cleaned_segments = []
-        prepositions_articles = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'en', 'con', 'por', 'para', 'sobre', 'al', 'a', 'ante', 'bajo', 'hacia', 'mediante', 'según', 'tras', 'entre', 'sin', 'desde', 'hasta', 'y', 'e', 'o', 'u']
+        # Words that indicate sentence continuation (never end a complete sentence)
+        prepositions_articles = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'en', 'con', 'por', 'para', 'sobre', 'al', 'a', 'ante', 'bajo', 'hacia', 'mediante', 'según', 'tras', 'entre', 'sin', 'desde', 'hasta', 'y', 'e', 'o', 'u', 'no']
 
         i = 0
         while i < len(segments):
