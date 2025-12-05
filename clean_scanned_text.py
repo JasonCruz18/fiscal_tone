@@ -22,19 +22,20 @@ from pathlib import Path
 # Helper Functions for Header/Title Detection
 # ────────────────────────────────────────────────────────────────────────────
 
-def is_section_header(line: str, max_chars: int = 200, max_words: int = 25) -> bool:
+def is_section_header(line: str, max_chars: int = 200, max_words: int = 35) -> bool:
     """
     Determine if a line is a section header (should be removed).
 
     IMPROVED (based on user feedback):
-    - Increased thresholds: 200 chars (was 150), 25 words (was 20)
+    - Increased thresholds: 200 chars (was 150), 35 words (was 25)
     - More aggressive detection: assumes text without ending period is a header
     - Special patterns for numbered sections: "ll. — Opinión...", "I. Opinión...", etc.
     - Detects headers even when very short (2-3 words)
+    - Detects long headers: "Elasticidad de la relación entre..." (31 words)
 
     Conditions:
         - Length < 200 characters
-        - Word count < 25 words
+        - Word count < 35 words (increased to catch longer headers)
         - Starts with uppercase letter, number, or special section marker
         - Is NOT a date
         - Does NOT end with period (strong indicator of header)
@@ -346,66 +347,69 @@ def stage4_remove_false_paragraph_breaks(data, enabled=True):
         # Examples: "de\n\n2,0 por ciento", "superávit de\n\n0,5 por ciento"
         text = re.sub(r'\n\n(\d+[,.]?\d*\s*(?:por\s+ciento|%)?)', r' \1', text)
 
-        # RULE 5 (NEW): Context-aware removal - check if previous text ends properly
-        # If previous segment doesn't end with .!?:, then \n\n before capitalized word is likely false
+        # RULE 5 (NEW): Remove \n\n when previous text ends with preposition/article/conjunction (without period)
+        # Examples: "gasto del\n\nGobierno" → "gasto del Gobierno"
+        #           "para la\n\nCooperación" → "para la Cooperación"
+        #           "Inversión e\n\nImpuestos" → "Inversión e Impuestos"
+        # CRITICAL: Only apply if the text before preposition/article is NOT a header itself
+        # CRITICAL: Must handle MULTIPLE consecutive false breaks in same paragraph
+        # Bad example: "La situación fiscal\n\nTexto" - DON'T join (first part is a header)
+        # Good example: "gasto del\n\nGobierno" - DO join (first part is not a header)
+
+        # Split by \n\n and process with skip index for consumed segments
         segments = text.split('\n\n')
         cleaned_segments = []
+        prepositions_articles = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'en', 'con', 'por', 'para', 'sobre', 'al', 'a', 'ante', 'bajo', 'hacia', 'mediante', 'según', 'tras', 'entre', 'sin', 'desde', 'hasta', 'y', 'e', 'o', 'u']
 
-        for i, segment in enumerate(segments):
-            segment = segment.strip()
+        i = 0
+        while i < len(segments):
+            segment = segments[i].strip()
             if not segment:
+                i += 1
                 continue
 
-            # First segment is always kept
-            if i == 0:
-                cleaned_segments.append(segment)
-                continue
+            # Accumulate joined text (for multiple consecutive false breaks)
+            accumulated_text = segment
 
-            # Get previous segment
-            prev_segment = cleaned_segments[-1] if cleaned_segments else ""
+            # Check if we should join with next segments
+            j = i + 1
+            while j < len(segments):
+                next_segment = segments[j].strip()
+                if not next_segment:
+                    j += 1
+                    continue
 
-            # Check if we should join with previous (false break) or keep separate (real paragraph)
-            should_join = False
+                # Check if current accumulated text ends with prep/article
+                last_word = accumulated_text.split()[-1].lower() if accumulated_text.split() else ""
 
-            # If previous segment exists and doesn't end with sentence-ending punctuation
-            if prev_segment and prev_segment[-1] not in '.!?:;':
-                # Current segment starts with capital letter
-                if segment[0].isupper():
-                    # Check if current segment looks like a continuation, not a header
-                    # Headers are usually short (< 150 chars), few words (< 20)
-                    # If longer than 150 chars OR more than 20 words, it's likely a continuation
-                    words = segment.split()
-                    is_long_text = len(segment) > 150 or len(words) > 20
+                # Check if next segment starts with capital
+                starts_with_capital = next_segment and next_segment[0].isupper()
 
-                    # Also check if it starts with common continuation patterns
-                    continuation_starters = [
-                        'Economía', 'Finanzas', 'Ministerio', 'Gobierno', 'Consejo',
-                        'Fiscal', 'Presupuesto', 'Política', 'Administración',
-                        'Tributaria', 'Pública', 'Nacional', 'General', 'Central'
-                    ]
-                    starts_with_continuation = any(segment.startswith(word) for word in continuation_starters)
+                if last_word in prepositions_articles and starts_with_capital:
+                    # CRITICAL CHECK: Is accumulated text a header by itself?
+                    # If so, DON'T join (it's a complete header, not a false break)
+                    if is_section_header(accumulated_text):
+                        # It's a header - stop joining
+                        break
+                    else:
+                        # It's not a header - join with next (false break)
+                        accumulated_text = accumulated_text + ' ' + next_segment
+                        total_removed += 1
+                        j += 1  # Move to next segment
+                else:
+                    # Can't join - stop
+                    break
 
-                    # If it's long text OR starts with continuation word, join it
-                    if is_long_text or starts_with_continuation:
-                        should_join = True
-                    # Even if short, check if previous text looks incomplete
-                    # (ends with preposition, article, etc.)
-                    elif prev_segment.split()[-1].lower() in [
-                        'de', 'del', 'la', 'el', 'los', 'las', 'un', 'una',
-                        'en', 'con', 'por', 'para', 'que', 'se', 'y', 'o',
-                        'su', 'sus', 'sobre', 'al', 'a', 'ante', 'bajo'
-                    ]:
-                        should_join = True
-
-            if should_join:
-                # Join with previous segment
-                cleaned_segments[-1] = cleaned_segments[-1] + ' ' + segment
-                total_removed += 1
-            else:
-                # Keep as separate paragraph
-                cleaned_segments.append(segment)
+            cleaned_segments.append(accumulated_text)
+            i = j  # Skip all consumed segments
 
         text = '\n\n'.join(cleaned_segments)
+
+        # RULE 5 (REMOVED): La lógica "context-aware" era demasiado arriesgada
+        # NUNCA eliminamos \n\n antes de texto que empieza con MAYÚSCULA
+        # Regla absoluta: "Un párrafo nunca inicia con minúscula"
+        # Pero SÍ puede iniciar con mayúscula, incluso si el anterior termina incorrectamente
+        # Mejor dejar algunos false breaks que destruir la estructura de párrafos
 
         entry['text'] = text
         cleaned_data.append(entry)
@@ -914,18 +918,20 @@ def main():
     print("="*80)
     print(f"Input:  {input_file}")
     print(f"Output: {output_file}")
-    print(f"\nStages (in execution order - HEADERS BEFORE FALSE BREAKS!):")
+    print(f"\nStages (in execution order - FALSE BREAKS FIRST, then HEADERS!):")
     print(f"  0. Preliminary cleaning (document IDs, OCR artifacts)")
     print(f"  1. Keyword filtering (FROM PAGE 2+, keep all if no keyword)")
     print(f"  2. Remove annexes (truncate at ANEXO pattern)")
     print(f"  3. Remove letter pages (Carta N* pattern)")
-    print(f"  5. Remove headers/titles (FIRST - improved detection)")
-    print(f"  4. Remove false paragraph breaks (1st pass - headers already removed)")
-    print(f"  4. Remove false paragraph breaks (2nd pass - cleanup)")
+    print(f"  4. Remove false paragraph breaks (1st - BEFORE headers)")
+    print(f"  5. Remove headers/titles (1st pass - improved detection)")
+    print(f"  4. Remove false paragraph breaks (2nd - cleanup after headers)")
     print(f"  6. Aggressive cleaning (ultra conservative)")
-    print(f"  4. Remove false paragraph breaks (3rd pass - cleanup after aggressive)")
+    print(f"  4. Remove false paragraph breaks (3rd - cleanup after aggressive)")
     print(f"  7. Final OCR cleanup (la cereza del pastel)")
-    print(f"  4. Remove false paragraph breaks (FINAL pass - absolute cleanup)")
+    print(f"  4. Remove false paragraph breaks (4th - cleanup after OCR)")
+    print(f"  5. Remove headers/titles (REFUERZO - catch remaining headers)")
+    print(f"  4. Remove false paragraph breaks (FINAL - absolute cleanup)")
     print("="*80)
 
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -936,26 +942,25 @@ def main():
     # Run stages in correct order (now function names match execution order!)
     # CRITICAL: Annexes (Stage 2) MUST run BEFORE headers (Stage 5)
     # Otherwise headers would remove "ANEXO:" before annexes can be truncated
-    # CRITICAL: Stage 5 (headers) MUST run BEFORE Stage 4 (false breaks)
-    # Otherwise false breaks will join headers to following text, making them undetectable
-    # CRITICAL: Stage 4 (false breaks) runs FOUR times:
-    #   1. After Stage 5 (removes OCR false breaks, headers already removed)
-    #   2. After Stage 5 again (headers create false breaks when removed)
-    #   3. After Stage 6 (aggressive cleaning may create false breaks)
-    #   4. After Stage 7 (final OCR cleanup may create false breaks)
+    # CRITICAL: Stage 4 (false breaks) MUST run BEFORE Stage 5 (headers)
+    # Otherwise text fragments like "situación actual\n\nde las finanzas" get mistaken as headers
+    # CRITICAL: Stage 5 runs TWICE (once before aggressive cleaning, once after as REFUERZO)
+    # This catches headers that were initially stuck to text but got separated after cleaning
     print("\nApplying cleaning stages...")
     # Execute stages in correct order
     data = stage0_preliminary_cleaning(data, enabled=True)
     data = stage1_filter_keywords(data, enabled=True)
     data = stage2_remove_annexes(data, enabled=True)
     data = stage3_remove_letter_pages(data, enabled=True)
-    data = stage5_remove_headers_and_titles(data, enabled=True)  # FIRST - before false breaks!
-    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # First pass
-    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Second pass (cleanup)
-    data = stage6_aggressive_cleaning(data, enabled=True)  # Creates false breaks!
-    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Third pass
-    data = stage7_final_ocr_cleanup(data, enabled=True)  # Creates false breaks
-    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # FINAL pass - absolute cleanup!
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # FIRST - join obvious false breaks
+    data = stage5_remove_headers_and_titles(data, enabled=True)  # Remove headers (now well-formed)
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Clean up after header removal
+    data = stage6_aggressive_cleaning(data, enabled=True)  # Remove noise paragraphs
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Clean up after aggressive
+    data = stage7_final_ocr_cleanup(data, enabled=True)  # Final OCR cleanup
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # Clean up after OCR
+    data = stage5_remove_headers_and_titles(data, enabled=True)  # REFUERZO - catch remaining headers
+    data = stage4_remove_false_paragraph_breaks(data, enabled=True)  # FINAL cleanup
 
     # Save
     with open(output_file, 'w', encoding='utf-8') as f:
