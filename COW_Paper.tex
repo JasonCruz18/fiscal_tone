@@ -1,0 +1,204 @@
+\documentclass[a4paper, fleqn, 11pt]{article}
+
+\input{COW_Format}  
+
+
+\begin{document}
+
+\title{
+\textbf{Fiscal Tone}
+\thanks{We gratefully acknowledge the support of the Research Center at Universidad del Pacífico (\href{https://agenda2026.up.edu.pe/propuesta-nacional/advertencias-ignoradas-el-necesario-retorno-a-la-prudencia-fiscal-en-el-peru/}{Agenda 2026} project). We alone are responsible for the views expressed and for any errors that may remain in this paper.}
+}
+
+\author{
+\begin{tabular}{c c c  }
+\textbf{\large Jason Cruz} & \textbf{\large Diego Winkelried}\thanks{Corresponding author. School of Economics and Finance, Universidad del Pac\'{i}fico, Av. Salaverry 2020, Lima 15072, Peru. Phone: (+511) 219 0100 extension 2713.} 
+ & \textbf{\large Marco Ortiz} \\
+\href{jj.cruza@up.edu.pe }{jj.cruza@up.edu.pe }  &
+\href{winkelried\_dm@up.edu.pe}{winkelried\_dm@up.edu.pe} &
+\href{ma.ortizs@up.edu.pe}{ma.ortizs@up.edu.pe}  \\[5mm]
+\multicolumn{3}{c}{\emph{School of Economics and Finance}} \\
+\multicolumn{3}{c}{\emph{Universidad del Pac\'{i}fico (Lima, Per\'{u})}}
+\end{tabular}
+}
+
+%\author{}
+
+\date{\normalsize This version: \today}
+
+\maketitle
+\thispagestyle{empty}
+
+
+\vfill
+
+
+
+%---------------------------------------------------
+% Abstract
+%---------------------------------------------------
+
+\begin{abstract} \noindent \normalsize
+Fiscal councils are widely seen as key institutions for promoting fiscal discipline, yet measuring their effectiveness remains difficult. Existing indices emphasize \emph{de jure} features---mandates, independence, resources---while largely overlooking \emph{de facto} behavior. This paper proposes a complementary, behavior-based approach by quantifying how fiscal councils communicate their assessments and warnings. Using a large language model (LLM), we analyze all reports and communiqués issued by the Peruvian Fiscal Council between 2016 and 2025 to construct an index of ``fiscal tone,'' capturing the severity of concern expressed in each document. The results reveal a marked shift toward more critical positions in recent years, consistent with a gradual weakening of fiscal rules and oversight. Beyond documenting Peru's fiscal deterioration, the study shows how LLM-based textual analysis can provide a replicable tool for evaluating the behavior, vigilance, and credibility of fiscal councils, complementing traditional institutional indicators.
+\end{abstract}
+
+\vfill
+\begin{tabular}{lll}
+  \textbf{JEL Classification} & \textbf{:} & C55, E62, H60, H83 \\ 
+  \textbf{Keywords} & \textbf{:} & Fiscal Council, fiscal rule, textual analysis, LLM, Policy communication.
+\end{tabular}
+
+\vfill
+
+\newpage
+
+
+
+%---------------------------------------------------
+% Introduction
+%---------------------------------------------------
+
+\section{Introduction}
+
+Persistent fiscal deficits are best understood as political‐economy phenomena rather than purely macroeconomic ones. The seminal model of \cite{AlesinaTabellini1990} shows that alternating partisan governments strategically accumulate debt to constrain their successors, creating a structural deficit bias even under rational expectations. This foundational insight inspired the search for institutional mechanisms to promote fiscal discipline—first through fiscal rules and later through independent fiscal councils (FCs). Early empirical evidence confirmed that deviations from fiscal plans often arise from weak budget institutions and optimistic forecasting \citep{vonHagen2010,Bergman2016}, pointing to the need for independent bodies to enhance credibility and transparency.
+
+An early formal theoretical justification for such bodies is provided by \cite{DebrunHauner2009}, who define independent fiscal agencies as non-partisan institutions that promote fiscal sustainability through information and reputation rather than coercive authority. \cite{Hagemann2011} further argues that FCs strengthen fiscal performance by improving the information environment, reducing forecast bias, and reinforcing rule compliance through reputational mechanisms. Similarly, \cite{CalmforsWrenLewis2011} outline what FCs should do —validate forecasts, assess compliance, and evaluate long-term sustainability— while emphasizing that they must remain advisory, not decision-making, to preserve democratic legitimacy.
+
+Historical case studies confirm that credibility is built gradually through transparency and methodological rigor. The Dutch Centraal Planbureau exemplifies how a technically strong analytical bureau can shape fiscal debate and foster consensus across political cycles \citep{BosTeulings2012}. Building on these experiences, \cite{Hemming2013} distinguishes fiscal councils from fiscal authorities, noting that only the former are compatible with democratic accountability. He highlights the OECD’s   Principles for Independent Fiscal Institutions, which stress independence, transparency, resources, and accountability as essential design pillars.
+
+Parallel to these developments, research on institutional communication—for instance, \cite{Allard2013} on how central banks publicly comment on fiscal policy—illustrates that credibility can be reinforced through consistent and transparent messaging. This perspective anticipates the modern emphasis on fiscal transparency and public engagement as integral components of FC effectiveness.
+
+The empirical literature has matured rapidly. Using cross-country data, \cite{Beetsma2019} show that countries with strong and independent FCs record smaller deficits, more accurate forecasts, and greater compliance with fiscal rules. \cite{DebrunJonung2019} propose a “fiscal rule trilemma”—between simplicity, flexibility, and enforceability—arguing that FCs help reconcile it by shifting enforcement from legal sanctions to reputational discipline. Theoretical refinements link FC success to voter information and political incentives, showing that transparency may strengthen or weaken discipline depending on how voters process fiscal information \cite{BeetsmaDebrunSloof2022}.
+
+Recent econometric work provides causal evidence of FC effectiveness. Using IMF and World Bank data, \cite{Capraru2022} and \cite{Latifi2024} find that FCs reduce primary deficits by roughly one percentage point of GDP and lower public debt ratios by four to six points, with effects increasing over time as reputation builds. \cite{Chrysanthakopoulos2022} demonstrate that FCs mitigate fiscal procyclicality, while \cite{AlnafrahBogatov2025} show that FC creation raises GDP growth and stabilizes debt and inflation volatility, especially in emerging economies. Meta-analytic evidence by \cite{BrandleElsener2024} confirms that these effects are statistically robust and strongest when FCs are legally independent, well-resourced, and embedded within numerical fiscal rules.
+
+Despite this convergence, an important question remains unresolved: how to evaluate the quality of a fiscal council in a way that reflects not only its legal and organizational design but also its actual behavior and influence. Existing indices—centered on mandates, independence, or resources—capture \emph{de jure} characteristics but often overlook \emph{de facto} performance. While we do not claim to resolve this complex issue, our analysis of fiscal tone provides new evidence relevant to this debate.
+
+To that end, we derive fiscal tone from a large-language-model (LLM) analysis of the official reports and public statements of the Peruvian Fiscal Council since its creation in 2013. LLMs, trained on vast text corpora and refined through instruction-based learning, have transformed automated text analysis in economics and public finance. Recent studies highlight their analytical potential: \citet{NieblerWindhager2023} use LLMs to measure the fiscal tone of parliamentary speeches; \citet{BommasaniHudson2021} and \citet{GilardiSchmid2023} demonstrate their effectiveness in instruction-based semantic classification; and, in the fiscal domain, \citet{Allard2013} and \citet{Latifi2024} show that discourse patterns in institutional communications can anticipate policy and market responses. Compared with traditional tools such as topic modeling or sentiment dictionaries, LLMs capture context, recognize nuance, and can be guided through tailored prompts—advantages essential for analyzing technical and institutional texts.
+
+We apply this approach to quantify the evolution of the Peruvian Fiscal Council’s fiscal tone and track how its warnings have responded to changes in fiscal policy and political conditions. Peru offers an instructive case: after a decade of prudence, rising political instability has weakened fiscal discipline. Throughout this period, the Council has maintained technical rigor and transparency, consistently alerting the public to fiscal risks and publishing well-documented analyses. Our results suggest that strengthening government accountability to the Council’s assessments—and ensuring that dialogue between fiscal authorities and the Council functions as a genuine mechanism of fiscal responsibility—remains a key institutional reform for the years ahead.
+
+
+\section{Background on the Peruvian Case}
+
+Peru’s modern fiscal framework emerged in the late 1990s as part of a broader effort to institutionalize macroeconomic discipline after decades of large fiscal deficits and the hyperinflation of the 1980s. The Fiscal Prudence and Transparency Law (LPTF) of 1999 constituted the first comprehensive attempt to formalize a rule-based system \citep{Valderrama2022}. It introduced a 1\% of GDP deficit ceiling, a 2\% real annual limit on non-financial expenditure growth, the Fiscal Stabilization Fund (FEF), specific constraints for election years, and the obligation to publish the Multiannual Macroeconomic Framework (MMM)---a document containing medium-term macroeconomic and fiscal forecasts \citep{Montoya2024}. A key motivation behind this reform was the need to consolidate the macroeconomic gains from the 1990s stabilization program, particularly the prohibition of central bank financing and the strengthening of tax administration \citep{Vtyurina2015}.
+
+Subsequent reforms strengthened and expanded the scope of the framework. The Fiscal Responsibility and Transparency Law (LRTF) of 2003 extended fiscal rules to regional and local governments and introduced transparency mechanisms such as compliance statements and mandatory fiscal reports \citep{Liendo2015}. In 2007, the expenditure rule was modified to exclude public investment, effectively introducing a ``golden rule'' that allowed borrowing for capital formation while maintaining limits on current spending \citep{Valderrama2022}. Although this change supported infrastructure expansion, it also reduced the countercyclical capacity of the framework by making aggregate expenditure less responsive to the business cycle. A second generation of reforms was implemented through the Fiscal Responsibility and Transparency Strengthening Law (Law No.\ 30099) in 2013. This law introduced a structural deficit rule, anchored public debt at 30\% of GDP, and created an independent Fiscal Council, reflecting international trends toward strengthening fiscal oversight institutions \citep{CespedesHuarcaRamirez2016}. In 2016, Legislative Decree 1276 replaced the structural balance rule with a conventional deficit rule, simplified expenditure limits, and linked spending growth to the long-term growth rate of real GDP, thereby seeking a better balance between transparency, countercyclicality, and operational simplicity \citep{ButronCespedes2020}.
+
+Despite these strong institutional foundations, compliance with fiscal rules has been uneven. As documented by \citet{Montoya2024}, Peru has experienced several episodes of non-compliance or formal suspension of the rules, including in 2000–2002 (post-Fujimori transition), 2009–2010 (global financial crisis), 2014 (fiscal stimulus), 2017 (coastal \textit{El Niño}), and, most significantly, 2020–2021, when all rules were suspended in response to the COVID-19 shock. Figure~\ref{fig:Motivation} summarizes these patterns: light blue bars denote years of compliance, pink bars represent years in which the rule was suspended, and red bars highlight years of non-compliance. The red “$\times$” markers in the upper panel identify violations of the expenditure rule, which have become more frequent, underscoring the difficulty of simultaneously meeting deficit and expenditure limits. Together, these developments point to the gradual weakening of the rule-based framework and of the credibility that characterized its earlier phases \citep{SchmidtHebbel2022}.
+
+The deterioration becomes particularly evident after 2022. During this period, legislative activism increased markedly, with Congress introducing spending initiatives that expanded or created new budgetary commitments. This trend was reinforced by the Constitutional Court’s reinterpretation of Article 79, which broadened Congress’s ability to propose measures with fiscal implications and weakened a long-standing constraint on parliamentary expenditure initiatives. At the same time, the Executive exhibited reduced capacity and limited political willingness to veto fiscally costly legislation, further loosening the discipline imposed by the rule-based framework.
+
+The Fiscal Council, created in 2013 and operational since 2016, plays a central role in this institutional landscape. Its mandate is to evaluate official macroeconomic projections, assess compliance with fiscal rules, and review the methodology used to estimate structural balances \citep{CespedesHuarcaRamirez2016}. Although its opinions are non-binding, the Council contributes to transparency and accountability by issuing independent, public assessments. Its influence derives primarily from its professional reputation, technical expertise, and visibility in the public debate rather than from legal enforcement authority. Importantly, the period covered by our analysis coincides with the deterioration of the fiscal framework described above. This makes the evolution of the Council’s tone particularly salient: as pressures on the rule-based system intensified, its evaluations became an informative indicator of fiscal stress. %The next section uses large language models (LLMs) to quantify this evolution and analyze how the Council reacted to a progressively more challenging fiscal environment.
+
+
+\section{The Fiscal Council’s Warnings}
+
+Building on this framework, we apply a large language model (LLM) to the Peruvian Fiscal Council’s (FC) reports and communiqués to measure how its tone has evolved between 2016 and 2025. The objective is to quantify changes in the severity of fiscal warnings and in the Council’s overall assessment of fiscal policy. By converting qualitative judgments into a consistent numerical indicator, this approach provides a novel metric of institutional vigilance that complements conventional fiscal indicators and strengthens the empirical analysis of fiscal oversight in Peru. In doing so, it also allows us to trace how the FC’s written assessments react to episodes of fiscal deterioration, institutional stress, or improvements in policy implementation, offering a systematic view of the Council’s signaling role within the macro-fiscal framework
+
+\subsection{Description of the Fiscal Corpus and Method}
+
+The dataset comprises 77 public documents issued by the Fiscal Council (FC) between 2016 and 2025—49 technical reports and 28 official communiqués—available at \url{https://cf.gob.pe}
+. Thirteen were scanned PDFs requiring OCR processing, while 64 were digital originals. Given the diversity of formats, a preprocessing workflow removed non-textual elements such as headers, footers, and signatures, ensuring consistent paragraph extraction. A further filtering step used a curated list of roughly 100 terms associated with fiscal warnings—such as violation of fiscal rules, fiscal relaxation, fiscal deterioration, sustainability risks, and institutional weakening—to exclude procedural or administrative text and retain only substantive fiscal content. The final corpus contained about 7,400 paragraphs, averaging 99 words each.
+
+Each paragraph was then evaluated using OpenAI’s \texttt{gpt-4o} model, instructed through a specialized prompt to act as a fiscal analyst and assign an ordinal score from 1 to 5 according to the severity of fiscal concern: 1 for no concern, 3 for neutral or descriptive statements, and 5 for maximum alarm, with intermediate scores capturing finer gradations. The prompt summarized the FC’s terminology across three dimensions—compliance and fiscal discipline, fiscal risk and sustainability, and governance and institutional capacity. All paragraphs were processed deterministically (temperature set to zero), and each received a 1–5 score reflecting its level of fiscal concern, together with a normalized index derived from that score. These outputs were then aggregated into document-level averages, frequency distributions, and time-series indicators. The full prompt appears in the Appendix.
+
+\subsection{Distribution of Fiscal Warnings}
+
+ Panel (a) of Figure~\ref{fig:Results} displays the distribution of paragraph-level scores over time. For each document, we compute the share of paragraphs falling into each of the five alert levels: $\pi_1, \pi_2, \pi_3, \pi_4,$ and $\pi_5$, where $\pi_j$ denotes the internal probability that a paragraph is classified in category $j$. These relative frequencies show how the FC’s assessments evolve across the full spectrum of concern.\footnote{The figures are presented at a monthly frequency, although the FC does not publish documents at regular monthly intervals. After computing the paragraph-level scores for each document, missing months were filled using simple linear interpolations. For visualization purposes, the plots in Figure~\ref{fig:Results}  display lightly smoothed, centered moving averages.}
+ Lower-alert categories ($\pi_1$ and $\pi_2$) fluctuate cyclically but decline in weight over the sample, while higher-alert categories ($\pi_4$ and $\pi_5$)  grow steadily. For brevity, we focus on $\pi_5$, the ``red'' warnings that capture the Council’s most severe assessments.
+
+ The evolution of $\pi_5$ highlights three distinct episodes of heightened fiscal concern. The first appears after the 2017 Coastal El Niño, when expenditure pressures and emergency responses lead to a temporary rise in severe warnings. The second occurs in the second half of 2020 during the COVID-19 shock, when $\pi_5$ surges and dominates FC documents, reflecting alarm over fiscal deterioration, rapid spending increases, and debt dynamics. The third and most pronounced episode begins in late 2022, amid institutional instability, frequent changes in MEF leadership, policy reversals, and the absence of a credible fiscal consolidation plan. During this period, $\pi_5$ reaches its highest levels in the entire sample---exceeding even those observed during the pandemic---despite the absence of an exogenous shock, pointing to a structural weakening of fiscal governance.
+ 
+
+\subsection{The Fiscal Tone}
+
+To summarize the overall stance contained in each document, we construct a synthetic fiscal-tone index based on the distribution of paragraph-level scores. Let $\mu = \pi_1 + 2\pi_2 + 3\pi_3 + 4\pi_4 + 5\pi_5$ denote the expected value of the paragraph scores within a document. By construction, $\mu \in [1,5]$, with higher values indicating more critical assessments. The fiscal-tone index is then defined as:  
+\[
+\tau = \frac{3 - \mu}{2}, \qquad \tau \in [-1,1]\,,
+\]
+a simple rescaling that sets $\tau = 0$ for a neutral document ($\mu = 3$), values near $+1$ for favorable assessments, and values near $-1$ for highly critical ones.
+
+Panel (b) of Figure~\ref{fig:Results} plots the resulting fiscal--tone series. The index displays short-run fluctuations but exhibits a clear downward trend beginning in 2020. During the early years of the sample (2016--2017), the tone is slightly negative, reflecting moderate concerns but no sustained deterioration. In contrast, the onset of the COVID-19 pandemic produces a sharp and persistent decline, consistent with the surge in severe warnings documented in Panel~(a). Although the tone improves temporarily in 2021, it remains below zero and never returns to pre-pandemic levels.
+
+The most pronounced fall in the fiscal--tone index occurs from late 2022 onward, a period marked by institutional instability, frequent turnover at the Ministry of Economy and Finance, and a weakening commitment to medium-term fiscal anchors. The index reaches levels comparable to (and at times more adverse than) those observed during the height of the pandemic, despite the absence of an external shock. This suggests that the recent deterioration reflects not transitory fiscal pressures but deeper fragilities in fiscal governance and policy implementation.
+
+
+%---------------------------------------------------
+% Conclusions
+%---------------------------------------------------
+
+\section{Concluding remarks} \label{section:Conclusions}
+
+This paper has examined the evolution of fiscal discipline in Peru through the lens of the FC’s communication and warnings. By applying a large language model to classify the tone of all official publications issued between 2016 and 2025, we constructed a quantitative indicator that tracks how the FC’s assessments have shifted in response to economic shocks and institutional change. The results point to a persistent deterioration of fiscal credibility since 2020, driven by weakened rules, expanding legislative discretion, and the erosion of technical counterweights. More broadly, automated textual analysis of FC documents offers a replicable and quantitative lens through which to observe how institutional signals of fiscal risk evolve over time. This approach bridges computational linguistics and fiscal surveillance, generating early-warning indicators that complement conventional fiscal statistics and strengthen transparency and accountability in the implementation of public finances.
+
+Beyond the Peruvian case, the study illustrates the value of analyzing FCs through their behavior rather than only their design. Text-based indicators of vigilance offer a new way to evaluate how these institutions communicate risks, adjust their warnings, and respond to deteriorating fiscal conditions. By showing how LLM-based tools can systematize and quantify this behavior, the paper provides a methodological contribution that can be applied to fiscal councils in other countries, to independent oversight bodies more broadly, and to any institutional setting where communication plays a key monitoring role.
+
+\small
+\bibliographystyle{apalike}
+\bibliography{COW_Biblio}
+\normalsize
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Figures and Tables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\clearpage
+ 
+
+\begin{figure}[p]
+\begin{center}\caption{Fiscal balance, targets and performance in Peru, 2000-2025}\label{fig:Motivation}
+\includegraphics[width=0.95\textwidth]{Fig_Performace.png}
+\end{center}
+
+\footnotesize  \textbf{Source:} \citet{Montoya2024} and \href{https://estadisticas.bcrp.gob.pe/estadisticas/series/}{BCRPData}. Own elaboration \\[1mm] 
+\textbf{Notes:} The non-financial public sector balance is shown as a percentage of GDP. Blue lines indicate the annual fiscal target. Light blue bars correspond to years when the rule was met, pink bars to years when it was suspended, and red bars to years of non-compliance. Red “$\times$” marks denote years when the expenditure rule was suspended or not met. The 2020 fiscal deficit (8\% of GDP) is omitted for visual clarity.
+\end{figure}
+
+\begin{figure}[p]
+    \begin{center}
+    \caption{Fiscal warnings and fiscal tone in Peru, 2016-2025}\label{fig:Results} \small
+    
+(a) Distribution of scores  
+\includegraphics[width=0.95\textwidth]{Fig_ScoresBars.png} \\[1mm]
+ (b) Fiscal tone index \\
+\includegraphics[width=0.95\textwidth]{Fig_FiscalTone.png}
+\end{center}
+\footnotesize \textbf{Source:} Fiscal Council reports and communiqués 
+(\href{https://cf.gob.pe/p/documentos}{https://cf.gob.pe/p/documentos}). Own elaboration.\\[1mm]
+\textbf{Notes:} Panel (a) shows the evolution of the estimated probabilities that paragraphs in each document are classified into one of five alert levels. Missing months were filled using simple linear  interpolation, and centered moving averages were applied to smooth the series for easier visualization. In Panel (b), the fiscal tone is a standardized index ranging from $-1$ (very unfavorable or high fiscal risk) to 0 (neutral) to $+1$ (very favorable or positive assessment).
+
+\end{figure}
+
+\clearpage
+\section{LLM Prompt for Fiscal Tone Classification}
+
+\begingroup
+\small
+\ttfamily
+
+Since approximately 2016, the management of public finances has shown increasing signs of deterioration. The loss of fiscal discipline, lack of transparency, and relaxation of fiscal rules have been recurrent themes in the reports of the Peruvian Fiscal Council. Added to this is the impact of political instability (for example, frequent ministerial changes) on institutional capacity to conduct a prudent and sustainable fiscal policy. In this context, the Fiscal Council has issued increasingly frequent and forceful warnings about the non-fulfillment of fiscal targets, the deterioration of public balances, and the risks of growing and potentially unsustainable indebtedness.
+
+Common criteria and terms in the Fiscal Council’s reports, by category:
+\begin{enumerate}
+  \item  Compliance and fiscal discipline:   non-fulfillment of fiscal targets, relaxation of fiscal rules, improper use of public spending, deviation of the fiscal deficit, deterioration of the fiscal framework, unjustified flexibility, procyclical fiscal policy.
+  \item  Risk and sustainability: fiscal risk, debt sustainability risk, excessive indebtedness, dependence on extraordinary revenues, structural fiscal vulnerability, use of temporary or non-permanent measures, macro-fiscal uncertainty.
+  \item \bfseries Governance and institutional capacity:  fiscal transparency, quality of public spending, institutional uncertainty, lack of multiannual planning, frequent changes in economic authorities, institutional weakening, compromised fiscal independence, absence of structural reform.
+\end{enumerate}
+
+You are a technical analyst at the Fiscal Council. Evaluate the following paragraph extracted from a technical report of the Fiscal Council, where an opinion is given on the performance of the Ministry of Economy and Finance with respect to the above criteria. Your task is to assign a  score from 1 to 5  according to the  level of fiscal concern or alert expressed in the text :
+
+\begin{enumerate}
+  \item No concern (target compliance, fiscal transparency, multiannual planning),
+  \item Mild concern (potential fiscal risk, deficit deviation, dependence on extraordinary revenues),
+  \item Neutral (technical description, management within the framework, no evaluative judgment),
+  \item High concern (target non-compliance, fiscal relaxation, macroeconomic uncertainty),
+  \item Fiscal alarm (severe criticism, debt sustainability risk, compromised fiscal independence).
+\end{enumerate}
+
+\endgroup
+ 
+ 
+\end{document}
