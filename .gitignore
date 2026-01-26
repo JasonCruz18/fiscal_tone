@@ -1,3 +1,7 @@
 *.csv
 *.pdf
 *.png
+
+# Node
+node_modules/
+dist/
