@@ -21,12 +21,19 @@ Example:
 
 from __future__ import annotations
 
+import codecs
 import os
+import sys
 import time
 from pathlib import Path
 from timeit import default_timer as timer
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
+
+# Set UTF-8 encoding for Windows console output
+if sys.platform == "win32" and hasattr(sys.stdout, "buffer"):
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 import pandas as pd
 import requests
@@ -334,21 +341,46 @@ def pdf_downloader(
         list_records, new_page_records = scrape_cf(url, already_scraped_pages=old_pages)
         all_new_records.extend(new_page_records)
 
-    # Early exit if no new pages found
-    if not all_new_records:
-        print("\n[INFO] No new pages: skipping download.")
+    # Check for PDFs in metadata that don't exist on disk
+    missing_pdfs = []
+    if not old_df.empty and "pdf_filename" in old_df.columns:
+        for _, row in old_df.iterrows():
+            filename = row.get("pdf_filename")
+            if filename and pd.notna(filename):
+                filepath = os.path.join(raw_pdf_folder, filename)
+                # Check both raw folder and editable/scanned subfolders
+                editable_path = os.path.join(raw_pdf_folder, "editable", filename)
+                scanned_path = os.path.join(raw_pdf_folder, "scanned", filename)
+                if not (os.path.exists(filepath) or os.path.exists(editable_path) or os.path.exists(scanned_path)):
+                    missing_pdfs.append(row.to_dict())
+
+    # Early exit if no new pages AND no missing files
+    if not all_new_records and not missing_pdfs:
+        print("\n[INFO] No new pages and all PDFs exist: skipping download.")
         print(f"Metadata unchanged: {metadata_path}")
         if os.path.exists(metadata_path):
             return pd.read_json(metadata_path, dtype=str)
         return pd.DataFrame()
 
-    # Filter for truly new PDFs not yet downloaded
-    new_df = pd.DataFrame(all_new_records).dropna(subset=["pdf_url"])
-    mask_new = ~new_df["pdf_url"].isin(old_urls)
-    df_to_download = new_df[mask_new].copy()
+    # Combine new PDFs from scraping with missing PDFs from disk check
+    df_to_download = pd.DataFrame()
+
+    if all_new_records:
+        new_df = pd.DataFrame(all_new_records).dropna(subset=["pdf_url"])
+        mask_new = ~new_df["pdf_url"].isin(old_urls)
+        df_to_download = new_df[mask_new].copy()
+
+    if missing_pdfs:
+        print(f"\n[INFO] Found {len(missing_pdfs)} PDFs in metadata but missing on disk")
+        missing_df = pd.DataFrame(missing_pdfs).dropna(subset=["pdf_url"])
+        if df_to_download.empty:
+            df_to_download = missing_df
+        else:
+            df_to_download = pd.concat([df_to_download, missing_df], ignore_index=True)
 
     # Sort chronologically (oldest first)
-    df_to_download["date"] = pd.to_datetime(df_to_download["date"], dayfirst=True)
+    # Use mixed format to handle both ISO dates and day-first dates
+    df_to_download["date"] = pd.to_datetime(df_to_download["date"], format="mixed", dayfirst=True, errors="coerce")
     df_to_download = df_to_download.sort_values("date").reset_index(drop=True)
 
     print(f"\n[INFO] Found {len(df_to_download)} new PDFs to download")
@@ -427,14 +459,16 @@ def pdf_downloader(
                 print(f"[ERROR] Extended fallback failed: {e2}")
 
         # Incremental metadata save (survives interruptions)
-        temp_df = pd.concat([temp_df, pd.DataFrame([row])], ignore_index=True)
-        temp_df.to_json(
-            metadata_path,
-            orient="records",
-            indent=2,
-            force_ascii=False,
-            date_format="iso",
-        )
+        # Only add to metadata if this is a NEW record (not already in old_df)
+        if row["pdf_url"] not in old_urls:
+            temp_df = pd.concat([temp_df, pd.DataFrame([row])], ignore_index=True)
+            temp_df.to_json(
+                metadata_path,
+                orient="records",
+                indent=2,
+                force_ascii=False,
+                date_format="iso",
+            )
 
         # Rate limiting to avoid server throttling
         time.sleep(request_delay)

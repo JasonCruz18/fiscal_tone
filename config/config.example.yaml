@@ -1,0 +1,165 @@
+# =============================================================================
+# FiscalTone Configuration
+# =============================================================================
+# Copy this file to config.yaml and customize for your environment:
+#   cp config/config.example.yaml config/config.yaml
+#
+# Environment variables can override settings using ${VAR_NAME} syntax.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Project Settings
+# -----------------------------------------------------------------------------
+project:
+  name: "FiscalTone"
+  version: "1.0.0"
+  description: "Fiscal Policy Sentiment Analysis for Peru's Fiscal Council"
+
+# -----------------------------------------------------------------------------
+# Path Configuration
+# -----------------------------------------------------------------------------
+paths:
+  # Base directories
+  data_root: "data"
+  metadata_dir: "metadata"
+
+  # Data subdirectories
+  raw_dir: "data/raw"
+  input_dir: "data/input"
+  output_dir: "data/output"
+
+  # PDF subdirectories (created by classify stage)
+  editable_dir: "data/raw/editable"
+  scanned_dir: "data/raw/scanned"
+
+# -----------------------------------------------------------------------------
+# Web Scraping Configuration
+# -----------------------------------------------------------------------------
+scraper:
+  # Source URLs
+  urls:
+    - "https://cf.gob.pe/p/informes/"
+    - "https://cf.gob.pe/p/comunicados/"
+
+  # Rate limiting
+  request_delay: 1.0        # Seconds between downloads
+  request_timeout: 20       # Seconds before timeout
+
+  # HTTP settings
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+  # PDFs to exclude (annual reports contain stats, not opinions)
+  exclude_pdfs:
+    - "Informe-anual-2017_CF_vf.pdf"
+    - "Informe-anual-del-Consejo-Fiscal-2018-version-final1.pdf"
+
+# -----------------------------------------------------------------------------
+# PDF Processing Configuration
+# -----------------------------------------------------------------------------
+pdf_processing:
+  # Font-based extraction settings (editable PDFs)
+  font_min: 11.0            # Minimum font size for body text
+  font_max: 11.9            # Maximum font size for body text
+  exclude_bold: true        # Skip bold text (headers/titles)
+
+  # Paragraph detection
+  vertical_threshold: 10    # Pixels between lines to detect new paragraph
+
+  # Content filtering
+  stop_at_annex: true       # Truncate at "Anexo" sections
+
+  # OCR settings (scanned PDFs)
+  ocr:
+    language: "spa"         # Tesseract language code
+    dpi: 300                # Image resolution for OCR
+    # tesseract_cmd: "C:/Program Files/Tesseract-OCR/tesseract.exe"  # Windows path
+
+# -----------------------------------------------------------------------------
+# Text Cleaning Configuration
+# -----------------------------------------------------------------------------
+cleaning:
+  # Cleaning stages to run (true = enabled)
+  stages:
+    preliminary: true       # OCR artifact removal
+    keyword_filter: true    # Find "Opinión del CF" section
+    false_breaks: true      # Fix split paragraphs
+    headers: true           # Remove section headers
+    annexes: true           # Truncate at annexes
+    letter_pages: true      # Remove cover letters
+    noise: true             # Final cleanup
+
+  # Header detection thresholds
+  header_max_chars: 200
+  header_max_words: 35
+
+# -----------------------------------------------------------------------------
+# LLM Classification Configuration
+# -----------------------------------------------------------------------------
+openai:
+  # API settings (use environment variable for security)
+  api_key: ${OPENAI_API_KEY}
+  model: "gpt-4o"
+
+  # Rate limiting (adjust based on your API tier)
+  # Tier 1: 500 RPM, 30,000 TPM
+  # With context (~600 tokens/request), max throughput is ~50 RPM
+  rate_limit: 50            # Requests per minute
+
+  # Request settings
+  temperature: 0            # Deterministic output
+  max_tokens: 5             # Only need single digit response
+
+  # Retry settings
+  max_retries: 5
+  retry_min_wait: 2         # Seconds
+  retry_max_wait: 30        # Seconds
+
+  # Batch processing
+  batch_size: 100           # Paragraphs per batch
+  save_backups: true        # Save after each batch
+
+# -----------------------------------------------------------------------------
+# Output Configuration
+# -----------------------------------------------------------------------------
+output:
+  # File formats
+  formats:
+    - "json"
+    - "csv"
+
+  # Output files
+  files:
+    paragraphs: "llm_output_paragraphs"
+    documents: "llm_output_documents"
+    metadata: "cf_metadata"
+    extracted: "cf_extracted_text"
+    cleaned: "cf_cleaned_text"
+
+  # JSON formatting
+  json_indent: 2
+  ensure_ascii: false
+
+# -----------------------------------------------------------------------------
+# Logging Configuration
+# -----------------------------------------------------------------------------
+logging:
+  level: "INFO"             # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/fiscal_tone.log"
+  console: true
+
+# -----------------------------------------------------------------------------
+# Feature Flags
+# -----------------------------------------------------------------------------
+features:
+  # Enable progress bars
+  show_progress: true
+
+  # Save intermediate results
+  save_intermediate: true
+
+  # Validate data at each stage
+  validate_data: true
+
+  # Windows console encoding fix
+  fix_console_encoding: true
