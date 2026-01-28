@@ -24,12 +24,21 @@ Example:
 
 from __future__ import annotations
 
+import codecs
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from timeit import default_timer as timer
 from typing import Any
+
+# Fix Windows console encoding for UTF-8 output (handles accented characters)
+if sys.platform == "win32":
+    if hasattr(sys.stdout, "buffer"):
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    if hasattr(sys.stderr, "buffer"):
+        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 import pdfplumber
 
