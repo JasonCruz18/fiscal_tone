@@ -1,0 +1,75 @@
+# FiscalTone - Conda Environment
+# Creates a complete environment for fiscal policy sentiment analysis
+#
+# Installation:
+#   conda env create -f environment.yml
+#   conda activate fiscal_tone
+#
+# Update existing environment:
+#   conda env update -f environment.yml --prune
+
+name: fiscal_tone
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python version
+  - python>=3.10,<3.13
+
+  # Web Scraping
+  - requests>=2.31.0
+  - beautifulsoup4>=4.12.0
+
+  # PDF Processing - Editable PDFs
+  - pymupdf>=1.23.0       # Imported as 'fitz'
+  - pdfplumber>=0.10.0
+
+  # PDF Processing - Scanned PDFs (OCR)
+  - pytesseract>=0.3.10
+  - pdf2image>=1.16.0
+  - pillow>=10.0.0
+
+  # Data Manipulation
+  - pandas>=2.1.0
+  - numpy>=1.24.0
+
+  # Async Processing
+  - aiohttp>=3.9.0
+
+  # Configuration
+  - pyyaml>=6.0
+
+  # Visualization
+  - matplotlib>=3.7.0
+
+  # Progress bars
+  - tqdm>=4.66.0
+  - colorama>=0.4.6
+
+  # Jupyter support
+  - jupyter>=1.0.0
+  - notebook>=7.0.0
+  - ipywidgets>=8.0.0
+
+  # Development tools
+  - black>=23.0.0
+  - flake8>=6.0.0
+  - isort>=5.12.0
+  - pytest>=7.4.0
+  - pytest-cov>=4.1.0
+
+  # Pip for additional packages
+  - pip
+
+  # Pip-only packages
+  - pip:
+      # LLM Integration
+      - openai>=1.0.0
+      - aiolimiter>=1.1.0
+      - tenacity>=8.2.0
+
+# Note: Tesseract OCR must be installed separately as a system dependency
+# Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki
+# Linux: sudo apt-get install tesseract-ocr tesseract-ocr-spa
+# macOS: brew install tesseract tesseract-lang

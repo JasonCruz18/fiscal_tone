@@ -1,5 +1,36 @@
+# Data files (large, gitignored)
 *.csv
 *.pdf
-*.txt
 *.png
+
+# Text files (with exceptions)
+*.txt
+!requirements*.txt
+!LICENSE.txt
+
+# JSON files (with exceptions)
 *.json
+!config/*.json
+!.vscode/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.idea/
+*.swp
+*.swo

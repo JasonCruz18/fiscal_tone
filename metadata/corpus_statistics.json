@@ -1,0 +1,87 @@
+{
+  "corpus_overview": {
+    "total_paragraphs": 1492,
+    "total_documents": 77,
+    "total_characters": 943319,
+    "date_generated": "2025-11-28T17:05:25.302966"
+  },
+  "paragraph_statistics": {
+    "mean_length": 632.2513404825737,
+    "median_length": 587.5,
+    "std_deviation": 341.657384586078,
+    "min_length": 49,
+    "max_length": 2230,
+    "percentiles": {
+      "p5": 154.75,
+      "p10": 235.1,
+      "p25": 389.25,
+      "p50": 587.5,
+      "p75": 827.25,
+      "p90": 1098.3000000000006,
+      "p95": 1237.0,
+      "p99": 1650.4499999999996
+    }
+  },
+  "by_document_type": {
+    "Comunicado": {
+      "paragraphs": 199,
+      "documents": 18
+    },
+    "Informe": {
+      "paragraphs": 1219,
+      "documents": 49
+    }
+  },
+  "by_source_type": {
+    "editable": {
+      "paragraphs": 1247,
+      "documents": 64
+    },
+    "scanned": {
+      "paragraphs": 245,
+      "documents": 13
+    }
+  },
+  "by_year": {
+    "2016": {
+      "paragraphs": 132,
+      "documents": 8
+    },
+    "2017": {
+      "paragraphs": 72,
+      "documents": 4
+    },
+    "2018": {
+      "paragraphs": 121,
+      "documents": 4
+    },
+    "2019": {
+      "paragraphs": 58,
+      "documents": 3
+    },
+    "2020": {
+      "paragraphs": 196,
+      "documents": 12
+    },
+    "2021": {
+      "paragraphs": 198,
+      "documents": 12
+    },
+    "2022": {
+      "paragraphs": 158,
+      "documents": 9
+    },
+    "2023": {
+      "paragraphs": 135,
+      "documents": 5
+    },
+    "2024": {
+      "paragraphs": 223,
+      "documents": 10
+    },
+    "2025": {
+      "paragraphs": 199,
+      "documents": 10
+    }
+  }
+}

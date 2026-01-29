@@ -1,30 +1,64 @@
-# FiscalTone - Python Dependencies
-# Python 3.12
+# FiscalTone - Production Dependencies
+# Python 3.10+
+#
+# Installation:
+#   pip install -r requirements.txt
+#
+# For development dependencies, also install:
+#   pip install -r requirements-dev.txt
 
+# =============================================================================
 # Web Scraping
+# =============================================================================
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 
+# =============================================================================
 # PDF Processing - Editable PDFs
-PyMuPDF>=1.23.0  # fitz
+# =============================================================================
+PyMuPDF>=1.23.0              # Imported as 'fitz'
 pdfplumber>=0.10.0
 
+# =============================================================================
 # PDF Processing - Scanned PDFs (OCR)
+# =============================================================================
 pytesseract>=0.3.10
 pdf2image>=1.16.0
 Pillow>=10.0.0
 
+# =============================================================================
 # Data Manipulation
+# =============================================================================
 pandas>=2.1.0
 numpy>=1.24.0
 
-# LLM Integration
+# =============================================================================
+# LLM Integration (OpenAI GPT-4o)
+# =============================================================================
 openai>=1.0.0
+aiolimiter>=1.1.0            # Async rate limiting
+tenacity>=8.2.0              # Retry logic with exponential backoff
 
+# =============================================================================
+# Configuration
+# =============================================================================
+pyyaml>=6.0
+
+# =============================================================================
 # Visualization
+# =============================================================================
 matplotlib>=3.7.0
 
-# Note: Tesseract OCR must be installed separately as a system dependency
-# Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki
-# Linux: sudo apt-get install tesseract-ocr tesseract-ocr-spa
-# macOS: brew install tesseract tesseract-lang
+# =============================================================================
+# Progress & UX
+# =============================================================================
+tqdm>=4.66.0
+colorama>=0.4.6
+
+# =============================================================================
+# System Requirements (NOT installed via pip)
+# =============================================================================
+# Tesseract OCR must be installed separately:
+#   Windows: https://github.com/UB-Mannheim/tesseract/wiki
+#   Linux:   sudo apt-get install tesseract-ocr tesseract-ocr-spa
+#   macOS:   brew install tesseract tesseract-lang
