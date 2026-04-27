@@ -31,15 +31,22 @@ class PipelineConfig:
         raw_dir: Directory for raw downloaded PDFs.
         metadata_dir: Directory for metadata JSON files.
         output_dir: Directory for final outputs.
+        request_delay: Seconds between PDF downloads.
+        llm_model: GPT model name for LLM classification.
+        llm_rpm: LLM requests per minute rate limit.
+        llm_batch_size: Paragraphs per LLM backup batch.
     """
 
     data_dir: Path = field(default_factory=lambda: Path("data"))
     raw_dir: Path = field(default_factory=lambda: Path("data/raw"))
     metadata_dir: Path = field(default_factory=lambda: Path("metadata"))
     output_dir: Path = field(default_factory=lambda: Path("data/output"))
+    request_delay: float = 1.0
+    llm_model: str = "gpt-4o"
+    llm_rpm: int = 50
+    llm_batch_size: int = 100
 
     def __post_init__(self) -> None:
-        """Convert string paths to Path objects."""
         self.data_dir = Path(self.data_dir)
         self.raw_dir = Path(self.raw_dir)
         self.metadata_dir = Path(self.metadata_dir)
@@ -56,6 +63,43 @@ class PipelineConfig:
             self.output_dir,
         ]:
             path.mkdir(parents=True, exist_ok=True)
+
+    @classmethod
+    def from_yaml(cls, yaml_path: str | Path) -> "PipelineConfig":
+        """Load configuration from a YAML file.
+
+        Args:
+            yaml_path: Path to config/config.yaml.
+
+        Returns:
+            PipelineConfig populated from YAML values.
+        """
+        try:
+            import yaml
+        except ImportError:
+            raise ImportError("PyYAML required: pip install pyyaml")
+
+        yaml_path = Path(yaml_path)
+        if not yaml_path.exists():
+            raise FileNotFoundError(f"Config not found: {yaml_path}")
+
+        with open(yaml_path, encoding="utf-8") as f:
+            raw = yaml.safe_load(f)
+
+        paths = raw.get("paths", {})
+        scraper = raw.get("scraper", {})
+        openai_cfg = raw.get("openai", {})
+
+        return cls(
+            data_dir=Path(paths.get("data_root", "data")),
+            raw_dir=Path(paths.get("raw_dir", "data/raw")),
+            metadata_dir=Path(paths.get("metadata_dir", "metadata")),
+            output_dir=Path(paths.get("output_dir", "data/output")),
+            request_delay=float(scraper.get("request_delay", 1.0)),
+            llm_model=str(openai_cfg.get("model", "gpt-4o")),
+            llm_rpm=int(openai_cfg.get("rate_limit", 50)),
+            llm_batch_size=int(openai_cfg.get("batch_size", 100)),
+        )
 
 
 class PipelineRunner:

@@ -259,12 +259,17 @@ def aggregate_scores(data: list[dict[str, Any]]) -> pd.DataFrame:
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
     # Aggregate by document
-    agg_cols = {
+    agg_cols: dict = {
         "fiscal_risk_score": ["mean", "count"],
-        "risk_index": "mean",
     }
 
-    # Add optional columns if present
+    # Score distribution counts (1-5)
+    for score in range(1, 6):
+        col = f"score_{score}_count"
+        df[col] = (df["fiscal_risk_score"] == score).astype(int)
+        agg_cols[col] = "sum"
+
+    # Add optional metadata columns
     for col in ["doc_title", "doc_type", "doc_number", "year", "month"]:
         if col in df.columns:
             agg_cols[col] = "first"
@@ -286,12 +291,14 @@ def aggregate_scores(data: list[dict[str, Any]]) -> pd.DataFrame:
         columns={
             "fiscal_risk_score_mean": "avg_risk_score",
             "fiscal_risk_score_count": "n_paragraphs",
-            "risk_index_mean": "avg_risk_index",
+            **{f"score_{i}_count_sum": f"score_{i}" for i in range(1, 6)},
         },
         inplace=True,
     )
 
-    # Calculate fiscal tone index
+    # avg_risk_index: 0–1 normalized score (higher = more risk)
+    # fiscal_tone_index: paper metric (3 – score) / 2, range [+1, –1]
+    df_agg["avg_risk_index"] = df_agg["avg_risk_score"] / 5.0
     df_agg["fiscal_tone_index"] = df_agg["avg_risk_score"].apply(
         calculate_fiscal_tone_index
     )

@@ -1,0 +1,133 @@
+
+\usepackage{amsfonts,amsmath,amsthm,amssymb}                % Math symbols
+\usepackage{setspace}                                       % Spaces
+\usepackage{booktabs}                                       % Nice tables rules
+\usepackage{graphicx}                                       % Insert figures
+\usepackage{colortbl}                                       % Color toolbox
+\usepackage[round]{natbib}                                  % Bibliographical references
+\usepackage{rotating}
+\usepackage{xcolor}
+\usepackage{comment}                                        % To easily add comments in edition mode
+\usepackage{enumitem}
+
+\usepackage[pagewise]{lineno}
+\modulolinenumbers[1]
+
+\setlength{\parindent}{0in}
+\setlength{\parskip}{6pt}
+\addtolength{\hoffset}{-1.5cm}
+\addtolength{\textwidth}{3cm}
+\addtolength{\voffset}{-1cm}
+\addtolength{\textheight}{2cm}
+\frenchspacing
+\pagenumbering{arabic}
+\pretolerance = 10000
+\tolerance    = 10000
+\allowdisplaybreaks
+
+% Customized Titles
+\usepackage[small,  bf]{titlesec}                       % Font style: San Seriff and bold
+\titlespacing{\section}{0pt}{*3}{*1}                       % Spaces before and after titles in sections
+\titlespacing{\subsection}{0pt}{*2}{*0}                    % Spaces before and after titles in subsections
+\titlespacing{\subsubsection}{0pt}{*2}{*0}                    % Spaces before and after titles in subsections
+\titleformat{\subsubsection}
+  {\itshape}
+  {\thesubsubsection}
+  {1em}
+  {}
+
+% Customized figures and tables captions
+\usepackage{caption}
+\captionsetup{font       = normalsize}
+\captionsetup{format     = plain}
+\captionsetup{labelsep   = period}
+\captionsetup{labelfont  = bf}
+\captionsetup{textfont   = it}
+\captionsetup{figurename = Figure, skip = 5pt}
+\captionsetup{tablename  = Table}
+
+%%%%%%%%%%%%%%%%%%%% Font
+%\usepackage[latin1]{inputenc}
+%\usepackage{newtxtext}
+%\usepackage{newtxmath}
+
+% Hyperlinks and pdf customization
+\usepackage{hyperref}
+\definecolor{azul}{rgb}{0, 0, 0.75}
+\hypersetup{
+    hypertexnames = false,
+    breaklinks    = true,
+    colorlinks    = true,
+    urlcolor      = azul,
+    linkcolor     = azul,
+    citecolor     = azul,
+    pdfstartview  = FitV,
+    bookmarksopen = true,
+    bookmarksopenlevel = 2,
+    pdfpagelayout = SinglePage,
+}
+
+% This code produces nice non-indented footnote paragraphs
+\usepackage[bottom]{footmisc}
+\makeatletter
+\newlength{\myFootnoteWidth}
+\newlength{\myFootnoteLabel}
+\setlength{\myFootnoteLabel}{0.6em}%  <-- can be changed to any valid value 975em
+\renewcommand{\@makefntext}[1]{%
+  \setlength{\myFootnoteWidth}{\columnwidth}%
+  \addtolength{\myFootnoteWidth}{-\myFootnoteLabel}%
+  \noindent\makebox[\myFootnoteLabel][r]{\@makefnmark\ }%
+  \parbox[t]{\myFootnoteWidth}{#1}%
+} \makeatother
+
+\makeatletter
+\pretocmd{\@maketitle}{\parindent=0pt\relax}{}{}
+\makeatother
+\makeatletter
+\renewcommand{\@makefnmark}{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
+\makeatother
+
+\newcommand{\red}[1]{\textcolor[rgb]{1.00,0.00,0.00}{#1}} 
+\newcommand{\blue}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}} 
+\newcommand{\green}[1]{\textcolor[rgb]{0.00,0.750,0.00}{#1}} 
+\renewcommand{\b}[1]{\boldsymbol{#1}} 
+
+%\usepackage{xcolor}
+
+% Define the colors with transparency
+\definecolor{smoke_white}{HTML}{F5F5F5}
+\definecolor{bubblegum_blue}{HTML}{3366FF}
+\definecolor{bubblegum_red}{HTML}{E6004C}
+\definecolor{light_jade}{HTML}{00DFA2}
+\definecolor{light_yellow}{HTML}{FFF183}
+\definecolor{light_black}{HTML}{292929}
+
+
+\newcommand{\highlightcell}[2]{%
+  \setlength\fboxrule{1.5pt}%
+  \fcolorbox{light_black}{#1}{\textcolor{smoke_white}{\textbf{#2}}}%
+}
+
+\begin{comment}
+\newcommand{\highlightcellyg}[2]{%
+  \setlength\fboxrule{1.5pt}%
+  \fcolorbox{#1}{light_black}{\textcolor{smoke_white}{\textbf{#2}}}%
+}
+\end{comment}
+
+\begin{comment}
+\newcommand{\highlightcell}[2]{%
+  \setlength\fboxrule{1.5pt}%
+  \fcolorbox{#1}{white}{\textcolor{black}{\textbf{#2}}}%
+}
+\end{comment}
+
+
+\newcommand{\highlightcellyg}[2]{%
+  \setlength\fboxrule{1.5pt}%
+  \fcolorbox{light_black}{#1}{\textcolor{light_black}{\textbf{#2}}}%
+}
+
+
+
+

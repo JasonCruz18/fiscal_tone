@@ -467,9 +467,9 @@ def process_all_pdfs_unified(input_folder="data/raw/scanned",
     print(f"Total pages: {total_pages}")
     print(f"Successful: {sum(r['cropped'] for r in results)}/{len(results)}")
     print(f"\nOutputs:")
-    print(f"  Debug visualizations: {debug_dir.relative_to(Path.cwd())}/ ({total_pages} files)")
-    print(f"  Cropped pages: {cropped_dir.relative_to(Path.cwd())}/ ({total_pages} files)")
-    print(f"  Results JSON: {json_path.relative_to(Path.cwd())}")
+    print(f"  Debug visualizations: {debug_dir}/ ({total_pages} files)")
+    print(f"  Cropped pages: {cropped_dir}/ ({total_pages} files)")
+    print(f"  Results JSON: {json_path}")
     print('='*80)
 
 

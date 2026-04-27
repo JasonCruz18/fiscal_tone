@@ -92,16 +92,22 @@ Examples:
 
     # Configuration arguments
     parser.add_argument(
+        "--config",
+        "-c",
+        default="config/config.yaml",
+        help="Path to config YAML file (default: config/config.yaml)",
+    )
+    parser.add_argument(
         "--data-dir",
         "-d",
-        default="data",
-        help="Base data directory (default: data)",
+        default=None,
+        help="Override base data directory from config",
     )
     parser.add_argument(
         "--metadata-dir",
         "-m",
-        default="metadata",
-        help="Metadata directory (default: metadata)",
+        default=None,
+        help="Override metadata directory from config",
     )
 
     args = parser.parse_args()
@@ -127,13 +133,20 @@ Examples:
         parser.print_help()
         return 1
 
-    # Create pipeline configuration
-    config = PipelineConfig(
-        data_dir=Path(args.data_dir),
-        raw_dir=Path(args.data_dir) / "raw",
-        metadata_dir=Path(args.metadata_dir),
-        output_dir=Path(args.data_dir) / "output",
-    )
+    # Create pipeline configuration — prefer YAML, allow CLI overrides
+    config_path = Path(args.config)
+    if config_path.exists():
+        config = PipelineConfig.from_yaml(config_path)
+    else:
+        config = PipelineConfig()
+
+    # Apply any explicit CLI overrides
+    if args.data_dir:
+        config.data_dir = Path(args.data_dir)
+        config.raw_dir = Path(args.data_dir) / "raw"
+        config.output_dir = Path(args.data_dir) / "output"
+    if args.metadata_dir:
+        config.metadata_dir = Path(args.metadata_dir)
 
     # Create and run pipeline
     runner = PipelineRunner(config)
