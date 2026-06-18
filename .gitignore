@@ -2,6 +2,8 @@
 *.csv
 *.pdf
 *.png
+!replication/ael_2026/data/**/*.csv
+!replication/ael_2026/outputs/**/*.csv
 
 # Text files (with exceptions)
 *.txt
