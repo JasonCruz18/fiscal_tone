@@ -57,13 +57,6 @@ replication/ael_2026/
      --prompt-style neutral
    ```
 
-4. To reproduce the predictive-regression table using the non-missing FT0
-   document-level observations:
-
-   ```bash
-   python replication/ael_2026/scripts/run_ft0_predictive.py
-   ```
-
 LLM reruns are not expected to be bit-for-bit deterministic across API service
 dates, even with temperature set to zero. The original scored files are
 therefore included as frozen research outputs.
@@ -73,4 +66,3 @@ therefore included as frozen research outputs.
 The broader FiscalTone repository contains an ongoing, more sophisticated PDF
 extraction and text-processing pipeline. That pipeline is useful for future
 extensions but does not replace this frozen article-specific package.
-
